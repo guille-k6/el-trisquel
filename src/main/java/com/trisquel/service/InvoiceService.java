@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+public
 class InvoiceService {
     @Autowired
-    public InvoiceService(InvoiceRepository invoiceRepository){
+    public InvoiceService(InvoiceRepository invoiceRepository) {
         this.repository = invoiceRepository;
     }
     private final InvoiceRepository repository;

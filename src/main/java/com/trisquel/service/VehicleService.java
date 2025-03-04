@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-class VehicleService {
+public class VehicleService {
     @Autowired
     VehicleService(VehicleRepository repository){
         this.repository = repository;

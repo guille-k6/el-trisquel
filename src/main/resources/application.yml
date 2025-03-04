@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/el_trisquel
+    username: mainuser
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: localhost
+    port: 1025
+    username: hello
+    password: hello
+
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000

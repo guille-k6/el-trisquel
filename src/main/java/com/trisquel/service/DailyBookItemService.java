@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-class DailyBookItemService {
+public class DailyBookItemService {
     @Autowired
     DailyBookItemService(DailyBookItemRepository repository){
         this.repository = repository;
