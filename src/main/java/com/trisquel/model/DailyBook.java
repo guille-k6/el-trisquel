@@ -3,6 +3,7 @@ package com.trisquel.model;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "daily_book")
@@ -20,6 +21,8 @@ public class DailyBook {
     private Long ltExtractedTank;
     private Long ltRemainingFlask;
     private Long ltTotalFlask;
+    @OneToMany(mappedBy = "dailyBook", cascade = CascadeType.ALL)
+    private List<DailyBookItem> items;
 
     @ManyToOne
     @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
@@ -103,5 +106,13 @@ public class DailyBook {
 
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
+    }
+
+    public List<DailyBookItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<DailyBookItem> items) {
+        this.items = items;
     }
 }

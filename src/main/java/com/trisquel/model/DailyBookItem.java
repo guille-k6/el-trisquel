@@ -12,7 +12,6 @@ public class DailyBookItem {
 
     private Long amount;
     private Boolean authorized;
-
     @ManyToOne
     @JoinColumn(name = "daily_book_id", referencedColumnName = "id")
     private DailyBook dailyBook;

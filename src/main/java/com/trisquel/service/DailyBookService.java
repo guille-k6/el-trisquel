@@ -11,12 +11,25 @@ import java.util.Optional;
 @Service
 public class DailyBookService {
     @Autowired
-    public DailyBookService(DailyBookRepository repository){
+    public DailyBookService(DailyBookRepository repository) {
         this.repository = repository;
     }
+
     private final DailyBookRepository repository;
-    public List<DailyBook> findAll() { return repository.findAll(); }
-    public Optional<DailyBook> findById(Long id) { return repository.findById(id); }
-    public DailyBook save(DailyBook dailyBook) { return repository.save(dailyBook); }
-    public void delete(Long id) { repository.deleteById(id); }
+
+    public List<DailyBook> findAll() {
+        return repository.findAll();
+    }
+
+    public Optional<DailyBook> findById(Long id) {
+        return repository.findById(id);
+    }
+
+    public DailyBook save(DailyBook dailyBook) {
+        return repository.save(dailyBook);
+    }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
+    }
 }
