@@ -1,6 +1,7 @@
 package com.trisquel.service;
 
 import com.trisquel.model.DailyBook;
+import com.trisquel.model.Dto.DailyBookDTO;
 import com.trisquel.repository.DailyBookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,9 @@ public class DailyBookService {
 
     private final DailyBookRepository repository;
 
-    public List<DailyBook> findAll() {
-        return repository.findAll();
+    public List<DailyBookDTO> findAll() {
+        List<DailyBook> dailyBooks = repository.findAll();
+        return DailyBookDTO.translateToDTOs(dailyBooks);
     }
 
     public Optional<DailyBook> findById(Long id) {

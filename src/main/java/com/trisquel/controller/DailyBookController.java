@@ -1,6 +1,7 @@
 package com.trisquel.controller;
 
 import com.trisquel.model.DailyBook;
+import com.trisquel.model.Dto.DailyBookDTO;
 import com.trisquel.service.DailyBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class DailyBookController {
     }
 
     @GetMapping
-    public List<DailyBook> getAllDailyBooks() {
+    public List<DailyBookDTO> getAllDailyBooks() {
         return dailyBookService.findAll();
     }
 

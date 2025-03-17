@@ -1,6 +1,9 @@
 package com.trisquel.model.Dto;
 
-import java.sql.Date;
+import com.trisquel.model.Invoice;
+
+import java.util.Date;
+import java.util.Optional;
 
 public class InvoiceDTO {
     private Long id;
@@ -17,6 +20,23 @@ public class InvoiceDTO {
         this.pricePerUnit = pricePerUnit;
         this.comment = comment;
         this.paid = paid;
+    }
+
+    public InvoiceDTO() {
+    }
+
+    public static Optional<InvoiceDTO> translateToDTO(Invoice invoice) {
+        if (invoice == null) {
+            return Optional.empty();
+        }
+        InvoiceDTO invoiceDTO = new InvoiceDTO();
+        invoiceDTO.setId(invoice.getId());
+        invoiceDTO.setAmount(invoice.getAmount());
+        invoiceDTO.setComment(invoice.getComment());
+        invoiceDTO.setDate(invoice.getDate());
+        invoiceDTO.setPricePerUnit(invoice.getPricePerUnit());
+        invoiceDTO.setPaid(invoice.getPaid());
+        return Optional.of(invoiceDTO);
     }
 
     public Long getId() {

@@ -1,5 +1,7 @@
 package com.trisquel.model.Dto;
 
+import com.trisquel.model.Product;
+
 public class ProductDTO {
     private Long id;
     private String name;
@@ -8,6 +10,10 @@ public class ProductDTO {
         this.id = id;
         this.name = name;
     }
+
+    public ProductDTO() {
+    }
+
 
     public Long getId() {
         return id;
@@ -23,5 +29,12 @@ public class ProductDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public static ProductDTO translateToDTO(Product product) {
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        return productDTO;
     }
 }

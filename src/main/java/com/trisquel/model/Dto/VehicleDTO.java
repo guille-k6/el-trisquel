@@ -1,6 +1,8 @@
 package com.trisquel.model.Dto;
 
-import java.sql.Date;
+import com.trisquel.model.Vehicle;
+
+import java.util.Date;
 
 public class VehicleDTO {
     private Long id;
@@ -13,6 +15,9 @@ public class VehicleDTO {
         this.name = name;
         this.purchaseDate = purchaseDate;
         this.purchaseDatePrice = purchaseDatePrice;
+    }
+
+    public VehicleDTO() {
     }
 
     public Long getId() {
@@ -45,5 +50,14 @@ public class VehicleDTO {
 
     public void setPurchaseDatePrice(Long purchaseDatePrice) {
         this.purchaseDatePrice = purchaseDatePrice;
+    }
+
+    public static VehicleDTO translateToDTO(Vehicle vehicle) {
+        VehicleDTO vehicleDTO = new VehicleDTO();
+        vehicleDTO.setId(vehicle.getId());
+        vehicleDTO.setName(vehicle.getName());
+        vehicleDTO.setPurchaseDate(vehicle.getPurchaseDate());
+        vehicleDTO.setPurchaseDatePrice(vehicle.getPurchaseDatePrice());
+        return vehicleDTO;
     }
 }

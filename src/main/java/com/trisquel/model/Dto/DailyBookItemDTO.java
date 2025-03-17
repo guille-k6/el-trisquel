@@ -1,20 +1,31 @@
 package com.trisquel.model.Dto;
 
+import com.trisquel.model.DailyBookItem;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 public class DailyBookItemDTO {
     private Long id;
-    private Long invoiceId;
+    private Optional<InvoiceDTO> invoice;
     private Long amount;
-    private Long productId;
+    private ProductDTO product;
     private Boolean authorized;
-    private Long clientId;
+    private ClientDTO client;
 
-    public DailyBookItemDTO(Long id, Long invoiceId, Long amount, Long productId, Boolean authorized, Long clientId) {
+
+    public DailyBookItemDTO() {
+    }
+
+    public DailyBookItemDTO(Long id, Optional<InvoiceDTO> invoice, Long amount, ProductDTO product, Boolean authorized,
+                            ClientDTO client) {
         this.id = id;
-        this.invoiceId = invoiceId;
+        this.invoice = invoice;
         this.amount = amount;
-        this.productId = productId;
+        this.product = product;
         this.authorized = authorized;
-        this.clientId = clientId;
+        this.client = client;
     }
 
     public Long getId() {
@@ -25,12 +36,12 @@ public class DailyBookItemDTO {
         this.id = id;
     }
 
-    public Long getInvoiceId() {
-        return invoiceId;
+    public Optional<InvoiceDTO> getInvoice() {
+        return invoice;
     }
 
-    public void setInvoiceId(Long invoiceId) {
-        this.invoiceId = invoiceId;
+    public void setInvoice(Optional<InvoiceDTO> invoice) {
+        this.invoice = invoice;
     }
 
     public Long getAmount() {
@@ -41,12 +52,12 @@ public class DailyBookItemDTO {
         this.amount = amount;
     }
 
-    public Long getProductId() {
-        return productId;
+    public ProductDTO getProduct() {
+        return product;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProduct(ProductDTO product) {
+        this.product = product;
     }
 
     public Boolean getAuthorized() {
@@ -57,11 +68,26 @@ public class DailyBookItemDTO {
         this.authorized = authorized;
     }
 
-    public Long getClientId() {
-        return clientId;
+    public ClientDTO getClient() {
+        return client;
     }
 
-    public void setClientId(Long clientId) {
-        this.clientId = clientId;
+    public void setClient(ClientDTO client) {
+        this.client = client;
+    }
+
+    public static List<DailyBookItemDTO> translateToDTOs(List<DailyBookItem> dailyBookItems) {
+        return dailyBookItems.stream().map(DailyBookItemDTO::translateToDTO).collect(Collectors.toList());
+    }
+
+    public static DailyBookItemDTO translateToDTO(DailyBookItem dailyBookItem) {
+        DailyBookItemDTO dbiDTO = new DailyBookItemDTO();
+        dbiDTO.setId(dailyBookItem.getId());
+        dbiDTO.setInvoice(InvoiceDTO.translateToDTO(dailyBookItem.getInvoice()));
+        dbiDTO.setAmount(dailyBookItem.getAmount());
+        dbiDTO.setProduct(ProductDTO.translateToDTO(dailyBookItem.getProduct()));
+        dbiDTO.setAuthorized(dailyBookItem.getAuthorized());
+        dbiDTO.setClient(ClientDTO.translateToDTO(dailyBookItem.getClient()));
+        return dbiDTO;
     }
 }

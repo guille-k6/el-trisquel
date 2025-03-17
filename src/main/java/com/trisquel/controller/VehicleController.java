@@ -2,6 +2,8 @@ package com.trisquel.controller;
 
 import com.trisquel.model.Vehicle;
 import com.trisquel.service.VehicleService;
+import com.trisquel.utils.ValidationException;
+import com.trisquel.utils.ValidationExceptionRespose;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,7 @@ public class VehicleController {
     private final VehicleService vehicleService;
 
     @Autowired
-    public VehicleController(VehicleService vehicleService){
+    public VehicleController(VehicleService vehicleService) {
         this.vehicleService = vehicleService;
     }
 
@@ -27,14 +29,19 @@ public class VehicleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long id) {
-        return vehicleService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return vehicleService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Vehicle> createVehicle(@RequestBody Vehicle vehicle) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(vehicleService.save(vehicle));
+    public ResponseEntity<?> createVehicle(@RequestBody Vehicle vehicle) {
+        ResponseEntity<?> response;
+        try {
+            vehicleService.save(vehicle);
+            response = ResponseEntity.ok("");
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionRespose(e.getValidationErrors()));
+        }
+        return response;
     }
 
     @PutMapping("/{id}")

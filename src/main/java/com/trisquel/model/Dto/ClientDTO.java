@@ -1,5 +1,7 @@
 package com.trisquel.model.Dto;
 
+import com.trisquel.model.Client;
+
 public class ClientDTO {
     private Long id;
     private String name;
@@ -11,6 +13,9 @@ public class ClientDTO {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
+    }
+
+    public ClientDTO() {
     }
 
     public Long getId() {
@@ -43,5 +48,14 @@ public class ClientDTO {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public static ClientDTO translateToDTO(Client client) {
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setId(client.getId());
+        clientDTO.setAddress(client.getAddress());
+        clientDTO.setName(client.getName());
+        clientDTO.setPhoneNumber(client.getPhoneNumber());
+        return clientDTO;
     }
 }
