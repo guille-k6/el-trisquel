@@ -32,3 +32,11 @@ spring:
           connectiontimeout: 5000
           timeout: 3000
           writetimeout: 5000
+# Configuración de SpringDoc OpenAPI
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html

@@ -28,7 +28,8 @@ public class ValidationException extends RuntimeException {
             ArrayList<String> newEntityValidations = new ArrayList<>();
             newEntityValidations.add(message);
             validationErrors.put(title, newEntityValidations);
+        } else {
+            errorMessages.add(message);
         }
-        errorMessages.add(message);
     }
 }

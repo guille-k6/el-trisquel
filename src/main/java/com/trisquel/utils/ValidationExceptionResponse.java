@@ -5,10 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ValidationExceptionRespose {
-    List<String> errors = new ArrayList<>();
+public class ValidationExceptionResponse {
+    private List<String> errors = new ArrayList<>();
+    private Map<String, List<String>> validationErrors;
 
-    public ValidationExceptionRespose(HashMap<String, List<String>> validationErrors) {
+    public ValidationExceptionResponse(HashMap<String, List<String>> validationErrors) {
+        this.validationErrors = validationErrors;
+
         for (Map.Entry<String, List<String>> entry : validationErrors.entrySet()) {
             String errorTitle = entry.getKey();
             List<String> entryErrors = entry.getValue();
@@ -19,5 +22,13 @@ public class ValidationExceptionRespose {
             }
             errors.add(errorTitle + ": " + errorBody);
         }
+    }
+
+    public List<String> getErrors() {
+        return errors;
+    }
+
+    public Map<String, List<String>> getValidationErrors() {
+        return validationErrors;
     }
 }
