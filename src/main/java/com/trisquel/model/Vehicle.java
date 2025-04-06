@@ -2,7 +2,7 @@ package com.trisquel.model;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "vehicle")
@@ -13,8 +13,9 @@ public class Vehicle {
     private Long id;
 
     private String name;
-    private Date purchaseDate;
+    private LocalDate purchaseDate;
     private Long purchaseDatePrice;
+
     public Long getId() {
         return id;
     }
@@ -31,11 +32,11 @@ public class Vehicle {
         this.name = name;
     }
 
-    public Date getPurchaseDate() {
+    public LocalDate getPurchaseDate() {
         return purchaseDate;
     }
 
-    public void setPurchaseDate(Date purchaseDate) {
+    public void setPurchaseDate(LocalDate purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
 

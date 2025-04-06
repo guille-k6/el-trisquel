@@ -2,15 +2,15 @@ package com.trisquel.model.Dto;
 
 import com.trisquel.model.Vehicle;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class VehicleDTO {
     private Long id;
     private String name;
-    private Date purchaseDate;
+    private LocalDate purchaseDate;
     private Long purchaseDatePrice;
 
-    public VehicleDTO(Long id, String name, Date purchaseDate, Long purchaseDatePrice) {
+    public VehicleDTO(Long id, String name, LocalDate purchaseDate, Long purchaseDatePrice) {
         this.id = id;
         this.name = name;
         this.purchaseDate = purchaseDate;
@@ -36,11 +36,11 @@ public class VehicleDTO {
         this.name = name;
     }
 
-    public Date getPurchaseDate() {
+    public LocalDate getPurchaseDate() {
         return purchaseDate;
     }
 
-    public void setPurchaseDate(Date purchaseDate) {
+    public void setPurchaseDate(LocalDate purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
 
