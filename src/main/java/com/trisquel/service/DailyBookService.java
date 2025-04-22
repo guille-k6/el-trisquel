@@ -23,8 +23,14 @@ public class DailyBookService {
         return DailyBookDTO.translateToDTOs(dailyBooks);
     }
 
-    public Optional<DailyBook> findById(Long id) {
-        return repository.findById(id);
+    public Optional<DailyBookDTO> findById(Long id) {
+        Optional<DailyBook> dailyBook = repository.findById(id);
+        if (dailyBook.isPresent()) {
+            DailyBookDTO dailyBookDTO = DailyBookDTO.translateToDTO(dailyBook.get());
+            return Optional.of(dailyBookDTO);
+        } else {
+            return Optional.empty();
+        }
     }
 
     public DailyBook save(DailyBook dailyBook) {

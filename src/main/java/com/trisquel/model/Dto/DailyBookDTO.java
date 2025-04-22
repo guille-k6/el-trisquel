@@ -2,14 +2,14 @@ package com.trisquel.model.Dto;
 
 import com.trisquel.model.DailyBook;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DailyBookDTO {
     private Long id;
     private VehicleDTO vehicle;
-    private Date date;
+    private LocalDate date;
     private Long vehicleKmsBefore;
     private Long vehicleKmsAfter;
     private Long kgTankBefore;
@@ -22,7 +22,7 @@ public class DailyBookDTO {
     public DailyBookDTO() {
     }
 
-    public DailyBookDTO(Long id, VehicleDTO vehicle, Date date, List<DailyBookItemDTO> items) {
+    public DailyBookDTO(Long id, VehicleDTO vehicle, LocalDate date, List<DailyBookItemDTO> items) {
         this.id = id;
         this.vehicle = vehicle;
         this.date = date;
@@ -45,11 +45,11 @@ public class DailyBookDTO {
         this.vehicle = vehicle;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

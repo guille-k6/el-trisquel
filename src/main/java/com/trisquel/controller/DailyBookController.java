@@ -17,7 +17,7 @@ public class DailyBookController {
     private final DailyBookService dailyBookService;
 
     @Autowired
-    public DailyBookController(DailyBookService dailyBookService){
+    public DailyBookController(DailyBookService dailyBookService) {
         this.dailyBookService = dailyBookService;
     }
 
@@ -27,10 +27,8 @@ public class DailyBookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DailyBook> getDailyBookById(@PathVariable Long id) {
-        return dailyBookService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DailyBookDTO> getDailyBookById(@PathVariable Long id) {
+        return dailyBookService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping

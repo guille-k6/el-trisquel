@@ -2,7 +2,7 @@ package com.trisquel.model;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -13,7 +13,7 @@ public class DailyBook {
     @SequenceGenerator(name = "daily_book_seq", sequenceName = "daily_book_seq", allocationSize = 1)
     private Long id;
 
-    private Date date;
+    private LocalDate date;
     private Long vehicleKmsBefore;
     private Long vehicleKmsAfter;
     private Long kgTankBefore;
@@ -36,11 +36,11 @@ public class DailyBook {
         this.id = id;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
