@@ -25,12 +25,11 @@ public class DailyBookService {
 
     public Optional<DailyBookDTO> findById(Long id) {
         Optional<DailyBook> dailyBook = repository.findById(id);
-        if (dailyBook.isPresent()) {
-            DailyBookDTO dailyBookDTO = DailyBookDTO.translateToDTO(dailyBook.get());
-            return Optional.of(dailyBookDTO);
-        } else {
+        if (dailyBook.isEmpty()) {
             return Optional.empty();
         }
+        DailyBookDTO dailyBookDTO = DailyBookDTO.translateToDTO(dailyBook.get());
+        return Optional.of(dailyBookDTO);
     }
 
     public DailyBook save(DailyBook dailyBook) {
