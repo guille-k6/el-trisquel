@@ -3,6 +3,8 @@ package com.trisquel.controller;
 import com.trisquel.model.DailyBook;
 import com.trisquel.model.Dto.DailyBookDTO;
 import com.trisquel.service.DailyBookService;
+import com.trisquel.utils.ValidationException;
+import com.trisquel.utils.ValidationExceptionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +34,17 @@ public class DailyBookController {
     }
 
     @PostMapping
-    public ResponseEntity<DailyBook> createDailyBook(@RequestBody DailyBook dailyBook) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(dailyBookService.save(dailyBook));
+    public ResponseEntity<?> createDailyBook(@RequestBody DailyBook dailyBook) {
+        ResponseEntity<?> response;
+        try {
+            dailyBookService.save(dailyBook);
+            response = ResponseEntity.ok("");
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+        return response;
     }
 
     @PutMapping("/{id}")
