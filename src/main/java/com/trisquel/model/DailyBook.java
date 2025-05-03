@@ -18,12 +18,14 @@ public class DailyBook {
     private Long vehicleKmsAfter;
     private Long kgTankBefore;
     private Long kgTankAfter;
+    private Long pressureTankBefore;
+    private Long pressureTankAfter;
     private Long ltExtractedTank;
     private Long ltRemainingFlask;
     private Long ltTotalFlask;
+    private NitrogenProvider nitrogenProvider;
     @OneToMany(mappedBy = "dailyBook", cascade = CascadeType.ALL)
     private List<DailyBookItem> items;
-
     @ManyToOne
     @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
     private Vehicle vehicle;
@@ -114,5 +116,29 @@ public class DailyBook {
 
     public void setItems(List<DailyBookItem> items) {
         this.items = items;
+    }
+
+    public Long getPressureTankBefore() {
+        return pressureTankBefore;
+    }
+
+    public void setPressureTankBefore(Long pressureTankBefore) {
+        this.pressureTankBefore = pressureTankBefore;
+    }
+
+    public Long getPressureTankAfter() {
+        return pressureTankAfter;
+    }
+
+    public void setPressureTankAfter(Long pressureTankAfter) {
+        this.pressureTankAfter = pressureTankAfter;
+    }
+
+    public NitrogenProvider getNitrogenProvider() {
+        return nitrogenProvider;
+    }
+
+    public void setNitrogenProvider(NitrogenProvider nitrogenProvider) {
+        this.nitrogenProvider = nitrogenProvider;
     }
 }

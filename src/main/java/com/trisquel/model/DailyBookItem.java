@@ -2,6 +2,8 @@ package com.trisquel.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "daily_book_item")
 public class DailyBookItem {
@@ -27,6 +29,16 @@ public class DailyBookItem {
     @ManyToOne
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
+
+    @ManyToOne
+    @JoinColumn(name = "voucher", referencedColumnName = "id")
+    private Client voucher;
+
+    private LocalDate date;
+
+    private Long payment;
+
+    private String observations;
 
     public Long getId() {
         return id;
@@ -82,5 +94,37 @@ public class DailyBookItem {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public Client getVoucher() {
+        return voucher;
+    }
+
+    public void setVoucher(Client voucher) {
+        this.voucher = voucher;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public Long getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Long payment) {
+        this.payment = payment;
+    }
+
+    public String getObservations() {
+        return observations;
+    }
+
+    public void setObservations(String observations) {
+        this.observations = observations;
     }
 }
