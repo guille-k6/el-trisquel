@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 public class Voucher {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "voucher_seq")
-    @SequenceGenerator(name = "daily_book_item_seq", sequenceName = "voucher_seq", allocationSize = 1)
+    @SequenceGenerator(name = "voucher_seq", sequenceName = "voucher_seq", allocationSize = 1)
     private Long id;
     private String name;
     private boolean invoiceable;

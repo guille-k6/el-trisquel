@@ -1,6 +1,7 @@
 package com.trisquel.model.Dto;
 
 import com.trisquel.model.DailyBook;
+import com.trisquel.model.NitrogenProvider;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,10 +14,15 @@ public class DailyBookDTO {
     private Long vehicleKmsBefore;
     private Long vehicleKmsAfter;
     private Long kgTankBefore;
+
     private Long kgTankAfter;
+
+    private Long pressureTankBefore;
+    private Long pressureTankAfter;
     private Long ltExtractedTank;
     private Long ltRemainingFlask;
     private Long ltTotalFlask;
+    private NitrogenProvider nitrogenProvider;
     private List<DailyBookItemDTO> items;
 
     public DailyBookDTO() {
@@ -117,6 +123,30 @@ public class DailyBookDTO {
         this.ltTotalFlask = ltTotalFlask;
     }
 
+    public Long getPressureTankBefore() {
+        return pressureTankBefore;
+    }
+
+    public void setPressureTankBefore(Long pressureTankBefore) {
+        this.pressureTankBefore = pressureTankBefore;
+    }
+
+    public Long getPressureTankAfter() {
+        return pressureTankAfter;
+    }
+
+    public void setPressureTankAfter(Long pressureTankAfter) {
+        this.pressureTankAfter = pressureTankAfter;
+    }
+
+    public NitrogenProvider getNitrogenProvider() {
+        return nitrogenProvider;
+    }
+
+    public void setNitrogenProvider(NitrogenProvider nitrogenProvider) {
+        this.nitrogenProvider = nitrogenProvider;
+    }
+
     public static DailyBookDTO translateToDTO(DailyBook dailyBook) {
         DailyBookDTO dailyBookDTO = new DailyBookDTO();
         dailyBookDTO.setId(dailyBook.getId());
@@ -126,9 +156,12 @@ public class DailyBookDTO {
         dailyBookDTO.setVehicleKmsAfter(dailyBook.getVehicleKmsAfter());
         dailyBookDTO.setKgTankBefore(dailyBook.getKgTankBefore());
         dailyBookDTO.setKgTankAfter(dailyBook.getKgTankAfter());
+        dailyBookDTO.setPressureTankBefore(dailyBook.getPressureTankBefore());
+        dailyBookDTO.setPressureTankAfter(dailyBook.getPressureTankAfter());
         dailyBookDTO.setLtExtractedTank(dailyBook.getLtExtractedTank());
         dailyBookDTO.setLtRemainingFlask(dailyBook.getLtRemainingFlask());
         dailyBookDTO.setLtTotalFlask(dailyBook.getLtTotalFlask());
+        dailyBookDTO.setNitrogenProvider(dailyBook.getNitrogenProvider());
         dailyBookDTO.setItems(DailyBookItemDTO.translateToDTOs(dailyBook.getItems()));
         return dailyBookDTO;
     }
