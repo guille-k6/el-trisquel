@@ -30,15 +30,14 @@ public class DailyBookItem {
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private Client client;
 
-    @ManyToOne
-    @JoinColumn(name = "voucher", referencedColumnName = "id")
-    private Client voucher;
 
     private LocalDate date;
 
     private Long payment;
 
     private String observations;
+    private boolean xvoucher;
+    private String voucherNumber;
 
     public Long getId() {
         return id;
@@ -96,14 +95,6 @@ public class DailyBookItem {
         this.client = client;
     }
 
-    public Client getVoucher() {
-        return voucher;
-    }
-
-    public void setVoucher(Client voucher) {
-        this.voucher = voucher;
-    }
-
     public LocalDate getDate() {
         return date;
     }
@@ -126,5 +117,21 @@ public class DailyBookItem {
 
     public void setObservations(String observations) {
         this.observations = observations;
+    }
+
+    public boolean isXvoucher() {
+        return xvoucher;
+    }
+
+    public void setXvoucher(boolean xvoucher) {
+        this.xvoucher = xvoucher;
+    }
+
+    public String getVoucherNumber() {
+        return voucherNumber;
+    }
+
+    public void setVoucherNumber(String voucherNumber) {
+        this.voucherNumber = voucherNumber;
     }
 }

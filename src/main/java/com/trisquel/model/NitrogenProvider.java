@@ -1,9 +1,15 @@
 package com.trisquel.model;
 
 public enum NitrogenProvider {
-    LINDE("Linde"),
-    AIR_LIQUIDE("Air Liquide");
+    LINDE("Linde"), AIR_LIQUIDE("Air Liquide");
 
-    NitrogenProvider(String s) {
+    private final String value;
+
+    NitrogenProvider(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
     }
 }

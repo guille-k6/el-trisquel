@@ -1,7 +1,6 @@
 package com.trisquel.model.Dto;
 
 import com.trisquel.model.DailyBook;
-import com.trisquel.model.NitrogenProvider;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,7 +21,7 @@ public class DailyBookDTO {
     private Long ltExtractedTank;
     private Long ltRemainingFlask;
     private Long ltTotalFlask;
-    private NitrogenProvider nitrogenProvider;
+    private String nitrogenProvider;
     private List<DailyBookItemDTO> items;
 
     public DailyBookDTO() {
@@ -139,11 +138,11 @@ public class DailyBookDTO {
         this.pressureTankAfter = pressureTankAfter;
     }
 
-    public NitrogenProvider getNitrogenProvider() {
+    public String getNitrogenProvider() {
         return nitrogenProvider;
     }
 
-    public void setNitrogenProvider(NitrogenProvider nitrogenProvider) {
+    public void setNitrogenProvider(String nitrogenProvider) {
         this.nitrogenProvider = nitrogenProvider;
     }
 
