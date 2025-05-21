@@ -36,7 +36,8 @@ public class DailyBookItem {
     private Long payment;
 
     private String observations;
-    private boolean xvoucher;
+    @Column(name = "x_voucher")
+    private boolean xvoucher = false;
     private String voucherNumber;
 
     public Long getId() {
