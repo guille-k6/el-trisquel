@@ -32,4 +32,20 @@ public class DailyBookItemService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    public Long getHighestVoucherNumber() {
+        Optional<DailyBookItem> dbi = repository.findHighestVoucherNumber();
+        if (dbi.isEmpty()) {
+            return 1L;
+        }
+        return dbi.get().getVoucherNumber();
+    }
+
+    public String getLatestXVoucherNumber() {
+        Optional<DailyBookItem> dbi = repository.findLatestXVoucher();
+        if (dbi.isEmpty()) {
+            return "X-1";
+        }
+        return dbi.get().getXVoucher();
+    }
 }

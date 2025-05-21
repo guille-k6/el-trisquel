@@ -16,7 +16,7 @@ public class DailyBookItemController {
     private final DailyBookItemService dailyBookItemService;
 
     @Autowired
-    public DailyBookItemController(DailyBookItemService dailyBookItemService){
+    public DailyBookItemController(DailyBookItemService dailyBookItemService) {
         this.dailyBookItemService = dailyBookItemService;
     }
 
@@ -27,9 +27,17 @@ public class DailyBookItemController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DailyBookItem> getDailyBookItemById(@PathVariable Long id) {
-        return dailyBookItemService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return dailyBookItemService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/latestVoucherNumber")
+    public ResponseEntity<Long> getLatestVoucherNumber() {
+        return ResponseEntity.ok(dailyBookItemService.getHighestVoucherNumber());
+    }
+
+    @GetMapping("/latestXVoucher")
+    public ResponseEntity<String> getHighestXVoucherNumber() {
+        return ResponseEntity.ok(dailyBookItemService.getLatestXVoucherNumber());
     }
 
     @PostMapping

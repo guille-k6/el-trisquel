@@ -1,6 +1,5 @@
 package com.trisquel.model.Dto;
 
-import com.trisquel.model.Client;
 import com.trisquel.model.DailyBookItem;
 
 import java.time.LocalDate;
@@ -15,12 +14,12 @@ public class DailyBookItemDTO {
     private ProductDTO product;
     private Boolean authorized;
     private ClientDTO client;
-    private Client voucher;
     private LocalDate date;
     private Long payment;
 
     private String observations;
-
+    private Long voucherNumber;
+    private String xVoucher;
 
     public DailyBookItemDTO() {
     }
@@ -73,14 +72,6 @@ public class DailyBookItemDTO {
         this.client = client;
     }
 
-    public Client getVoucher() {
-        return voucher;
-    }
-
-    public void setVoucher(Client voucher) {
-        this.voucher = voucher;
-    }
-
     public LocalDate getDate() {
         return date;
     }
@@ -105,6 +96,22 @@ public class DailyBookItemDTO {
         this.observations = observations;
     }
 
+    public Long getVoucherNumber() {
+        return voucherNumber;
+    }
+
+    public void setVoucherNumber(Long voucherNumber) {
+        this.voucherNumber = voucherNumber;
+    }
+
+    public String getxVoucher() {
+        return xVoucher;
+    }
+
+    public void setxVoucher(String xVoucher) {
+        this.xVoucher = xVoucher;
+    }
+
     public static List<DailyBookItemDTO> translateToDTOs(List<DailyBookItem> dailyBookItems) {
         return dailyBookItems.stream().map(DailyBookItemDTO::translateToDTO).collect(Collectors.toList());
     }
@@ -117,7 +124,8 @@ public class DailyBookItemDTO {
         dbiDTO.setProduct(ProductDTO.translateToDTO(dailyBookItem.getProduct()));
         dbiDTO.setAuthorized(dailyBookItem.getAuthorized());
         dbiDTO.setClient(ClientDTO.translateToDTO(dailyBookItem.getClient()));
-        dbiDTO.setVoucher(dailyBookItem.getVoucher());
+        dbiDTO.setVoucherNumber(dailyBookItem.getVoucherNumber());
+        dbiDTO.setxVoucher(dailyBookItem.getXVoucher());
         dbiDTO.setDate(dailyBookItem.getDate());
         dbiDTO.setPayment(dailyBookItem.getPayment());
         return dbiDTO;
