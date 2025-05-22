@@ -14,13 +14,12 @@ public class DailyBookItemDTO {
     private ProductDTO product;
     private Boolean authorized;
     private ClientDTO client;
-    private boolean xVoucher;
-    private String voucherNumber;
+    private String xVoucher;
+    private Long voucherNumber;
     private LocalDate date;
     private Long payment;
 
     private String observations;
-
 
     public DailyBookItemDTO() {
     }
@@ -97,24 +96,24 @@ public class DailyBookItemDTO {
         this.observations = observations;
     }
 
-    public static List<DailyBookItemDTO> translateToDTOs(List<DailyBookItem> dailyBookItems) {
-        return dailyBookItems.stream().map(DailyBookItemDTO::translateToDTO).collect(Collectors.toList());
-    }
-
-    public boolean isxVoucher() {
-        return xVoucher;
-    }
-
-    public void setxVoucher(boolean xVoucher) {
-        this.xVoucher = xVoucher;
-    }
-
-    public String getVoucherNumber() {
+    public Long getVoucherNumber() {
         return voucherNumber;
     }
 
-    public void setVoucherNumber(String voucherNumber) {
+    public void setVoucherNumber(Long voucherNumber) {
         this.voucherNumber = voucherNumber;
+    }
+
+    public String getxVoucher() {
+        return xVoucher;
+    }
+
+    public void setxVoucher(String xVoucher) {
+        this.xVoucher = xVoucher;
+    }
+
+    public static List<DailyBookItemDTO> translateToDTOs(List<DailyBookItem> dailyBookItems) {
+        return dailyBookItems.stream().map(DailyBookItemDTO::translateToDTO).collect(Collectors.toList());
     }
 
     public static DailyBookItemDTO translateToDTO(DailyBookItem dailyBookItem) {
@@ -125,8 +124,8 @@ public class DailyBookItemDTO {
         dbiDTO.setProduct(ProductDTO.translateToDTO(dailyBookItem.getProduct()));
         dbiDTO.setAuthorized(dailyBookItem.getAuthorized());
         dbiDTO.setClient(ClientDTO.translateToDTO(dailyBookItem.getClient()));
-        dbiDTO.setxVoucher(dailyBookItem.isXvoucher());
         dbiDTO.setVoucherNumber(dailyBookItem.getVoucherNumber());
+        dbiDTO.setxVoucher(dailyBookItem.getXVoucher());
         dbiDTO.setDate(dailyBookItem.getDate());
         dbiDTO.setPayment(dailyBookItem.getPayment());
         return dbiDTO;

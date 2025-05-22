@@ -36,9 +36,9 @@ public class DailyBookItem {
     private Long payment;
 
     private String observations;
-    @Column(name = "x_voucher")
-    private boolean xvoucher = false;
-    private String voucherNumber;
+
+    private String xVoucher;
+    private Long voucherNumber;
 
     public Long getId() {
         return id;
@@ -120,19 +120,19 @@ public class DailyBookItem {
         this.observations = observations;
     }
 
-    public boolean isXvoucher() {
-        return xvoucher;
+    public String getXVoucher() {
+        return xVoucher;
     }
 
-    public void setXvoucher(boolean xvoucher) {
-        this.xvoucher = xvoucher;
+    public void setXvoucher(String xvoucher) {
+        this.xVoucher = xvoucher;
     }
 
-    public String getVoucherNumber() {
+    public Long getVoucherNumber() {
         return voucherNumber;
     }
 
-    public void setVoucherNumber(String voucherNumber) {
+    public void setVoucherNumber(Long voucherNumber) {
         this.voucherNumber = voucherNumber;
     }
 }
