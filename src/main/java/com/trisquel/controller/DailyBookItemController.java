@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/daily-book-item")
@@ -31,13 +32,15 @@ public class DailyBookItemController {
     }
 
     @GetMapping("/latestVoucherNumber")
-    public ResponseEntity<Long> getLatestVoucherNumber() {
-        return ResponseEntity.ok(dailyBookItemService.getHighestVoucherNumber());
+    public ResponseEntity<?> getLatestVoucherNumber() {
+        Long number = dailyBookItemService.getHighestVoucherNumber();
+        return ResponseEntity.ok(Map.of("latestVoucherNumber", number));
     }
 
     @GetMapping("/latestXVoucher")
-    public ResponseEntity<String> getHighestXVoucherNumber() {
-        return ResponseEntity.ok(dailyBookItemService.getLatestXVoucherNumber());
+    public ResponseEntity<?> getHighestXVoucherNumber() {
+        String xVoucher = dailyBookItemService.getLatestXVoucherNumber();
+        return ResponseEntity.ok(Map.of("latestXVoucher", xVoucher));
     }
 
     @PostMapping

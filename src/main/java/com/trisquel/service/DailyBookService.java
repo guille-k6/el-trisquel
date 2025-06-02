@@ -4,7 +4,6 @@ import com.trisquel.model.DailyBook;
 import com.trisquel.model.DailyBookItem;
 import com.trisquel.model.Dto.DailyBookDTO;
 import com.trisquel.repository.DailyBookRepository;
-import com.trisquel.repository.VoucherSequencerRepository;
 import com.trisquel.utils.ValidationErrorItem;
 import com.trisquel.utils.ValidationException;
 import jakarta.transaction.Transactional;
@@ -18,13 +17,11 @@ import java.util.Optional;
 @Service
 public class DailyBookService {
     @Autowired
-    public DailyBookService(DailyBookRepository repository, VoucherSequencerRepository voucherSequencerRepository) {
+    public DailyBookService(DailyBookRepository repository) {
         this.repository = repository;
-        this.voucherSequencerRepository = voucherSequencerRepository;
     }
 
     private final DailyBookRepository repository;
-    private final VoucherSequencerRepository voucherSequencerRepository;
 
     public List<DailyBookDTO> findAll() {
         List<DailyBook> dailyBooks = repository.findAll();
@@ -89,7 +86,7 @@ public class DailyBookService {
         if (dailyBook.getVehicleKmsAfter() == null) {
             validationErrors.add(new ValidationErrorItem("Error", "El vehiculo debe tener kilómetros finales"));
         }
-        if (dailyBook.getKgTankBefore() >= dailyBook.getVehicleKmsAfter()) {
+        if (dailyBook.getVehicleKmsBefore() >= dailyBook.getVehicleKmsAfter()) {
             validationErrors.add(new ValidationErrorItem("Error", "Los kilómetros finales no pueden ser menores a los iniciales"));
         }
         if (dailyBook.getVehicle() == null) {
