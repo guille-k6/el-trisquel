@@ -134,7 +134,7 @@ public class DailyBookService {
             validationErrors.add(new ValidationErrorItem("Error", "La descarga " + item.getId() + " debe tener cliente"));
         }
         // Para el caso de cliente anulado no validamos nada
-        if (item.getClient().getName().toLowerCase().contains("anulado")) {
+        if (10L == item.getClient().getId()) {
             return;
         }
         if (item.getProduct() == null) {
