@@ -1,10 +1,14 @@
 package com.trisquel.service;
 
 import com.trisquel.model.DailyBookItem;
+import com.trisquel.model.Dto.DailyBookItemDTO;
 import com.trisquel.repository.DailyBookItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,5 +51,11 @@ public class DailyBookItemService {
             return "X-1";
         }
         return dbi.get().getXVoucher();
+    }
+
+    public Page<DailyBookItemDTO> findInvoiceableDailyBookItems(Pageable pageable, Long clientId, LocalDate startDate,
+                                                                LocalDate endDate) {
+        Page<DailyBookItem> dailyBookItems = repository.findInvoiceableWithFilters(pageable, clientId, startDate, endDate);
+        return dailyBookItems.map(DailyBookItemDTO::translateToDTO);
     }
 }

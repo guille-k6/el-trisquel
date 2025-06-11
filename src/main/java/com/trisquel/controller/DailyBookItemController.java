@@ -1,12 +1,19 @@
 package com.trisquel.controller;
 
 import com.trisquel.model.DailyBookItem;
+import com.trisquel.model.Dto.DailyBookItemDTO;
 import com.trisquel.service.DailyBookItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -57,5 +64,16 @@ public class DailyBookItemController {
     public ResponseEntity<Void> deleteDailyBookItem(@PathVariable Long id) {
         dailyBookItemService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/invoiceableDailyBookItems")
+    public ResponseEntity<Page<DailyBookItemDTO>> getInvoiceableDailyBookItems(
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "30") int size,
+            @RequestParam(required = false) Long clientId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
+        Page<DailyBookItemDTO> items = dailyBookItemService.findInvoiceableDailyBookItems(pageable, clientId, startDate, endDate);
+        return ResponseEntity.ok(items);
     }
 }
