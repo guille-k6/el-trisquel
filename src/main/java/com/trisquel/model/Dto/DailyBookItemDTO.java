@@ -18,7 +18,6 @@ public class DailyBookItemDTO {
     private Long voucherNumber;
     private LocalDate date;
     private Long payment;
-
     private String observations;
 
     public DailyBookItemDTO() {
@@ -128,6 +127,7 @@ public class DailyBookItemDTO {
         dbiDTO.setxVoucher(dailyBookItem.getXVoucher());
         dbiDTO.setDate(dailyBookItem.getDate());
         dbiDTO.setPayment(dailyBookItem.getPayment());
+        dbiDTO.setObservations(dailyBookItem.getObservations());
         return dbiDTO;
     }
 }

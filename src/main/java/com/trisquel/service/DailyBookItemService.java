@@ -3,6 +3,7 @@ package com.trisquel.service;
 import com.trisquel.model.DailyBookItem;
 import com.trisquel.model.Dto.DailyBookItemDTO;
 import com.trisquel.repository.DailyBookItemRepository;
+import com.trisquel.utils.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DailyBookItemService {
@@ -57,5 +60,36 @@ public class DailyBookItemService {
                                                                 LocalDate endDate) {
         Page<DailyBookItem> dailyBookItems = repository.findInvoiceableWithFilters(pageable, clientId, startDate, endDate);
         return dailyBookItems.map(DailyBookItemDTO::translateToDTO);
+    }
+
+    public List<DailyBookItemDTO> getItemsByIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            throw new IllegalArgumentException("IDs list cannot be null or empty");
+        }
+        // Remove duplicates and null values
+        List<Long> cleanIds = ids.stream().filter(Objects::nonNull).distinct().collect(Collectors.toList());
+        if (cleanIds.isEmpty()) {
+            throw new IllegalArgumentException("No valid IDs provided");
+        }
+        List<DailyBookItem> items = repository.findByIdIn(cleanIds);
+        // Optional: Check if all requested items were found
+        if (items.size() != cleanIds.size()) {
+            List<Long> foundIds = items.stream().map(DailyBookItem::getId).collect(Collectors.toList());
+            List<Long> notFoundIds = cleanIds.stream().filter(id -> !foundIds.contains(id)).collect(Collectors.toList());
+            // You can log this or handle it as needed
+            System.out.println("Items not found for IDs: " + notFoundIds);
+        }
+        // All items should be from the same client, check that
+        if (!items.isEmpty()) {
+            Long firstClientId = items.getFirst().getClient().getId();
+            for (DailyBookItem item : items) {
+                if (!item.getClient().getId().equals(firstClientId)) {
+                    ValidationException ve = new ValidationException();
+                    ve.addValidationError("Error", "Los items son de clientes disinttos");
+                    throw ve;
+                }
+            }
+        }
+        return items.stream().map(DailyBookItemDTO::translateToDTO).collect(Collectors.toList());
     }
 }

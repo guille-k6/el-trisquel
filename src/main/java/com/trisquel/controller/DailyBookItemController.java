@@ -3,6 +3,8 @@ package com.trisquel.controller;
 import com.trisquel.model.DailyBookItem;
 import com.trisquel.model.Dto.DailyBookItemDTO;
 import com.trisquel.service.DailyBookItemService;
+import com.trisquel.utils.ValidationException;
+import com.trisquel.utils.ValidationExceptionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,8 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/daily-book-item")
@@ -72,8 +76,28 @@ public class DailyBookItemController {
             @RequestParam(required = false) Long clientId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        page = page - 1; // Front starts from page 1 and Pageable from 0.
+        size = 5;
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
         Page<DailyBookItemDTO> items = dailyBookItemService.findInvoiceableDailyBookItems(pageable, clientId, startDate, endDate);
         return ResponseEntity.ok(items);
+    }
+
+    @GetMapping("/items")
+    public ResponseEntity<?> getItemsByIds(@RequestParam("ids") String idsParam) {
+        try {
+            // Parse comma-separated IDs from the query parameter
+            List<Long> ids = Arrays.stream(idsParam.split(",")).map(String::trim).filter(s -> !s.isEmpty()).map(Long::parseLong).collect(Collectors.toList());
+            List<DailyBookItemDTO> items = dailyBookItemService.getItemsByIds(ids);
+            return ResponseEntity.ok(items);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (ValidationException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

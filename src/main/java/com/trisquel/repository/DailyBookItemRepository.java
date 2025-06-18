@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -24,4 +25,7 @@ public interface DailyBookItemRepository extends JpaRepository<DailyBookItem, Lo
     Page<DailyBookItem> findInvoiceableWithFilters(Pageable pageable, @Param("clientId") Long clientId,
                                                    @Param("startDate") LocalDate startDate,
                                                    @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT d FROM DailyBookItem d WHERE d.id IN :ids")
+    List<DailyBookItem> findByIdIn(@Param("ids") List<Long> ids);
 }
