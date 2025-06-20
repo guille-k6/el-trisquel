@@ -18,9 +18,8 @@ public class DailyBookItem {
     @JoinColumn(name = "daily_book_id", referencedColumnName = "id")
     private DailyBook dailyBook;
 
-    @ManyToOne
-    @JoinColumn(name = "invoice_id", referencedColumnName = "id")
-    private Invoice invoice;
+    @Column(name = "invoice_id")
+    private Long invoiceId;
 
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
@@ -72,12 +71,12 @@ public class DailyBookItem {
         this.dailyBook = dailyBook;
     }
 
-    public Invoice getInvoice() {
-        return invoice;
+    public Long getInvoiceId() {
+        return invoiceId;
     }
 
-    public void setInvoice(Invoice invoice) {
-        this.invoice = invoice;
+    public void setInvoice(Long invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     public Product getProduct() {

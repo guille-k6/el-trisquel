@@ -2,7 +2,8 @@ package com.trisquel.model;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "invoice")
@@ -12,15 +13,18 @@ public class Invoice {
     @SequenceGenerator(name = "invoice_seq", sequenceName = "invoice_seq", allocationSize = 1)
     private Long id;
 
-    private Date date;
-    private Long amount;
-    private Long pricePerUnit;
+    private LocalDate date;
+
     private String comment;
+
     private Boolean paid;
 
-    @OneToOne
-    @JoinColumn(name = "dbi_id", referencedColumnName = "id")
-    private DailyBookItem dailyBookItem;
+    private String status;
+
+    @Column(name = "created_at")
+    private OffsetDateTime createdAt;
+
+    // Getters y Setters
 
     public Long getId() {
         return id;
@@ -30,28 +34,12 @@ public class Invoice {
         this.id = id;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    public Long getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
-
-    public Long getPricePerUnit() {
-        return pricePerUnit;
-    }
-
-    public void setPricePerUnit(Long pricePerUnit) {
-        this.pricePerUnit = pricePerUnit;
     }
 
     public String getComment() {
@@ -70,11 +58,19 @@ public class Invoice {
         this.paid = paid;
     }
 
-    public DailyBookItem getDailyBookItem() {
-        return dailyBookItem;
+    public String getStatus() {
+        return status;
     }
 
-    public void setDailyBookItem(DailyBookItem dailyBookItem) {
-        this.dailyBookItem = dailyBookItem;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

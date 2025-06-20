@@ -4,12 +4,11 @@ import com.trisquel.model.DailyBookItem;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DailyBookItemDTO {
     private Long id;
-    private Optional<InvoiceDTO> invoice;
+    private Long invoiceId;
     private Long amount;
     private ProductDTO product;
     private Boolean authorized;
@@ -31,12 +30,12 @@ public class DailyBookItemDTO {
         this.id = id;
     }
 
-    public Optional<InvoiceDTO> getInvoice() {
-        return invoice;
+    public Long getInvoice() {
+        return invoiceId;
     }
 
-    public void setInvoice(Optional<InvoiceDTO> invoice) {
-        this.invoice = invoice;
+    public void setInvoiceId(Long invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
     public Long getAmount() {
@@ -118,7 +117,7 @@ public class DailyBookItemDTO {
     public static DailyBookItemDTO translateToDTO(DailyBookItem dailyBookItem) {
         DailyBookItemDTO dbiDTO = new DailyBookItemDTO();
         dbiDTO.setId(dailyBookItem.getId());
-        dbiDTO.setInvoice(InvoiceDTO.translateToDTO(dailyBookItem.getInvoice()));
+        dbiDTO.setInvoiceId(dailyBookItem.getInvoiceId());
         dbiDTO.setAmount(dailyBookItem.getAmount());
         dbiDTO.setProduct(ProductDTO.translateToDTO(dailyBookItem.getProduct()));
         dbiDTO.setAuthorized(dailyBookItem.getAuthorized());

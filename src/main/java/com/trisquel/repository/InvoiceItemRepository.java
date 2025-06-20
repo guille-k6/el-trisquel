@@ -1,9 +1,9 @@
 package com.trisquel.repository;
 
-import com.trisquel.model.DailyBook;
+import com.trisquel.model.InvoiceItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DailyBookRepository extends JpaRepository<DailyBook, Long> {
+public interface InvoiceItemRepository extends JpaRepository<InvoiceItem, Long> {
 }
