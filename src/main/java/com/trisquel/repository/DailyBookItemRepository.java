@@ -21,7 +21,7 @@ public interface DailyBookItemRepository extends JpaRepository<DailyBookItem, Lo
     @Query("SELECT dbi FROM DailyBookItem dbi WHERE dbi.id = (SELECT MAX(dbis.id) FROM DailyBookItem dbis WHERE dbis.xVoucher IS NOT NULL)")
     Optional<DailyBookItem> findLatestXVoucher();
 
-    @Query("SELECT d FROM DailyBookItem d WHERE d.invoice IS NULL AND :clientId IS NULL OR d.client.id = :clientId AND :startDate IS NULL OR d.date >= :startDate AND :endDate IS NULL OR d.date <= :endDate")
+    @Query("SELECT d FROM DailyBookItem d WHERE d.invoiceId IS NULL AND :clientId IS NULL OR d.client.id = :clientId AND :startDate IS NULL OR d.date >= :startDate AND :endDate IS NULL OR d.date <= :endDate")
     Page<DailyBookItem> findInvoiceableWithFilters(Pageable pageable, @Param("clientId") Long clientId,
                                                    @Param("startDate") LocalDate startDate,
                                                    @Param("endDate") LocalDate endDate);

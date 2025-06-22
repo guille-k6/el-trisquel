@@ -5,24 +5,18 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "invoice_item")
 public class InvoiceItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invoice_item_seq")
     @SequenceGenerator(name = "invoice_item_seq", sequenceName = "invoice_item_seq", allocationSize = 1)
     private Long id;
-
     private Integer amount;
-
     @Column(name = "price_per_unit")
-    private Long pricePerUnit;
-
+    private Double pricePerUnit;
     @Column(name = "iva_percetage")
     private Integer ivaPercentage;
-
     @Column(name = "invoice_id", nullable = false)
     private Long invoiceId;
-
-    @Column(name = "invoice_id", nullable = false)
+    @Column(name = "product_id", nullable = false)
     private Long productId;
 
     public Long getId() {
@@ -41,11 +35,11 @@ public class InvoiceItem {
         this.amount = amount;
     }
 
-    public Long getPricePerUnit() {
+    public Double getPricePerUnit() {
         return pricePerUnit;
     }
 
-    public void setPricePerUnit(Long pricePerUnit) {
+    public void setPricePerUnit(Double pricePerUnit) {
         this.pricePerUnit = pricePerUnit;
     }
 
@@ -57,11 +51,11 @@ public class InvoiceItem {
         this.ivaPercentage = ivaPercentage;
     }
 
-    public Long getProduct() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProduct(Long productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 

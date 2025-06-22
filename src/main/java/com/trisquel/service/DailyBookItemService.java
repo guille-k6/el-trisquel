@@ -85,7 +85,7 @@ public class DailyBookItemService {
             for (DailyBookItem item : items) {
                 if (!item.getClient().getId().equals(firstClientId)) {
                     ValidationException ve = new ValidationException();
-                    ve.addValidationError("Error", "Los items son de clientes disinttos");
+                    ve.addValidationError("Error", "Los items son de clientes disintos");
                     throw ve;
                 }
             }

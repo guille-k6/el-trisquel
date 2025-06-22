@@ -8,14 +8,14 @@ import java.time.OffsetDateTime;
 public class InvoiceDTO {
     private Long id;
     private LocalDate date;
-
     private String comment;
-
     private Boolean paid;
-
     private String status;
-
     private OffsetDateTime createdAt;
+    private ClientDTO client;
+    private String tipo;
+    private Long numero;
+    private Double total;
 
     public InvoiceDTO() {
     }
@@ -31,6 +31,10 @@ public class InvoiceDTO {
         invoiceDTO.setPaid(invoice.getPaid());
         invoiceDTO.setStatus(invoice.getStatus());
         invoiceDTO.setCreatedAt(invoice.getCreatedAt());
+        invoiceDTO.setClient(ClientDTO.translateToDTO(invoice.getClient()));
+        invoiceDTO.setTipo(invoice.getTipo());
+        invoiceDTO.setNumero(invoice.getNumero());
+        invoiceDTO.setTotal(invoice.getTotal());
         return invoiceDTO;
     }
 
@@ -80,5 +84,37 @@ public class InvoiceDTO {
 
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public ClientDTO getClient() {
+        return client;
+    }
+
+    public void setClient(ClientDTO client) {
+        this.client = client;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public Long getNumero() {
+        return numero;
+    }
+
+    public void setNumero(Long numero) {
+        this.numero = numero;
+    }
+
+    public Double getTotal() {
+        return total;
+    }
+
+    public void setTotal(Double total) {
+        this.total = total;
     }
 }

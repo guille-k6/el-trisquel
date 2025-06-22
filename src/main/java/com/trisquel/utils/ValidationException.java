@@ -22,7 +22,7 @@ public class ValidationException extends RuntimeException {
      * @param title
      * @param message
      */
-    public void addValidationError(String title, String message) {
+    public ValidationException addValidationError(String title, String message) {
         List<String> errorMessages = validationErrors.get(title);
         if (errorMessages == null) {
             ArrayList<String> newEntityValidations = new ArrayList<>();
@@ -31,5 +31,20 @@ public class ValidationException extends RuntimeException {
         } else {
             errorMessages.add(message);
         }
+        return this;
+    }
+
+    public static void verifyAndMaybeThrowValidationException(List<ValidationErrorItem> validationErrorList) {
+        if (!validationErrorList.isEmpty()) {
+            ValidationException validationException = new ValidationException();
+            for (ValidationErrorItem validationErrorItem : validationErrorList) {
+                validationException.addValidationError(validationErrorItem.title(), validationErrorItem.message());
+            }
+            throw validationException;
+        }
+    }
+
+    public ValidationException getValidationException() {
+        return this;
     }
 }

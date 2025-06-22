@@ -119,13 +119,7 @@ public class DailyBookService {
         if (dailyBook.getLtRemainingFlask() == null) {
             validationErrors.add(new ValidationErrorItem("Error", "Los litros remanentes en termos no deben ser nulos"));
         }
-        if (!validationErrors.isEmpty()) {
-            ValidationException validationException = new ValidationException();
-            for (ValidationErrorItem validationErrorItem : validationErrors) {
-                validationException.addValidationError(validationErrorItem.title(), validationErrorItem.message());
-            }
-            throw validationException;
-        }
+        ValidationException.verifyAndMaybeThrowValidationException(validationErrors);
     }
 
     private void validateDailyBookItem(DailyBookItem item) {
@@ -146,12 +140,6 @@ public class DailyBookService {
         if (item.getDate() == null) {
             validationErrors.add(new ValidationErrorItem("Error", "La descarga " + item.getId() + " debe tener fecha"));
         }
-        if (!validationErrors.isEmpty()) {
-            ValidationException validationException = new ValidationException();
-            for (ValidationErrorItem validationErrorItem : validationErrors) {
-                validationException.addValidationError(validationErrorItem.title(), validationErrorItem.message());
-            }
-            throw validationException;
-        }
+        ValidationException.verifyAndMaybeThrowValidationException(validationErrors);
     }
 }

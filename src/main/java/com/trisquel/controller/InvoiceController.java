@@ -1,7 +1,10 @@
 package com.trisquel.controller;
 
+import com.trisquel.model.Dto.InvoiceInputDTO;
 import com.trisquel.model.Invoice;
 import com.trisquel.service.InvoiceService;
+import com.trisquel.utils.ValidationException;
+import com.trisquel.utils.ValidationExceptionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +47,19 @@ public class InvoiceController {
     public ResponseEntity<Void> deleteInvoice(@PathVariable Long id) {
         invoiceService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/new")
+    public ResponseEntity<?> newInvoice(@RequestBody InvoiceInputDTO invoiceInputDTO) {
+        ResponseEntity<?> response;
+        try {
+            invoiceService.processNewInvoiceRequest(invoiceInputDTO);
+            response = ResponseEntity.ok("");
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+        return response;
     }
 }
