@@ -23,8 +23,9 @@ public class InvoiceQueue {
     @Column(name = "processed_at")
     private ZonedDateTime processedAt;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 127)
-    private String status = "queued";
+    private InvoiceQueueStatus status = InvoiceQueueStatus.QUEUED;
 
     @Column(name = "cae", length = 255)
     private String cae;
@@ -32,7 +33,7 @@ public class InvoiceQueue {
     @Column(name = "cae_due_date")
     private LocalDate caeDueDate;
 
-    @Column(name = "invoice_ number", length = 127)
+    @Column(name = "invoice_number", length = 127)
     private String invoiceNumber;
 
     @Column(name = "error_message", length = 2047)
@@ -51,7 +52,7 @@ public class InvoiceQueue {
     public InvoiceQueue(Long invoiceId) {
         this.invoiceId = invoiceId;
         this.enqueuedAt = ZonedDateTime.now();
-        this.status = "queued";
+        this.status = InvoiceQueueStatus.QUEUED;
         this.retryCount = 0;
     }
 
@@ -88,11 +89,11 @@ public class InvoiceQueue {
         this.processedAt = processedAt;
     }
 
-    public String getStatus() {
+    public InvoiceQueueStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(InvoiceQueueStatus status) {
         this.status = status;
     }
 
@@ -147,28 +148,16 @@ public class InvoiceQueue {
     // Utility methods
     public void markAsProcessed() {
         this.processedAt = ZonedDateTime.now();
-        this.status = "processed";
+        this.status = InvoiceQueueStatus.COMPLETED;
     }
 
     public void markAsFailed(String errorMessage) {
         this.processedAt = ZonedDateTime.now();
-        this.status = "failed";
+        this.status = InvoiceQueueStatus.FAILING;
         this.errorMessage = errorMessage;
     }
 
     public void incrementRetryCount() {
         this.retryCount = (this.retryCount == null ? 0 : this.retryCount) + 1;
-    }
-
-    public boolean isQueued() {
-        return "queued".equals(this.status);
-    }
-
-    public boolean isProcessed() {
-        return "processed".equals(this.status);
-    }
-
-    public boolean isFailed() {
-        return "failed".equals(this.status);
     }
 }

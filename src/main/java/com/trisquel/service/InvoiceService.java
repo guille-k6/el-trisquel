@@ -18,13 +18,15 @@ public class InvoiceService {
     @Autowired
     public InvoiceService(InvoiceRepository invoiceRepository, InvoiceItemRepository invoiceItemRepository,
                           DailyBookItemRepository dailyBookItemRepository, DailyBookRepository dailyBookRepository,
-                          ClientRepository clientRepository, ProductRepository productRepository) {
+                          ClientRepository clientRepository, ProductRepository productRepository,
+                          InvoiceQueueRepository invoiceQueueRepository) {
         this.repository = invoiceRepository;
         this.invoiceItemRepository = invoiceItemRepository;
         this.dailyBookItemRepository = dailyBookItemRepository;
         this.dailyBookRepository = dailyBookRepository;
         this.clientRepository = clientRepository;
         this.productRepository = productRepository;
+        this.invoiceQueueRepository = invoiceQueueRepository;
     }
 
     private final InvoiceRepository repository;
@@ -33,6 +35,7 @@ public class InvoiceService {
     private final DailyBookRepository dailyBookRepository;
     private final ClientRepository clientRepository;
     private final ProductRepository productRepository;
+    private final InvoiceQueueRepository invoiceQueueRepository;
 
     public List<Invoice> findAll() {
         return repository.findAll();
@@ -50,6 +53,11 @@ public class InvoiceService {
         repository.deleteById(id);
     }
 
+    /**
+     * Creates an invoice with its items, validates them and create an invoice queue request.
+     *
+     * @param invoiceInputDTO
+     */
     @Transactional(rollbackFor = Throwable.class)
     public void processNewInvoiceRequest(InvoiceInputDTO invoiceInputDTO) {
         try {
@@ -57,22 +65,31 @@ public class InvoiceService {
             List<DailyBookItem> dbis = dailyBookItemRepository.findByIdIn(invoiceInputDTO.getDbiIds());
             validateInvoiceWithDailyBookItemClients(invoiceInputDTO, dbis);
             Client client = clientRepository.findById(invoiceInputDTO.getClientId()).orElseThrow(() -> new ValidationException().addValidationError("Cliente no encontrado", "No se encontró un cliente con el ID: " + invoiceInputDTO.getClientId()));
-            //
+            // Invoice creation
             Invoice invoice = createInvoiceShell(invoiceInputDTO, client);
-            // Guardar la factura primero para obtener el ID
             Invoice savedInvoice = repository.save(invoice);
-            // Configurar y guardar los items de la factura
             processInvoiceItems(invoiceInputDTO.getInvoiceItems(), savedInvoice.getId());
-            // Calcular y actualizar el total de la factura
             updateInvoiceTotal(savedInvoice);
-            // Actualizar los items de libros diarios con el id de factura creada
             updateDailyBookItemsInvoices(dbis, savedInvoice.getId());
+            // Queue creation
+            generateInvoiceQueue(savedInvoice.getId());
         } catch (Throwable t) {
             System.out.println(t);
             throw t;
         }
     }
 
+    private void generateInvoiceQueue(Long invoiceId) {
+        InvoiceQueue invoiceQueue = new InvoiceQueue(invoiceId);
+        invoiceQueueRepository.save(invoiceQueue);
+    }
+
+    /**
+     * Basic fields validations. Verifies that the products of the invoice exists in our system.
+     *
+     * @param invoiceInputDTO new invoice request
+     * @throws ValidationException if those conditions are true
+     */
     public void basicInvoiceValidation(InvoiceInputDTO invoiceInputDTO) {
         List<ValidationErrorItem> validationErrors = new ArrayList<>();
         if (invoiceInputDTO.getInvoiceItems().isEmpty()) {
@@ -100,13 +117,13 @@ public class InvoiceService {
             }
             productIds.add(invoiceItem.getProductId());
         }
-        // Primera validación sin realizar consultas a base de datos
+        // First validation without DB queries
         ValidationException.verifyAndMaybeThrowValidationException(validationErrors);
-        // Validacion de que existan los productos.
+        // Products validation
         List<Product> products = productRepository.findByIdIn(productIds);
         List<Long> foundProductIds = products.stream().map(Product::getId).collect(Collectors.toList());
         if (products.size() != productIds.size()) {
-            // Hay un ID de producto que no lo encontró en base de datos
+            // There is a product ID that is not in DB.
             for (Long productId : productIds) {
                 if (!foundProductIds.contains(productId)) {
                     validationErrors.add(new ValidationErrorItem("Error", "No se encontró un producto con el id: " + productId));
@@ -117,17 +134,24 @@ public class InvoiceService {
         ValidationException.verifyAndMaybeThrowValidationException(validationErrors);
     }
 
+    /**
+     * Verifies that all the daily book items are from the same Client and that are not associated to any invoice previously
+     *
+     * @param invoiceInputDTO new invoice request
+     * @param dbis            list of daily book items
+     * @throws ValidationException if those conditions are true
+     */
     private void validateInvoiceWithDailyBookItemClients(InvoiceInputDTO invoiceInputDTO, List<DailyBookItem> dbis) {
+        List<ValidationErrorItem> validationErrors = new ArrayList<>();
         for (DailyBookItem dailyBookItem : dbis) {
             if (!dailyBookItem.getClient().getId().equals(invoiceInputDTO.getClientId())) {
-                ValidationException validationException = new ValidationException();
-                validationException.addValidationError("Error", "Los items son de clientes diferentes." + dailyBookItem.getClient().getId() + " es distinto a: " + dailyBookItem.getClient().getName());
+                validationErrors.add(new ValidationErrorItem("Error", "Los items son de clientes diferentes." + dailyBookItem.getClient().getId() + " es distinto a: " + dailyBookItem.getClient().getName()));
             }
             if (dailyBookItem.getInvoiceId() != null) {
-                ValidationException validationException = new ValidationException();
-                validationException.addValidationError("Error", "El item de libro diario: " + dailyBookItem.getId() + " ya tiene una factura asociada, la: " + dailyBookItem.getInvoiceId());
+                validationErrors.add(new ValidationErrorItem("Error", "El item de libro diario: " + dailyBookItem.getId() + " ya tiene una factura asociada, la: " + dailyBookItem.getInvoiceId()));
             }
         }
+        ValidationException.verifyAndMaybeThrowValidationException(validationErrors);
     }
 
     private Invoice createInvoiceShell(InvoiceInputDTO dto, Client client) {
@@ -135,19 +159,18 @@ public class InvoiceService {
         invoice.setDate(dto.getInvoiceDate());
         invoice.setClient(client);
         invoice.setCreatedAt(OffsetDateTime.now());
-        invoice.setPaid(false); // Por defecto no pagada
-        invoice.setStatus("PENDING"); // Estado inicial
-        invoice.setTotal(0.0); // Se calculará después
+        invoice.setPaid(false);
+        invoice.setStatus("PENDING");
+        invoice.setTotal(0.0); // Calculation will be done after
         return invoice;
     }
 
     private void processInvoiceItems(List<InvoiceItem> items, Long invoiceId) {
         for (InvoiceItem item : items) {
             item.setInvoiceId(invoiceId);
-            // El ID del item se generará automáticamente
+            // Item id auto-generated
             item.setId(null);
         }
-        // Guardar todos los items
         invoiceItemRepository.saveAll(items);
     }
 
@@ -162,10 +185,20 @@ public class InvoiceService {
         repository.save(invoice);
     }
 
+    /**
+     * Updates the daily book items with the id of the created invoice
+     *
+     * @param items     list of daily book items
+     * @param invoiceId Invoice id of which these daily book items are associated
+     */
     private void updateDailyBookItemsInvoices(List<DailyBookItem> items, Long invoiceId) {
         for (DailyBookItem dbi : items) {
             dbi.setInvoice(invoiceId);
         }
         dailyBookItemRepository.saveAll(items);
+    }
+
+    public void enqueueInvoice(InvoiceQueue invoice) {
+        invoiceQueueRepository.save(invoice);
     }
 }

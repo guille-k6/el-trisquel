@@ -2,6 +2,7 @@ package com.trisquel.controller;
 
 import com.trisquel.model.Dto.InvoiceInputDTO;
 import com.trisquel.model.Invoice;
+import com.trisquel.model.InvoiceQueue;
 import com.trisquel.service.InvoiceService;
 import com.trisquel.utils.ValidationException;
 import com.trisquel.utils.ValidationExceptionResponse;
@@ -61,5 +62,13 @@ public class InvoiceController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
         return response;
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<Void> testQueue() {
+        InvoiceQueue invQueue = new InvoiceQueue(1L);
+        invQueue.setCae("holaSoyUnCae");
+        invoiceService.enqueueInvoice(invQueue);
+        return ResponseEntity.noContent().build();
     }
 }

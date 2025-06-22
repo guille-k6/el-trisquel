@@ -16,6 +16,9 @@ public class InvoiceDTO {
     private String tipo;
     private Long numero;
     private Double total;
+    private String cae;
+    private LocalDate vtoCae;
+    private Long sellPoint;
 
     public InvoiceDTO() {
     }
@@ -35,6 +38,9 @@ public class InvoiceDTO {
         invoiceDTO.setTipo(invoice.getTipo());
         invoiceDTO.setNumero(invoice.getNumero());
         invoiceDTO.setTotal(invoice.getTotal());
+        invoiceDTO.setCae(invoice.getCae());
+        invoiceDTO.setVtoCae(invoice.getVtoCae());
+        invoiceDTO.setSellPoint(invoice.getSellPoint());
         return invoiceDTO;
     }
 
@@ -116,5 +122,29 @@ public class InvoiceDTO {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    public String getCae() {
+        return cae;
+    }
+
+    public void setCae(String cae) {
+        this.cae = cae;
+    }
+
+    public LocalDate getVtoCae() {
+        return vtoCae;
+    }
+
+    public void setVtoCae(LocalDate vtoCae) {
+        this.vtoCae = vtoCae;
+    }
+
+    public Long getSellPoint() {
+        return sellPoint;
+    }
+
+    public void setSellPoint(Long sellPoint) {
+        this.sellPoint = sellPoint;
     }
 }

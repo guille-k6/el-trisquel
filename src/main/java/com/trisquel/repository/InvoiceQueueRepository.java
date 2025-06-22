@@ -1,6 +1,7 @@
 package com.trisquel.repository;
 
 import com.trisquel.model.InvoiceQueue;
+import com.trisquel.model.InvoiceQueueStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -48,4 +49,11 @@ public interface InvoiceQueueRepository extends JpaRepository<InvoiceQueue, Long
 
     // Delete processed items older than specified date
     void deleteByStatusAndProcessedAtBefore(String status, ZonedDateTime cutoffDate);
+
+    @Query("SELECT iq FROM InvoiceQueue iq WHERE iq.status IN :statuses ORDER BY iq.enqueuedAt ASC")
+    List<InvoiceQueue> findByStatusInOrderByEnqueuedAtAsc(@Param("statuses") List<InvoiceQueueStatus> statuses);
+
+    @Query("SELECT iq FROM InvoiceQueue iq WHERE iq.status = :status AND iq.retryCount < :maxRetries")
+    List<InvoiceQueue> findFailingInvoicesWithRetries(@Param("status") InvoiceQueueStatus status,
+                                                      @Param("maxRetries") int maxRetries);
 }

@@ -1,6 +1,7 @@
 package com.trisquel.service;
 
 import com.trisquel.model.InvoiceQueue;
+import com.trisquel.model.InvoiceQueueStatus;
 import com.trisquel.repository.InvoiceQueueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,11 +96,11 @@ public class InvoiceQueueService {
     public InvoiceQueue retryFailedItem(Long id) {
         InvoiceQueue item = invoiceQueueRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Queue item not found: " + id));
 
-        if (!"failed".equals(item.getStatus())) {
+        if (!InvoiceQueueStatus.FAILING.equals(item.getStatus())) {
             throw new IllegalStateException("Item is not in failed status");
         }
 
-        item.setStatus("queued");
+        item.setStatus(InvoiceQueueStatus.RETRYING);
         item.setProcessedAt(null);
         item.setErrorMessage(null);
         item.incrementRetryCount();

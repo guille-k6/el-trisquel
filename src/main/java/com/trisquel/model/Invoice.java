@@ -24,6 +24,9 @@ public class Invoice {
     private String tipo;
     private Long numero;
     private Double total;
+    private String cae;
+    private LocalDate vtoCae;
+    private Long sellPoint;
 
     // Getters y Setters
 
@@ -105,5 +108,29 @@ public class Invoice {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    public String getCae() {
+        return cae;
+    }
+
+    public void setCae(String cae) {
+        this.cae = cae;
+    }
+
+    public LocalDate getVtoCae() {
+        return vtoCae;
+    }
+
+    public void setVtoCae(LocalDate vtoCae) {
+        this.vtoCae = vtoCae;
+    }
+
+    public Long getSellPoint() {
+        return sellPoint;
+    }
+
+    public void setSellPoint(Long sellPoint) {
+        this.sellPoint = sellPoint;
     }
 }
