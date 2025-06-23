@@ -15,6 +15,15 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  task:
+    scheduling:
+      pool:
+        size: 3
+    execution:
+      pool:
+        core-size: 2
+        max-size: 5
+        queue-capacity: 100
   mail:
     host: localhost
     port: 1025
@@ -40,3 +49,17 @@ springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
+afip:
+  wsaa-url: https://wsaahomo.afip.gov.ar/ws/services/LoginCms  # Homologación
+  wsfev1-url: https://wswhomo.afip.gov.ar/wsfev1/service.asmx   # Homologación
+  certificate-path: ${AFIP_CERT_PATH:certificates/certificate.p12}
+  certificate-password: ${AFIP_CERT_PASSWORD:}
+  private-key-path: ${AFIP_KEY_PATH:certificates/private.key}
+  cuit: ${AFIP_CUIT:20123456789}
+  service: wsfe
+  token-expiration-hours: 12
+  max-retries: 3
+
+# Para producción cambiar a:
+# wsaa-url: https://wsaa.afip.gov.ar/ws/services/LoginCms
+# wsfev1-url: https://servicios1.afip.gov.ar/wsfev1/service.asmx
