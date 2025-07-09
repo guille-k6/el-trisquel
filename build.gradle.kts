@@ -25,6 +25,17 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
     implementation("net.javacrumbs.shedlock:shedlock-spring:6.9.0")
     implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:6.9.0")
+
+    // Spring Web Services (estándar para SOAP sin generación de clases)
+    implementation("org.springframework.ws:spring-ws-core:4.0.5")
+    implementation("org.springframework.ws:spring-ws-support:4.0.5")
+    implementation("org.springframework:spring-oxm:6.0.13")
+    implementation("org.apache.httpcomponents:httpclient:4.5.14")
+
+    implementation("org.bouncycastle:bcprov-jdk18on:1.78.1")
+    implementation("org.bouncycastle:bcpkix-jdk18on:1.78.1")
+    implementation("org.bouncycastle:bcutil-jdk18on:1.78.1")
+
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
