@@ -2,10 +2,11 @@ package trisquel.afip.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import trisquel.afip.auth.AfipAuthService;
 import trisquel.afip.config.AfipConfiguration;
+import trisquel.afip.model.AfipAuth;
 import trisquel.afip.model.AfipInvoiceRequest;
 import trisquel.afip.model.AfipInvoiceResponse;
-import trisquel.afip.model.AfipToken;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,23 +28,24 @@ public class AfipInvoiceService {
         try {
             // log.info("Autorizando factura en AFIP...");
             // 1. Obtener token válido
-            AfipToken token = authService.getValidToken();
+            // AfipToken token = authService.getValidToken();
             // 2. Obtener próximo número de comprobante
-            long nextInvoiceNumber = getNextInvoiceNumber(token);
-            request.setInvoiceNumber(nextInvoiceNumber);
+            //long nextInvoiceNumber = getNextInvoiceNumber(token);
+            // request.setInvoiceNumber(nextInvoiceNumber);
             // 3. Crear SOAP request para FECAESolicitar
-            String soapRequest = buildFECAESolicitarRequest(token, request);
+            // String soapRequest = buildFECAESolicitarRequest(token, request);
             // 4. Enviar a WSFEv1
-            String soapResponse = sendSOAPRequest(soapRequest);
+            // String soapResponse = sendSOAPRequest(soapRequest);
             // 5. Parsear respuesta
-            return parseFECAEResponse(soapResponse);
+            // return parseFECAEResponse(soapResponse);
+            return null;
         } catch (Exception e) {
             // log.error("Error autorizando factura en AFIP", e);
             throw new RuntimeException("Error en autorización AFIP", e);
         }
     }
 
-    private long getNextInvoiceNumber(AfipToken token) {
+    private long getNextInvoiceNumber(AfipAuth token) {
         // Llamar a FECompUltimoAutorizado para obtener el último número
         // @formatter:off
         String soapRequest = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
@@ -67,7 +69,7 @@ public class AfipInvoiceService {
         return 1L; // Placeholder
     }
 
-    private String buildFECAESolicitarRequest(AfipToken token, AfipInvoiceRequest request) {
+    private String buildFECAESolicitarRequest(AfipAuth token, AfipInvoiceRequest request) {
         // @formatter:off
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
                 "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:ar=\"http://ar.gov.afip.dif.FEV1/\">" +

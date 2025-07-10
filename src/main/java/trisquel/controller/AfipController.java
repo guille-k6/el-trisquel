@@ -5,7 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import trisquel.afip.auth.WSAAJavaClient;
+import trisquel.afip.auth.AfipAuthService;
+import trisquel.afip.model.AfipAuth;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,22 +14,26 @@ import java.util.Map;
 @RestController
 @RequestMapping("/afip")
 public class AfipController {
-    WSAAJavaClient client;
+    AfipAuthService client;
 
-    public AfipController(WSAAJavaClient client) {
+    public AfipController(AfipAuthService client) {
         this.client = client;
     }
 
     @GetMapping
-    public ResponseEntity authenticate() {
+    public ResponseEntity authenticate() throws Exception {
+        AfipAuth response = null;
         try {
-            String response = client.authenticate();
-            System.out.println("Respuesta WSAA:");
-            System.out.println(response);
+            response = client.authenticate();
+            if (response.getErrorMessage() == null) {
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.getErrorMessage());
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/debug-resources")
@@ -38,7 +43,7 @@ public class AfipController {
             //            Resource keyResource = resourceLoader.getResource("classpath:certificates/trisquelPrivKey.key");
 
             Map<String, Object> debug = new HashMap<>();
-//            debug.put("certExists", certResource.exists());
+            //            debug.put("certExists", certResource.exists());
             //            debug.put("keyExists", keyResource.exists());
             //            debug.put("certPath", certResource.getURI().toString());
             //            debug.put("keyPath", keyResource.getURI().toString());

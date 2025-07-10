@@ -4,10 +4,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import trisquel.afip.config.AfipConfiguration;
+import trisquel.afip.model.AfipAuth;
+import trisquel.afip.repository.AfipAuthRepository;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,31 +21,35 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class WSAAJavaClient {
+public class AfipAuthService {
 
+    private final AfipAuthRepository afipAuthRepository;
     private RestTemplate restTemplate;
     private final AfipConfiguration afipConfiguration;
     private final ResourceLoader resourceLoader;
-    private static final Logger logger = Logger.getLogger(WSAAJavaClient.class.getName());
+    private static final Logger logger = Logger.getLogger(AfipAuthService.class.getName());
     private final String certificatePath;
     private final String privateKeyPath;
     private final String serviceId = "wsfe";
     private final String wsaaUrl = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms";
 
-    public WSAAJavaClient(RestTemplate restTemplate, AfipConfiguration afipConfiguration,
-                          ResourceLoader resourceLoader) {
+    public AfipAuthService(RestTemplate restTemplate, AfipConfiguration afipConfiguration,
+                           ResourceLoader resourceLoader, AfipAuthRepository afipAuthRepository) {
         this.restTemplate = restTemplate;
         this.afipConfiguration = afipConfiguration;
         this.resourceLoader = resourceLoader;
         this.certificatePath = getActualFilePath(afipConfiguration.getCertificatePath());
         this.privateKeyPath = getActualFilePath(afipConfiguration.getPrivateKeyPath());
+        this.afipAuthRepository = afipAuthRepository;
     }
 
     /**
@@ -51,13 +58,17 @@ public class WSAAJavaClient {
      * @return response of the authentication
      * @throws Exception
      */
-    public String authenticate() throws Exception {
+    public AfipAuth authenticate() throws Exception {
+        Optional<AfipAuth> activeAuth = afipAuthRepository.findLastAuth(OffsetDateTime.now().plusMinutes(5));
+        if (activeAuth.isPresent()) {
+            return activeAuth.get();
+        }
         SignatureUtils signatureUtils = new SignatureUtils(certificatePath, privateKeyPath);
         String xmlContent = createLoginTicketRequestXML();
         byte[] cmsData = signatureUtils.signCMS(xmlContent);
         String base64CMS = Base64.getEncoder().encodeToString(cmsData);
-        String response = invokeWSAAWithRestTemplate(base64CMS);
-        return response;
+        AfipAuth auth = invokeWSAAWithRestTemplate(base64CMS);
+        return auth;
     }
 
     public String createLoginTicketRequestXML() throws Exception {
@@ -99,7 +110,7 @@ public class WSAAJavaClient {
         return xmlContent;
     }
 
-    public String invokeWSAAWithRestTemplate(String base64CMS) throws Exception {
+    public AfipAuth invokeWSAAWithRestTemplate(String base64CMS) throws Exception {
         String soapRequest = buildSoapRequest(base64CMS);
 
         HttpHeaders headers = new HttpHeaders();
@@ -108,20 +119,84 @@ public class WSAAJavaClient {
         headers.set("User-Agent", "Java-WSAA-Client/1.0");
 
         HttpEntity<String> requestEntity = new HttpEntity<>(soapRequest, headers);
-        ResponseEntity<String> response = null;
+        AfipAuth afipAuth;
         try {
-            response = restTemplate.exchange(wsaaUrl, HttpMethod.POST, requestEntity, String.class);
-
+            ResponseEntity<String> response = restTemplate.exchange(wsaaUrl, HttpMethod.POST, requestEntity, String.class);
             String responseBody = response.getBody();
-
-            return extractLoginTicketResponse(responseBody);
-
+            afipAuth = parseAuthenticationFromResponse(responseBody);
+            afipAuth = afipAuthRepository.save(afipAuth);
+        } catch (HttpServerErrorException e) {
+            // Error del ws de afip. Posibles causas: mala request, pediste un tklen hace muy poco tiempo, etc etc etc.
+            afipAuth = parseFailedAuthentication(e.getMessage());
+            afipAuth = afipAuthRepository.save(afipAuth);
         } catch (Exception e) {
-            // Authentication failed. What happened?
-            String fault = response.getBody();
             logger.severe("Error en WSAA: " + e.getMessage());
+            e.printStackTrace();
             throw e;
         }
+        return afipAuth;
+    }
+
+    private AfipAuth parseAuthenticationFromResponse(String responseBody) {
+
+        String parsedResponse = responseBody.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"").replace("&amp;", "&");
+        Pattern loginCmsReturnPattern = Pattern.compile("<loginTicketResponse(.*?)</loginTicketResponse>", Pattern.DOTALL);
+        Matcher returnMatcher = loginCmsReturnPattern.matcher(parsedResponse);
+        if (!returnMatcher.find()) {
+            throw new RuntimeException("Error en WSAA: " + "No se encontro el bloque <loginTicketResponse>");
+        }
+
+        Long uniqueId = null;
+        OffsetDateTime generationTime = null;
+        OffsetDateTime expirationTime = null;
+        String token = null;
+        String sign = null;
+
+        Pattern idPattern = Pattern.compile("<uniqueId>(.*?)</uniqueId>");
+        Matcher idMatcher = idPattern.matcher(parsedResponse);
+        if (idMatcher.find()) {
+            uniqueId = Long.valueOf(idMatcher.group(1));
+        }
+        Pattern genPattern = Pattern.compile("<generationTime>(.*?)</generationTime>");
+        Matcher genMatcher = genPattern.matcher(parsedResponse);
+        if (genMatcher.find()) {
+            generationTime = OffsetDateTime.parse(genMatcher.group(1));
+        }
+        Pattern expPattern = Pattern.compile("<expirationTime>(.*?)</expirationTime>");
+        Matcher expMatcher = expPattern.matcher(parsedResponse);
+        if (expMatcher.find()) {
+            expirationTime = OffsetDateTime.parse(expMatcher.group(1));
+        }
+        Pattern tokenPattern = Pattern.compile("<token>(.*?)</token>");
+        Matcher tokenMatcher = tokenPattern.matcher(parsedResponse);
+        if (tokenMatcher.find()) {
+            token = tokenMatcher.group(1);
+        }
+        Pattern signPattern = Pattern.compile("<token>(.*?)</token>");
+        Matcher signMatcher = signPattern.matcher(parsedResponse);
+        if (signMatcher.find()) {
+            sign = signMatcher.group(1);
+        }
+        return new AfipAuth(uniqueId, generationTime, expirationTime, token, sign, null);
+    }
+
+    private AfipAuth parseFailedAuthentication(String errorBody) {
+        String parsedError = errorBody.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"").replace("&amp;", "&");
+        Long uniqueId = null;
+        OffsetDateTime generationTime = OffsetDateTime.now();
+        OffsetDateTime expirationTime = null;
+        String token = null;
+        String sign = null;
+        String errorMessage;
+
+        Pattern errorPattern = Pattern.compile("<faultstring(.*?)</faultstring>", Pattern.DOTALL);
+        Matcher errorMatcher = errorPattern.matcher(parsedError);
+        if (!errorMatcher.find()) {
+            errorMessage = parsedError;
+        }
+        errorMessage = errorMatcher.group(1);
+        AfipAuth auth = new AfipAuth(uniqueId, generationTime, expirationTime, token, sign, errorMessage);
+        return auth;
     }
 
     private String extractSoapFault(String soapResponse) {
@@ -148,20 +223,6 @@ public class WSAAJavaClient {
                 """.formatted(base64CMS);
     }
 
-    private String extractLoginTicketResponse(String soapResponse) {
-        Pattern pattern = Pattern.compile("<loginCmsReturn>(.*?)</loginCmsReturn>", Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(soapResponse);
-        if (matcher.find()) {
-            return matcher.group(1).trim();
-        }
-        pattern = Pattern.compile("<.*?:loginCmsReturn>(.*?)</.*?:loginCmsReturn>", Pattern.DOTALL);
-        matcher = pattern.matcher(soapResponse);
-        if (matcher.find()) {
-            return matcher.group(1).trim();
-        }
-        logger.warning("No se pudo extraer loginCmsReturn, devolviendo respuesta completa");
-        return soapResponse;
-    }
 
     private String getActualFilePath(String resourcePath) {
         try {
