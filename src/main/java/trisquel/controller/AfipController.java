@@ -7,8 +7,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import trisquel.afip.auth.AfipAuthService;
 import trisquel.afip.model.AfipAuth;
+import trisquel.afip.model.AfipComprobante;
+import trisquel.afip.model.DTO.AfipComprobanteDTO;
+import trisquel.model.Dto.DefaultList;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -52,5 +57,14 @@ public class AfipController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/tipo-comprobante")
+    public ResponseEntity<DefaultList<?>> tipoCompobante() {
+        List<AfipComprobanteDTO> vouchers = Arrays.stream(AfipComprobante.values()).map(AfipComprobanteDTO::fromEnum).toList();
+        AfipComprobanteDTO comprobanteDefault = AfipComprobanteDTO.fromEnum(AfipComprobante.FACT_A);
+        DefaultList<AfipComprobanteDTO> defaultList = new DefaultList<>(vouchers, comprobanteDefault);
+        return ResponseEntity.ok(defaultList);
+
     }
 }
