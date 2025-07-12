@@ -6,9 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import trisquel.afip.auth.AfipAuthService;
-import trisquel.afip.model.AfipAuth;
-import trisquel.afip.model.AfipComprobante;
-import trisquel.afip.model.DTO.AfipComprobanteDTO;
+import trisquel.afip.model.*;
+import trisquel.afip.model.DTO.*;
 import trisquel.model.Dto.DefaultList;
 
 import java.util.Arrays;
@@ -60,11 +59,34 @@ public class AfipController {
     }
 
     @GetMapping("/tipo-comprobante")
-    public ResponseEntity<DefaultList<?>> tipoCompobante() {
-        List<AfipComprobanteDTO> vouchers = Arrays.stream(AfipComprobante.values()).map(AfipComprobanteDTO::fromEnum).toList();
-        AfipComprobanteDTO comprobanteDefault = AfipComprobanteDTO.fromEnum(AfipComprobante.FACT_A);
-        DefaultList<AfipComprobanteDTO> defaultList = new DefaultList<>(vouchers, comprobanteDefault);
+    public ResponseEntity<DefaultList<?>> tiposCompobante() {
+        DefaultList<AfipComprobanteDTO> defaultList = DefaultList.buildDefaultListFromEnum(AfipComprobante.FACT_A, AfipComprobanteDTO::fromEnum);
         return ResponseEntity.ok(defaultList);
-
     }
+
+    @GetMapping("/moneda")
+    public ResponseEntity<DefaultList<?>> monedas() {
+        DefaultList<AfipMonedaDTO> defaultList = DefaultList.buildDefaultListFromEnum(AfipMoneda.PESO, AfipMonedaDTO::fromEnum);
+        return ResponseEntity.ok(defaultList);
+    }
+
+    @GetMapping("/concepto")
+    public ResponseEntity<DefaultList<?>> conceptos() {
+        DefaultList<AfipConceptoDTO> defaultList = DefaultList.buildDefaultListFromEnum(AfipConcepto.PRODUCTO, AfipConceptoDTO::fromEnum);
+        return ResponseEntity.ok(defaultList);
+    }
+
+    @GetMapping("/iva")
+    public ResponseEntity<DefaultList<?>> ivas() {
+        DefaultList<AfipIvaDTO> defaultList = DefaultList.buildDefaultListFromEnum(AfipIva.IVA_21p, AfipIvaDTO::fromEnum);
+        return ResponseEntity.ok(defaultList);
+    }
+
+    @GetMapping("/tipo-documento")
+    public ResponseEntity<DefaultList<?>> tiposDocumento() {
+        DefaultList<AfipTipoDocDTO> defaultList = DefaultList.buildDefaultListFromEnum(AfipTipoDoc.DNI, AfipTipoDocDTO::fromEnum);
+        return ResponseEntity.ok(defaultList);
+    }
+
+
 }
