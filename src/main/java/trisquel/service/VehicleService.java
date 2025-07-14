@@ -1,11 +1,11 @@
 package trisquel.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import trisquel.model.Vehicle;
 import trisquel.repository.VehicleRepository;
 import trisquel.utils.ValidationErrorItem;
 import trisquel.utils.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,13 +58,7 @@ public class VehicleService {
         if (vehicle.getPurchaseDatePrice() < 0) {
             validationErrors.add(new ValidationErrorItem("Error", "El precio de compra no puede ser menor a 0"));
         }
-        if (!validationErrors.isEmpty()) {
-            ValidationException validationException = new ValidationException();
-            for (ValidationErrorItem validationErrorItem : validationErrors) {
-                validationException.addValidationError(validationErrorItem.title(), validationErrorItem.message());
-            }
-            throw validationException;
-        }
+        ValidationException.verifyAndMaybeThrowValidationException(validationErrors);
     }
 
 

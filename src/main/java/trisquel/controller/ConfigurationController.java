@@ -1,13 +1,13 @@
 package trisquel.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import trisquel.model.ConfigurationMap;
 import trisquel.service.ConfigurationService;
+import trisquel.utils.ValidationException;
+import trisquel.utils.ValidationExceptionResponse;
 
 import java.util.Optional;
 
@@ -22,13 +22,27 @@ public class ConfigurationController {
     }
 
     @GetMapping("/{key}")
-    public ResponseEntity<ConfigurationMap> getClientById(@PathVariable String key) {
+    public ResponseEntity<ConfigurationMap> configuration(@PathVariable String key) {
 
         Optional<ConfigurationMap> configuration = configurationService.findByKey(key);
         if (configuration.isEmpty()) {
             return ResponseEntity.ok().build();
         }
         return configurationService.findByKey(key).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<?> save(@RequestBody ConfigurationMap config) {
+        ResponseEntity<?> response;
+        try {
+            configurationService.save(config);
+            response = ResponseEntity.ok("");
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+        return response;
     }
 }
 

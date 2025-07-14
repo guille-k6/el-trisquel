@@ -2,7 +2,8 @@ package trisquel.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
-import trisquel.utils.JsonNodeConverter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "configuration_map")
@@ -13,7 +14,7 @@ public class ConfigurationMap {
     private Long id;
     private String key;
     @Column(columnDefinition = "jsonb")
-    @Convert(converter = JsonNodeConverter.class)
+    @JdbcTypeCode(SqlTypes.JSON)
     private JsonNode value;
 
     public Long getId() {

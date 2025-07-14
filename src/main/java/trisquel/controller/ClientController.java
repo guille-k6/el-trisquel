@@ -1,14 +1,14 @@
 package trisquel.controller;
 
-import trisquel.model.Client;
-import trisquel.service.ClientService;
-import trisquel.utils.ValidationException;
-import trisquel.utils.ValidationExceptionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import trisquel.model.Client;
+import trisquel.service.ClientService;
+import trisquel.utils.ValidationException;
+import trisquel.utils.ValidationExceptionResponse;
 
 import java.util.List;
 

@@ -13,6 +13,9 @@ public class Client {
     private String name;
     private String address;
     private String phoneNumber;
+    private Long docType;
+    private Long docNumber;
+    private String email;
 
     public Long getId() {
         return id;
@@ -44,6 +47,30 @@ public class Client {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Long getDocType() {
+        return docType;
+    }
+
+    public void setDocType(Long docType) {
+        this.docType = docType;
+    }
+
+    public Long getDocNumber() {
+        return docNumber;
+    }
+
+    public void setDocNumber(Long docNumber) {
+        this.docNumber = docNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

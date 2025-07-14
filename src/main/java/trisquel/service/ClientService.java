@@ -1,11 +1,11 @@
 package trisquel.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import trisquel.model.Client;
 import trisquel.repository.ClientRepository;
 import trisquel.utils.ValidationErrorItem;
 import trisquel.utils.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,19 +49,22 @@ public class ClientService {
         if (client.getName().isBlank()) {
             validationErrors.add(new ValidationErrorItem("Error", "El campo nombre es obligatorio"));
         }
-        if (client.getAddress() == null) {
-            validationErrors.add(new ValidationErrorItem("Error", "El campo dirección es obligatorio"));
+        //        if (client.getAddress() == null) {
+        //            validationErrors.add(new ValidationErrorItem("Error", "El campo dirección es obligatorio"));
+        //        }
+        //        if (client.getPhoneNumber() == null) {
+        //            validationErrors.add(new ValidationErrorItem("Error", "El campo número de teléfono es obligatorio"));
+        //        }
+        if (client.getDocType() == null) {
+            validationErrors.add(new ValidationErrorItem("Error", "El campo tipo de documento es obligatorio"));
         }
-        if (client.getPhoneNumber() == null) {
-            validationErrors.add(new ValidationErrorItem("Error", "El campo número de teléfono es obligatorio"));
+        if (client.getDocNumber() == null) {
+            validationErrors.add(new ValidationErrorItem("Error", "El campo número de documento es obligatorio"));
         }
-        if (!validationErrors.isEmpty()) {
-            ValidationException validationException = new ValidationException();
-            for (ValidationErrorItem validationErrorItem : validationErrors) {
-                validationException.addValidationError(validationErrorItem.title(), validationErrorItem.message());
-            }
-            throw validationException;
-        }
+        //        if(client.getEmail() == null) {
+        //            validationErrors.add(new ValidationErrorItem("Error", "El campo email es obligatorio"));
+        //        }
+        ValidationException.verifyAndMaybeThrowValidationException(validationErrors);
     }
 
     public void delete(Long id) {

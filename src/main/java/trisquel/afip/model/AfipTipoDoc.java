@@ -1,7 +1,7 @@
 package trisquel.afip.model;
 
 public enum AfipTipoDoc {
-    CUIT(80, "CUIT"), CUIL(86, "CUIL"), CDI(87, "CDI"), DNI(96, "DNI"), NN(96, "Sin Identificar");
+    CUIT(80, "CUIT"), CUIL(86, "CUIL"), CDI(87, "CDI"), DNI(96, "DNI"), NN(0, "Sin Identificar");
     private final int code;
     private final String description;
 
