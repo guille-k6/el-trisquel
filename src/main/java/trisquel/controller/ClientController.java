@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trisquel.model.Client;
+import trisquel.model.Dto.ClientDTO;
 import trisquel.service.ClientService;
 import trisquel.utils.ValidationException;
 import trisquel.utils.ValidationExceptionResponse;
@@ -24,7 +25,7 @@ public class ClientController {
     }
 
     @GetMapping
-    public List<Client> getAllClients() {
+    public List<ClientDTO> getAllClients() {
         return clientService.findAll();
     }
 

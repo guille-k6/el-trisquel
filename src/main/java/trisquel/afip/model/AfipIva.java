@@ -25,7 +25,7 @@ public enum AfipIva {
         return description;
     }
 
-    public static AfipIva fromCodigo(int code) {
+    public static AfipIva fromCode(int code) {
         for (AfipIva tipo : values()) {
             if (tipo.code == code) {
                 return tipo;

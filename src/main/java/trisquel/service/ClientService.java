@@ -3,6 +3,7 @@ package trisquel.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import trisquel.model.Client;
+import trisquel.model.Dto.ClientDTO;
 import trisquel.repository.ClientRepository;
 import trisquel.utils.ValidationErrorItem;
 import trisquel.utils.ValidationException;
@@ -20,8 +21,9 @@ public class ClientService {
 
     private final ClientRepository repository;
 
-    public List<Client> findAll() {
-        return repository.findAll();
+    public List<ClientDTO> findAll() {
+        List<Client> clients = repository.findAll();
+        return ClientDTO.translateToDTOs(clients);
     }
 
     public Optional<Client> findById(Long id) {

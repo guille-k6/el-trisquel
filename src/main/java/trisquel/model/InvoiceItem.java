@@ -1,6 +1,7 @@
 package trisquel.model;
 
 import jakarta.persistence.*;
+import trisquel.afip.model.AfipIva;
 
 @Entity
 @Table(name = "invoice_item")
@@ -12,10 +13,12 @@ public class InvoiceItem {
     private Integer amount;
     @Column(name = "price_per_unit")
     private Double pricePerUnit;
-    @Column(name = "iva_percetage")
-    private Integer ivaPercentage;
-    @Column(name = "invoice_id", nullable = false)
-    private Long invoiceId;
+    @Column(name = "iva")
+    private AfipIva iva;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "invoice_id", nullable = false)
+    private Invoice invoice;
+
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
@@ -43,12 +46,12 @@ public class InvoiceItem {
         this.pricePerUnit = pricePerUnit;
     }
 
-    public Integer getIvaPercentage() {
-        return ivaPercentage;
+    public AfipIva getIva() {
+        return iva;
     }
 
-    public void setIvaPercentage(Integer ivaPercentage) {
-        this.ivaPercentage = ivaPercentage;
+    public void setIva(AfipIva iva) {
+        this.iva = iva;
     }
 
     public Long getProductId() {
@@ -59,11 +62,11 @@ public class InvoiceItem {
         this.productId = productId;
     }
 
-    public Long getInvoiceId() {
-        return invoiceId;
+    public Invoice getInvoice() {
+        return invoice;
     }
 
-    public void setInvoiceId(Long invoiceId) {
-        this.invoiceId = invoiceId;
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
     }
 }

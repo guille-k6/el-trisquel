@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trisquel.model.*;
+import trisquel.model.Dto.InvoiceDTO;
 import trisquel.model.Dto.InvoiceInputDTO;
 import trisquel.repository.*;
 import trisquel.utils.ValidationErrorItem;
@@ -37,8 +38,9 @@ public class InvoiceService {
     private final ProductRepository productRepository;
     private final InvoiceQueueRepository invoiceQueueRepository;
 
-    public List<Invoice> findAll() {
-        return repository.findAll();
+    public List<InvoiceDTO> findAll() {
+        List<Invoice> invoices = repository.findAll();
+        return InvoiceDTO.translateToDTOs(invoices);
     }
 
     public Optional<Invoice> findById(Long id) {
@@ -112,7 +114,7 @@ public class InvoiceService {
             if (invoiceItem.getPricePerUnit() <= 0) {
                 validationErrors.add(new ValidationErrorItem("Error", "La precio unitario de los items de factura debe ser mayor que 0"));
             }
-            if (invoiceItem.getIvaPercentage() < 0 || invoiceItem.getIvaPercentage() > 100) {
+            if (invoiceItem.getIva().getPercentage() < 0 || invoiceItem.getIva().getPercentage() > 100) {
                 validationErrors.add(new ValidationErrorItem("Error", "El porcentaje de IVA debe ser mayor que 0 y menor que 100"));
             }
             productIds.add(invoiceItem.getProductId());
@@ -161,13 +163,13 @@ public class InvoiceService {
         invoice.setCreatedAt(OffsetDateTime.now());
         invoice.setPaid(false);
         invoice.setStatus("PENDING");
-        invoice.setTotal(0.0); // Calculation will be done after
+        invoice.setTotal(0.0);
         return invoice;
     }
 
     private void processInvoiceItems(List<InvoiceItem> items, Long invoiceId) {
         for (InvoiceItem item : items) {
-            item.setInvoiceId(invoiceId);
+            item.setInvoice(new Invoice(invoiceId));
             // Item id auto-generated
             item.setId(null);
         }
@@ -178,7 +180,7 @@ public class InvoiceService {
         List<InvoiceItem> items = invoiceItemRepository.findByInvoiceId(invoice.getId());
         double total = items.stream().mapToDouble(item -> {
             double subtotal = item.getAmount() * item.getPricePerUnit();
-            double iva = subtotal * (item.getIvaPercentage() / 100.0);
+            double iva = subtotal * (item.getIva().getPercentage() / 100.0);
             return subtotal + iva;
         }).sum();
         invoice.setTotal(total);

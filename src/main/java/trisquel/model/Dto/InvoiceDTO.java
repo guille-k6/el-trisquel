@@ -1,9 +1,13 @@
 package trisquel.model.Dto;
 
+import trisquel.afip.model.DTO.AfipComprobanteDTO;
+import trisquel.afip.model.DTO.AfipConceptoDTO;
 import trisquel.model.Invoice;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class InvoiceDTO {
     private Long id;
@@ -19,6 +23,9 @@ public class InvoiceDTO {
     private String cae;
     private LocalDate vtoCae;
     private Long sellPoint;
+    private AfipComprobanteDTO comprobante;
+    private AfipConceptoDTO concepto;
+    private List<InvoiceItemDTO> items;
 
     public InvoiceDTO() {
     }
@@ -41,7 +48,14 @@ public class InvoiceDTO {
         invoiceDTO.setCae(invoice.getCae());
         invoiceDTO.setVtoCae(invoice.getVtoCae());
         invoiceDTO.setSellPoint(invoice.getSellPoint());
+        invoiceDTO.setComprobante(AfipComprobanteDTO.fromEnum(invoice.getComprobante()));
+        invoiceDTO.setConcepto(AfipConceptoDTO.fromEnum(invoice.getConcepto()));
+        invoiceDTO.setItems(InvoiceItemDTO.translateToDTOs(invoice.getItems()));
         return invoiceDTO;
+    }
+
+    public static List<InvoiceDTO> translateToDTOs(List<Invoice> invoices) {
+        return invoices.stream().map(InvoiceDTO::translateToDTO).collect(Collectors.toList());
     }
 
     public Long getId() {
@@ -146,5 +160,29 @@ public class InvoiceDTO {
 
     public void setSellPoint(Long sellPoint) {
         this.sellPoint = sellPoint;
+    }
+
+    public AfipComprobanteDTO getComprobante() {
+        return comprobante;
+    }
+
+    public void setComprobante(AfipComprobanteDTO comprobante) {
+        this.comprobante = comprobante;
+    }
+
+    public AfipConceptoDTO getConcepto() {
+        return concepto;
+    }
+
+    public void setConcepto(AfipConceptoDTO concepto) {
+        this.concepto = concepto;
+    }
+
+    public List<InvoiceItemDTO> getItems() {
+        return items;
+    }
+
+    public void setItems(List<InvoiceItemDTO> items) {
+        this.items = items;
     }
 }

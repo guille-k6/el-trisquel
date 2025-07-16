@@ -1,9 +1,13 @@
 package trisquel.model;
 
 import jakarta.persistence.*;
+import trisquel.afip.model.AfipComprobante;
+import trisquel.afip.model.AfipConcepto;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "invoice")
@@ -15,6 +19,8 @@ public class Invoice {
     private LocalDate date;
     private String comment;
     private Boolean paid;
+    private AfipComprobante comprobante;
+    private AfipConcepto concepto;
     private String status;
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
@@ -27,6 +33,15 @@ public class Invoice {
     private String cae;
     private LocalDate vtoCae;
     private Long sellPoint;
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<InvoiceItem> items = new ArrayList<>();
+
+    public Invoice() {
+    }
+
+    public Invoice(Long id) {
+        this.id = id;
+    }
 
     // Getters y Setters
 
@@ -132,5 +147,29 @@ public class Invoice {
 
     public void setSellPoint(Long sellPoint) {
         this.sellPoint = sellPoint;
+    }
+
+    public AfipComprobante getComprobante() {
+        return comprobante;
+    }
+
+    public void setComprobante(AfipComprobante comprobante) {
+        this.comprobante = comprobante;
+    }
+
+    public AfipConcepto getConcepto() {
+        return concepto;
+    }
+
+    public void setConcepto(AfipConcepto concepto) {
+        this.concepto = concepto;
+    }
+
+    public List<InvoiceItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<InvoiceItem> items) {
+        this.items = items;
     }
 }

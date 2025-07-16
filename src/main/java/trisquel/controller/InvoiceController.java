@@ -1,5 +1,6 @@
 package trisquel.controller;
 
+import trisquel.model.Dto.InvoiceDTO;
 import trisquel.model.Dto.InvoiceInputDTO;
 import trisquel.model.Invoice;
 import trisquel.model.InvoiceQueue;
@@ -25,7 +26,7 @@ public class InvoiceController {
     }
 
     @GetMapping
-    public List<Invoice> getAllInvoices() {
+    public List<InvoiceDTO> getAllInvoices() {
         return invoiceService.findAll();
     }
 

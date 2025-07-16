@@ -1,6 +1,7 @@
 package trisquel.model;
 
 import jakarta.persistence.*;
+import trisquel.afip.model.AfipTipoDoc;
 
 @Entity
 @Table(name = "client")
@@ -13,7 +14,7 @@ public class Client {
     private String name;
     private String address;
     private String phoneNumber;
-    private Long docType;
+    private AfipTipoDoc docType;
     private Long docNumber;
     private String email;
 
@@ -49,11 +50,11 @@ public class Client {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getDocType() {
+    public AfipTipoDoc getDocType() {
         return docType;
     }
 
-    public void setDocType(Long docType) {
+    public void setDocType(AfipTipoDoc docType) {
         this.docType = docType;
     }
 
