@@ -3,6 +3,7 @@ package trisquel.model.Dto;
 import trisquel.afip.model.DTO.AfipComprobanteDTO;
 import trisquel.afip.model.DTO.AfipConceptoDTO;
 import trisquel.model.Invoice;
+import trisquel.model.InvoiceQueueStatus;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -14,10 +15,9 @@ public class InvoiceDTO {
     private LocalDate date;
     private String comment;
     private Boolean paid;
-    private String status;
+    private InvoiceQueueStatus status;
     private OffsetDateTime createdAt;
     private ClientDTO client;
-    private String tipo;
     private Long numero;
     private Double total;
     private String cae;
@@ -42,7 +42,6 @@ public class InvoiceDTO {
         invoiceDTO.setStatus(invoice.getStatus());
         invoiceDTO.setCreatedAt(invoice.getCreatedAt());
         invoiceDTO.setClient(ClientDTO.translateToDTO(invoice.getClient()));
-        invoiceDTO.setTipo(invoice.getTipo());
         invoiceDTO.setNumero(invoice.getNumero());
         invoiceDTO.setTotal(invoice.getTotal());
         invoiceDTO.setCae(invoice.getCae());
@@ -90,11 +89,11 @@ public class InvoiceDTO {
         this.paid = paid;
     }
 
-    public String getStatus() {
+    public InvoiceQueueStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(InvoiceQueueStatus status) {
         this.status = status;
     }
 
@@ -112,14 +111,6 @@ public class InvoiceDTO {
 
     public void setClient(ClientDTO client) {
         this.client = client;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 
     public Long getNumero() {

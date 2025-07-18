@@ -3,6 +3,8 @@ package trisquel.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import trisquel.afip.model.AfipComprobante;
+import trisquel.afip.model.AfipConcepto;
 import trisquel.model.*;
 import trisquel.model.Dto.InvoiceDTO;
 import trisquel.model.Dto.InvoiceInputDTO;
@@ -70,10 +72,10 @@ public class InvoiceService {
             // Invoice creation
             Invoice invoice = createInvoiceShell(invoiceInputDTO, client);
             Invoice savedInvoice = repository.save(invoice);
-            processInvoiceItems(invoiceInputDTO.getInvoiceItems(), savedInvoice.getId());
-            updateInvoiceTotal(savedInvoice);
+            List<InvoiceItem> processedItems = processInvoiceItems(invoiceInputDTO.getInvoiceItems(), savedInvoice.getId());
+            savedInvoice.setItems(processedItems);
+            // InvoicePricing invoicePricing = new InvoicePricing(invoice);
             updateDailyBookItemsInvoices(dbis, savedInvoice.getId());
-            // Queue creation
             generateInvoiceQueue(savedInvoice.getId());
         } catch (Throwable t) {
             System.out.println(t);
@@ -162,29 +164,22 @@ public class InvoiceService {
         invoice.setClient(client);
         invoice.setCreatedAt(OffsetDateTime.now());
         invoice.setPaid(false);
-        invoice.setStatus("PENDING");
+        invoice.setStatus(InvoiceQueueStatus.STARTED);
         invoice.setTotal(0.0);
+        invoice.setComprobante(AfipComprobante.FACT_A);
+        invoice.setConcepto(AfipConcepto.PRODUCTO);
+        invoice.setSellPoint(1L);
         return invoice;
     }
 
-    private void processInvoiceItems(List<InvoiceItem> items, Long invoiceId) {
+    private List<InvoiceItem> processInvoiceItems(List<InvoiceItem> items, Long invoiceId) {
         for (InvoiceItem item : items) {
             item.setInvoice(new Invoice(invoiceId));
             // Item id auto-generated
             item.setId(null);
         }
         invoiceItemRepository.saveAll(items);
-    }
-
-    private void updateInvoiceTotal(Invoice invoice) {
-        List<InvoiceItem> items = invoiceItemRepository.findByInvoiceId(invoice.getId());
-        double total = items.stream().mapToDouble(item -> {
-            double subtotal = item.getAmount() * item.getPricePerUnit();
-            double iva = subtotal * (item.getIva().getPercentage() / 100.0);
-            return subtotal + iva;
-        }).sum();
-        invoice.setTotal(total);
-        repository.save(invoice);
+        return items;
     }
 
     /**

@@ -1,5 +1,8 @@
 package trisquel.afip.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum AfipConcepto {
     PRODUCTO(1, "Productos"), SERVICIO(2, "Servicios"), PROD_Y_SERV(3, "Productos y Servicios");
     private final int code;
@@ -10,6 +13,7 @@ public enum AfipConcepto {
         this.description = description;
     }
 
+    @JsonCreator
     public static AfipConcepto fromCode(int code) {
         for (AfipConcepto tipo : values()) {
             if (tipo.code == code) {
@@ -19,6 +23,7 @@ public enum AfipConcepto {
         throw new IllegalArgumentException("Código de concepto no válido: " + code);
     }
 
+    @JsonValue
     public int getCode() {
         return code;
     }

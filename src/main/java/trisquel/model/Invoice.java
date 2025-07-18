@@ -21,13 +21,14 @@ public class Invoice {
     private Boolean paid;
     private AfipComprobante comprobante;
     private AfipConcepto concepto;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "queue_status", nullable = false)
+    private InvoiceQueueStatus status = InvoiceQueueStatus.QUEUED;
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
-    private String tipo;
     private Long numero;
     private Double total;
     private String cae;
@@ -77,11 +78,11 @@ public class Invoice {
         this.paid = paid;
     }
 
-    public String getStatus() {
+    public InvoiceQueueStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(InvoiceQueueStatus status) {
         this.status = status;
     }
 
@@ -99,14 +100,6 @@ public class Invoice {
 
     public void setClient(Client client) {
         this.client = client;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 
     public Long getNumero() {

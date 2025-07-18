@@ -1,5 +1,8 @@
 package trisquel.afip.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum AfipMoneda {
     PESO("PES", "PESO ARGENTINO"), DOLAR("DOL", "DOLAR ESTADOUNIDENSE"), REAL("12", "REAL"), PESO_UY("11", "PESO URUGUAYO");
 
@@ -11,6 +14,7 @@ public enum AfipMoneda {
         this.description = description;
     }
 
+    @JsonValue
     public String getCode() {
         return code;
     }
@@ -19,6 +23,7 @@ public enum AfipMoneda {
         return description;
     }
 
+    @JsonCreator
     public static AfipMoneda fromCode(String code) {
         for (AfipMoneda tipo : values()) {
             if (tipo.code.equals(code)) {
