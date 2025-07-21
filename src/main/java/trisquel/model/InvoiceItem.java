@@ -3,6 +3,8 @@ package trisquel.model;
 import jakarta.persistence.*;
 import trisquel.afip.model.AfipIva;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "invoice_item")
 public class InvoiceItem {
@@ -11,16 +13,19 @@ public class InvoiceItem {
     @SequenceGenerator(name = "invoice_item_seq", sequenceName = "invoice_item_seq", allocationSize = 1)
     private Long id;
     private Integer amount;
-    @Column(name = "price_per_unit")
-    private Double pricePerUnit;
     @Column(name = "iva")
     private AfipIva iva;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_id", nullable = false)
     private Invoice invoice;
-
     @Column(name = "product_id", nullable = false)
     private Long productId;
+    @Column(name = "price_per_unit", precision = 10, scale = 2)
+    private BigDecimal pricePerUnit;
+    @Column(name = "iva_amount", precision = 10, scale = 2)
+    private BigDecimal ivaAmount;
+    @Column(name = "total", precision = 10, scale = 2)
+    private BigDecimal total;
 
     public Long getId() {
         return id;
@@ -38,11 +43,11 @@ public class InvoiceItem {
         this.amount = amount;
     }
 
-    public Double getPricePerUnit() {
+    public BigDecimal getPricePerUnit() {
         return pricePerUnit;
     }
 
-    public void setPricePerUnit(Double pricePerUnit) {
+    public void setPricePerUnit(BigDecimal pricePerUnit) {
         this.pricePerUnit = pricePerUnit;
     }
 
@@ -68,5 +73,21 @@ public class InvoiceItem {
 
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
+    }
+
+    public BigDecimal getIvaAmount() {
+        return ivaAmount;
+    }
+
+    public void setIvaAmount(BigDecimal ivaAmount) {
+        this.ivaAmount = ivaAmount;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 }

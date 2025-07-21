@@ -3,15 +3,19 @@ package trisquel.model.Dto;
 import trisquel.afip.model.DTO.AfipIvaDTO;
 import trisquel.model.InvoiceItem;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class InvoiceItemDTO {
     private Long id;
-    private Double pricePerUnit;
     private AfipIvaDTO iva;
     private Long invoiceId;
     private Long productId;
+    private BigDecimal pricePerUnit;
+    private BigDecimal ivaAmount;
+    private BigDecimal total;
+
 
     InvoiceItemDTO() {
     }
@@ -26,6 +30,9 @@ public class InvoiceItemDTO {
         invoiceItemDTO.setIva(AfipIvaDTO.fromEnum(invoiceItem.getIva()));
         invoiceItemDTO.setInvoiceId(invoiceItem.getInvoice().getId());
         invoiceItemDTO.setProductId(invoiceItem.getProductId());
+        invoiceItemDTO.setPricePerUnit(invoiceItem.getPricePerUnit());
+        invoiceItemDTO.setIvaAmount(invoiceItem.getIvaAmount());
+        invoiceItemDTO.setTotal(invoiceItem.getTotal());
         return invoiceItemDTO;
     }
 
@@ -41,11 +48,11 @@ public class InvoiceItemDTO {
         this.id = id;
     }
 
-    public Double getPricePerUnit() {
+    public BigDecimal getPricePerUnit() {
         return pricePerUnit;
     }
 
-    public void setPricePerUnit(Double pricePerUnit) {
+    public void setPricePerUnit(BigDecimal pricePerUnit) {
         this.pricePerUnit = pricePerUnit;
     }
 
@@ -71,5 +78,21 @@ public class InvoiceItemDTO {
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public BigDecimal getIvaAmount() {
+        return ivaAmount;
+    }
+
+    public void setIvaAmount(BigDecimal ivaAmount) {
+        this.ivaAmount = ivaAmount;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 }

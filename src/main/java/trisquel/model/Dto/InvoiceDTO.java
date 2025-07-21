@@ -2,6 +2,7 @@ package trisquel.model.Dto;
 
 import trisquel.afip.model.DTO.AfipComprobanteDTO;
 import trisquel.afip.model.DTO.AfipConceptoDTO;
+import trisquel.afip.model.DTO.AfipMonedaDTO;
 import trisquel.model.Invoice;
 import trisquel.model.InvoiceQueueStatus;
 
@@ -25,6 +26,7 @@ public class InvoiceDTO {
     private Long sellPoint;
     private AfipComprobanteDTO comprobante;
     private AfipConceptoDTO concepto;
+    private AfipMonedaDTO moneda;
     private List<InvoiceItemDTO> items;
 
     public InvoiceDTO() {
@@ -49,6 +51,7 @@ public class InvoiceDTO {
         invoiceDTO.setSellPoint(invoice.getSellPoint());
         invoiceDTO.setComprobante(AfipComprobanteDTO.fromEnum(invoice.getComprobante()));
         invoiceDTO.setConcepto(AfipConceptoDTO.fromEnum(invoice.getConcepto()));
+        invoiceDTO.setMoneda(AfipMonedaDTO.fromEnum(invoice.getMoneda()));
         invoiceDTO.setItems(InvoiceItemDTO.translateToDTOs(invoice.getItems()));
         return invoiceDTO;
     }
@@ -167,6 +170,14 @@ public class InvoiceDTO {
 
     public void setConcepto(AfipConceptoDTO concepto) {
         this.concepto = concepto;
+    }
+
+    public AfipMonedaDTO getMoneda() {
+        return moneda;
+    }
+
+    public void setMoneda(AfipMonedaDTO moneda) {
+        this.moneda = moneda;
     }
 
     public List<InvoiceItemDTO> getItems() {

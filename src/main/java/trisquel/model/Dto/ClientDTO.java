@@ -1,5 +1,6 @@
 package trisquel.model.Dto;
 
+import trisquel.afip.model.DTO.AfipCondicionIvaDTO;
 import trisquel.afip.model.DTO.AfipTipoDocDTO;
 import trisquel.model.Client;
 
@@ -14,6 +15,7 @@ public class ClientDTO {
     private AfipTipoDocDTO docType;
     private Long docNumber;
     private String email;
+    private AfipCondicionIvaDTO condicionIva;
 
     public ClientDTO(Long id, String name, String address, String phoneNumber, AfipTipoDocDTO docType, Long docNumber,
                      String email) {
@@ -85,6 +87,14 @@ public class ClientDTO {
         this.email = email;
     }
 
+    public AfipCondicionIvaDTO getCondicionIva() {
+        return condicionIva;
+    }
+
+    public void setCondicionIva(AfipCondicionIvaDTO condicionIva) {
+        this.condicionIva = condicionIva;
+    }
+
     public static ClientDTO translateToDTO(Client client) {
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setId(client.getId());
@@ -94,6 +104,7 @@ public class ClientDTO {
         clientDTO.setDocType(AfipTipoDocDTO.fromEnum(client.getDocType()));
         clientDTO.setDocNumber(client.getDocNumber());
         clientDTO.setEmail(client.getEmail());
+        clientDTO.setCondicionIva(AfipCondicionIvaDTO.fromEnum(client.getCondicionIva()));
         return clientDTO;
     }
 

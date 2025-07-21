@@ -1,18 +1,18 @@
 package trisquel.controller;
 
-import trisquel.model.Dto.InvoiceDTO;
-import trisquel.model.Dto.InvoiceInputDTO;
-import trisquel.model.Invoice;
-import trisquel.model.InvoiceQueue;
-import trisquel.service.InvoiceService;
-import trisquel.utils.ValidationException;
-import trisquel.utils.ValidationExceptionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import trisquel.model.Dto.InvoiceDTO;
+import trisquel.model.Dto.InvoiceInputDTO;
+import trisquel.model.Invoice;
+import trisquel.service.InvoiceService;
+import trisquel.utils.ValidationException;
+import trisquel.utils.ValidationExceptionResponse;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/invoice")
@@ -60,16 +60,8 @@ public class InvoiceController {
         } catch (ValidationException e) {
             response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ValidationExceptionResponse(Map.of("Error", List.of(e.getMessage()))));
         }
         return response;
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<Void> testQueue() {
-        InvoiceQueue invQueue = new InvoiceQueue(1L);
-        invQueue.setCae("holaSoyUnCae");
-        invoiceService.enqueueInvoice(invQueue);
-        return ResponseEntity.noContent().build();
     }
 }

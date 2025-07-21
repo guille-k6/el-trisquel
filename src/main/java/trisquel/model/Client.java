@@ -1,6 +1,7 @@
 package trisquel.model;
 
 import jakarta.persistence.*;
+import trisquel.afip.model.AfipCondicionIva;
 import trisquel.afip.model.AfipTipoDoc;
 
 @Entity
@@ -17,6 +18,8 @@ public class Client {
     private AfipTipoDoc docType;
     private Long docNumber;
     private String email;
+    @Column(name = "iva_condition")
+    private AfipCondicionIva condicionIva;
 
     public Long getId() {
         return id;
@@ -72,6 +75,14 @@ public class Client {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public AfipCondicionIva getCondicionIva() {
+        return condicionIva;
+    }
+
+    public void setCondicionIva(AfipCondicionIva condicionIva) {
+        this.condicionIva = condicionIva;
     }
 
 }

@@ -10,9 +10,7 @@ import trisquel.afip.model.*;
 import trisquel.afip.model.DTO.*;
 import trisquel.model.Dto.DefaultList;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -85,6 +83,12 @@ public class AfipController {
     @GetMapping("/tipo-documento")
     public ResponseEntity<DefaultList<?>> tiposDocumento() {
         DefaultList<AfipTipoDocDTO> defaultList = DefaultList.buildDefaultListFromEnum(AfipTipoDoc.DNI, AfipTipoDocDTO::fromEnum);
+        return ResponseEntity.ok(defaultList);
+    }
+
+    @GetMapping("/condicion-iva")
+    public ResponseEntity<DefaultList<?>> condicionesIva() {
+        DefaultList<AfipCondicionIvaDTO> defaultList = DefaultList.buildDefaultListFromEnum(AfipCondicionIva.CONSUMIDOR_FINAL, AfipCondicionIvaDTO::fromEnum);
         return ResponseEntity.ok(defaultList);
     }
 

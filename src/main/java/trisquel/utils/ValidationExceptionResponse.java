@@ -9,7 +9,7 @@ public class ValidationExceptionResponse {
     private List<String> errors = new ArrayList<>();
     private Map<String, List<String>> validationErrors;
 
-    public ValidationExceptionResponse(HashMap<String, List<String>> validationErrors) {
+    public ValidationExceptionResponse(Map<String, List<String>> validationErrors) {
         this.validationErrors = validationErrors;
 
         for (Map.Entry<String, List<String>> entry : validationErrors.entrySet()) {

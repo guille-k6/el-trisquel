@@ -12,6 +12,7 @@ import trisquel.repository.*;
 import trisquel.utils.ValidationErrorItem;
 import trisquel.utils.ValidationException;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,7 +23,8 @@ public class InvoiceService {
     public InvoiceService(InvoiceRepository invoiceRepository, InvoiceItemRepository invoiceItemRepository,
                           DailyBookItemRepository dailyBookItemRepository, DailyBookRepository dailyBookRepository,
                           ClientRepository clientRepository, ProductRepository productRepository,
-                          InvoiceQueueRepository invoiceQueueRepository) {
+                          InvoiceQueueRepository invoiceQueueRepository,
+                          InvoiceQueueRecordService invoiceQueueRecordService) {
         this.repository = invoiceRepository;
         this.invoiceItemRepository = invoiceItemRepository;
         this.dailyBookItemRepository = dailyBookItemRepository;
@@ -30,8 +32,10 @@ public class InvoiceService {
         this.clientRepository = clientRepository;
         this.productRepository = productRepository;
         this.invoiceQueueRepository = invoiceQueueRepository;
+        this.invoiceQueueRecordService = invoiceQueueRecordService;
     }
 
+    private final InvoiceQueueRecordService invoiceQueueRecordService;
     private final InvoiceRepository repository;
     private final InvoiceItemRepository invoiceItemRepository;
     private final DailyBookItemRepository dailyBookItemRepository;
@@ -85,7 +89,7 @@ public class InvoiceService {
 
     private void generateInvoiceQueue(Long invoiceId) {
         InvoiceQueue invoiceQueue = new InvoiceQueue(invoiceId);
-        invoiceQueueRepository.save(invoiceQueue);
+        handleInvoiceQueueSave(invoiceQueue);
     }
 
     /**
@@ -113,7 +117,7 @@ public class InvoiceService {
             if (invoiceItem.getAmount() <= 0) {
                 validationErrors.add(new ValidationErrorItem("Error", "La cantidad de los items de factura debe ser mayor que 0"));
             }
-            if (invoiceItem.getPricePerUnit() <= 0) {
+            if (invoiceItem.getPricePerUnit().compareTo(BigDecimal.ZERO) <= 0) {
                 validationErrors.add(new ValidationErrorItem("Error", "La precio unitario de los items de factura debe ser mayor que 0"));
             }
             if (invoiceItem.getIva().getPercentage() < 0 || invoiceItem.getIva().getPercentage() > 100) {
@@ -175,8 +179,11 @@ public class InvoiceService {
     private List<InvoiceItem> processInvoiceItems(List<InvoiceItem> items, Long invoiceId) {
         for (InvoiceItem item : items) {
             item.setInvoice(new Invoice(invoiceId));
-            // Item id auto-generated
             item.setId(null);
+            BigDecimal ivaAmount = item.getPricePerUnit().multiply(BigDecimal.valueOf(item.getAmount())).multiply(BigDecimal.valueOf(item.getIva().getPercentage())).divide(new BigDecimal(100));
+            item.setIvaAmount(ivaAmount);
+            BigDecimal total = item.getPricePerUnit().multiply(BigDecimal.valueOf(item.getAmount())).add(ivaAmount);
+            item.setTotal(total);
         }
         invoiceItemRepository.saveAll(items);
         return items;
@@ -195,7 +202,12 @@ public class InvoiceService {
         dailyBookItemRepository.saveAll(items);
     }
 
-    public void enqueueInvoice(InvoiceQueue invoice) {
-        invoiceQueueRepository.save(invoice);
+    public InvoiceQueue handleInvoiceQueueSave(InvoiceQueue invoiceQueue) {
+        InvoiceQueueRecord invoiceQueueRecord = InvoiceQueueRecord.buildFromInvoiceQueue(invoiceQueue);
+        // Update InvoiceQueue record
+        invoiceQueueRecordService.save(invoiceQueueRecord);
+        // Update InvoiceQueue
+        invoiceQueueRepository.save(invoiceQueue);
+        return invoiceQueue;
     }
 }

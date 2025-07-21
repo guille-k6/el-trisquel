@@ -3,6 +3,7 @@ package trisquel.model;
 import jakarta.persistence.*;
 import trisquel.afip.model.AfipComprobante;
 import trisquel.afip.model.AfipConcepto;
+import trisquel.afip.model.AfipMoneda;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -21,8 +22,9 @@ public class Invoice {
     private Boolean paid;
     private AfipComprobante comprobante;
     private AfipConcepto concepto;
+    private AfipMoneda moneda;
     @Enumerated(EnumType.STRING)
-    @Column(name = "queue_status", nullable = false)
+    @Column(name = "status", nullable = false)
     private InvoiceQueueStatus status = InvoiceQueueStatus.QUEUED;
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
@@ -33,7 +35,7 @@ public class Invoice {
     private Double total;
     private String cae;
     private LocalDate vtoCae;
-    private Long sellPoint;
+    private Long sellPoint = 1L;
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<InvoiceItem> items = new ArrayList<>();
 
@@ -164,5 +166,13 @@ public class Invoice {
 
     public void setItems(List<InvoiceItem> items) {
         this.items = items;
+    }
+
+    public AfipMoneda getMoneda() {
+        return moneda;
+    }
+
+    public void setMoneda(AfipMoneda moneda) {
+        this.moneda = moneda;
     }
 }

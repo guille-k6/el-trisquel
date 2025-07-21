@@ -2,20 +2,22 @@ package trisquel.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "invoice_queue")
-public class  InvoiceQueue {
+@Table(name = "invoice_queue_record")
+public class InvoiceQueueRecord {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invoice_queue_seq")
-    @SequenceGenerator(name = "invoice_queue_seq", sequenceName = "invoice_queue_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invoice_queue_record_seq")
+    @SequenceGenerator(name = "invoice_queue_record_seq", sequenceName = "invoice_queue_record_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "invoice_id")
     private Long invoiceId;
+
+    @Column(name = "invoice_queue_id")
+    private Long invoiceQueueId;
 
     @Column(name = "enqueued_at", columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT now()")
     private ZonedDateTime enqueuedAt;
@@ -36,18 +38,26 @@ public class  InvoiceQueue {
     @Column(name = "response")
     private String response;
 
-    // Constructors
-    public InvoiceQueue() {
+    public static InvoiceQueueRecord buildFromInvoiceQueue(InvoiceQueue invoiceQueue) {
+        InvoiceQueueRecord record = new InvoiceQueueRecord();
+        record.setId(null);
+        record.setInvoiceId(invoiceQueue.getInvoiceId());
+        record.setInvoiceQueueId(invoiceQueue.getId());
+        record.setEnqueuedAt(invoiceQueue.getEnqueuedAt());
+        ZonedDateTime processTime = invoiceQueue.getProcessedAt();
+        if (processTime != null) {
+            record.setProcessedAt(processTime);
+        } else {
+            record.setProcessedAt(ZonedDateTime.now());
+        }
+        record.setProcessedAt(invoiceQueue.getProcessedAt());
+        record.setStatus(invoiceQueue.getStatus());
+        record.setRetryCount(invoiceQueue.getRetryCount());
+        record.setRequest(invoiceQueue.getRequest());
+        record.setResponse(invoiceQueue.getResponse());
+        return record;
     }
 
-    public InvoiceQueue(Long invoiceId) {
-        this.invoiceId = invoiceId;
-        this.enqueuedAt = ZonedDateTime.now();
-        this.status = InvoiceQueueStatus.QUEUED;
-        this.retryCount = 0;
-    }
-
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -62,6 +72,14 @@ public class  InvoiceQueue {
 
     public void setInvoiceId(Long invoiceId) {
         this.invoiceId = invoiceId;
+    }
+
+    public Long getInvoiceQueueId() {
+        return invoiceQueueId;
+    }
+
+    public void setInvoiceQueueId(Long invoiceQueueId) {
+        this.invoiceQueueId = invoiceQueueId;
     }
 
     public ZonedDateTime getEnqueuedAt() {
@@ -110,20 +128,5 @@ public class  InvoiceQueue {
 
     public void setResponse(String response) {
         this.response = response;
-    }
-
-    // Utility methods
-    public void markAsProcessed() {
-        this.processedAt = ZonedDateTime.now();
-        this.status = InvoiceQueueStatus.COMPLETED;
-    }
-
-    public void markAsFailed(String errorMessage) {
-        this.processedAt = ZonedDateTime.now();
-        this.status = InvoiceQueueStatus.FAILING;
-    }
-
-    public void incrementRetryCount() {
-        this.retryCount = (this.retryCount == null ? 0 : this.retryCount) + 1;
     }
 }
