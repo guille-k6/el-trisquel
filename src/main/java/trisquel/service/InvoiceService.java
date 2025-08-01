@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trisquel.afip.model.AfipComprobante;
 import trisquel.afip.model.AfipConcepto;
+import trisquel.afip.model.AfipMoneda;
 import trisquel.model.*;
 import trisquel.model.Dto.InvoiceDTO;
 import trisquel.model.Dto.InvoiceInputDTO;
@@ -23,8 +24,7 @@ public class InvoiceService {
     public InvoiceService(InvoiceRepository invoiceRepository, InvoiceItemRepository invoiceItemRepository,
                           DailyBookItemRepository dailyBookItemRepository, DailyBookRepository dailyBookRepository,
                           ClientRepository clientRepository, ProductRepository productRepository,
-                          InvoiceQueueRepository invoiceQueueRepository,
-                          InvoiceQueueRecordService invoiceQueueRecordService) {
+                          InvoiceQueueRepository invoiceQueueRepository) {
         this.repository = invoiceRepository;
         this.invoiceItemRepository = invoiceItemRepository;
         this.dailyBookItemRepository = dailyBookItemRepository;
@@ -32,10 +32,8 @@ public class InvoiceService {
         this.clientRepository = clientRepository;
         this.productRepository = productRepository;
         this.invoiceQueueRepository = invoiceQueueRepository;
-        this.invoiceQueueRecordService = invoiceQueueRecordService;
     }
 
-    private final InvoiceQueueRecordService invoiceQueueRecordService;
     private final InvoiceRepository repository;
     private final InvoiceItemRepository invoiceItemRepository;
     private final DailyBookItemRepository dailyBookItemRepository;
@@ -89,7 +87,7 @@ public class InvoiceService {
 
     private void generateInvoiceQueue(Long invoiceId) {
         InvoiceQueue invoiceQueue = new InvoiceQueue(invoiceId);
-        handleInvoiceQueueSave(invoiceQueue);
+        invoiceQueueRepository.save(invoiceQueue);
     }
 
     /**
@@ -168,10 +166,11 @@ public class InvoiceService {
         invoice.setClient(client);
         invoice.setCreatedAt(OffsetDateTime.now());
         invoice.setPaid(false);
-        invoice.setStatus(InvoiceQueueStatus.STARTED);
+        invoice.setStatus(InvoiceQueueStatus.QUEUED);
         invoice.setTotal(0.0);
         invoice.setComprobante(AfipComprobante.FACT_A);
         invoice.setConcepto(AfipConcepto.PRODUCTO);
+        invoice.setMoneda(AfipMoneda.PESO);
         invoice.setSellPoint(1L);
         return invoice;
     }
@@ -200,14 +199,5 @@ public class InvoiceService {
             dbi.setInvoice(invoiceId);
         }
         dailyBookItemRepository.saveAll(items);
-    }
-
-    public InvoiceQueue handleInvoiceQueueSave(InvoiceQueue invoiceQueue) {
-        InvoiceQueueRecord invoiceQueueRecord = InvoiceQueueRecord.buildFromInvoiceQueue(invoiceQueue);
-        // Update InvoiceQueue record
-        invoiceQueueRecordService.save(invoiceQueueRecord);
-        // Update InvoiceQueue
-        invoiceQueueRepository.save(invoiceQueue);
-        return invoiceQueue;
     }
 }

@@ -56,7 +56,11 @@ afip:
   private-key-path: classpath:certificates/trisquelPrivKey.key
   token-expiration-hours: 12
   max-retries: 3
-
+  cert:
+    path: src/main/resources/certificates/certpem.pem
+  key:
+    path: src/main/resources/certificates/MiClavePrivada.key
+  service: wsfe
 # Para producción cambiar a:
 # wsaa-url: https://wsaa.afip.gov.ar/ws/services/LoginCms
 # wsfev1-url: https://servicios1.afip.gov.ar/wsfev1/service.asmx

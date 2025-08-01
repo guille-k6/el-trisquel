@@ -8,18 +8,24 @@ import org.springframework.web.bind.annotation.RestController;
 import trisquel.afip.auth.AfipAuthService;
 import trisquel.afip.model.*;
 import trisquel.afip.model.DTO.*;
+import trisquel.afip.service.InvoiceProcessingService;
+import trisquel.afip.service.WsaaService;
 import trisquel.model.Dto.DefaultList;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/afip")
 public class AfipController {
     AfipAuthService client;
+    InvoiceProcessingService invoiceProcessingService;
+    WsaaService wsaaService;
 
-    public AfipController(AfipAuthService client) {
+    public AfipController(AfipAuthService client, InvoiceProcessingService invoiceProcessingService,
+                          WsaaService wsaaService) {
         this.client = client;
+        this.invoiceProcessingService = invoiceProcessingService;
+        this.wsaaService = wsaaService;
     }
 
     @GetMapping
@@ -38,22 +44,28 @@ public class AfipController {
         }
     }
 
-    @GetMapping("/debug-resources")
-    public ResponseEntity<?> debugResources() {
+    @GetMapping("/token")
+    public ResponseEntity<?> getToken() {
         try {
-            //            Resource certResource = resourceLoader.getResource("classpath:certificates/certificado.crt");
-            //            Resource keyResource = resourceLoader.getResource("classpath:certificates/trisquelPrivKey.key");
-
-            Map<String, Object> debug = new HashMap<>();
-            //            debug.put("certExists", certResource.exists());
-            //            debug.put("keyExists", keyResource.exists());
-            //            debug.put("certPath", certResource.getURI().toString());
-            //            debug.put("keyPath", keyResource.getURI().toString());
-
-            return ResponseEntity.ok(debug);
+            wsaaService.autenticar();
+            return ResponseEntity.ok("ok");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
         }
+    }
+
+
+    @GetMapping("process-queued")
+    public ResponseEntity processQueued() {
+        try {
+            invoiceProcessingService.processQueuedInvoices();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/tipo-comprobante")

@@ -13,6 +13,9 @@ public class AfipSoapRequestBuilder {
     public static String buildFECAESolicitarRequest(AfipAuth afipAuth, String trisquelCUIT,
                                              Invoice invoice, Client client,
                                              InvoiceIvaBreakdown invoiceBreakdown) {
+        final String CUIT = "30717409775"; // TODO: Evitar hardcode y poner el del trisquel.
+
+
         StringBuilder xml = new StringBuilder();
 
         // Header SOAP
@@ -24,7 +27,7 @@ public class AfipSoapRequestBuilder {
 
         // FECAESolicitar
         xml.append("<ar:FECAESolicitar>");
-        appendAuth(xml, afipAuth, trisquelCUIT);
+        appendAuth(xml, afipAuth, CUIT);
         appendFeCAEReq(xml, invoice, client, invoiceBreakdown);
         xml.append("</ar:FECAESolicitar>");
 
@@ -36,10 +39,10 @@ public class AfipSoapRequestBuilder {
 
     private static void appendAuth(StringBuilder xml, AfipAuth afipAuth, String trisquelCUIT) {
         xml.append("<ar:Auth>")
-                .append("<ar:Token>").append(afipAuth.getToken()).append("</ar:Token>")
-                .append("<ar:Sign>").append(afipAuth.getSign()).append("</ar:Sign>")
-                .append("<ar:Cuit>").append(trisquelCUIT).append("</ar:Cuit>")
-                .append("</ar:Auth>");
+            .append("<ar:Token>").append(afipAuth.getToken()).append("</ar:Token>")
+            .append("<ar:Sign>").append(afipAuth.getSign()).append("</ar:Sign>")
+            .append("<ar:Cuit>").append(trisquelCUIT).append("</ar:Cuit>")
+        .append("</ar:Auth>");
     }
 
     private static void appendFeCAEReq(StringBuilder xml, Invoice invoice, Client client,

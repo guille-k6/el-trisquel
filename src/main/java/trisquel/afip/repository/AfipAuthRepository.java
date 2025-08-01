@@ -11,6 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface AfipAuthRepository extends JpaRepository<AfipAuth, Long> {
-    @Query("SELECT aa FROM AfipAuth aa WHERE aa.errorMessage IS NULL AND :now < aa.expirationTime ORDER BY aa.id ASC")
+    @Query("SELECT aa FROM AfipAuth aa WHERE aa.errorMessage IS NULL AND :now < aa.expirationTime ORDER BY aa.id ASC LIMIT 1")
     Optional<AfipAuth> findLastAuth(@Param("now") OffsetDateTime now);
 }

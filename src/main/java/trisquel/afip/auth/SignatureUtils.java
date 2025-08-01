@@ -39,6 +39,7 @@ public class SignatureUtils {
     public static byte[] signCMS(String xmlContent) throws Exception {
         X509Certificate certificate = loadCertificateFromPEM(certificatePath);
         RSAPrivateKey privateKey = loadPrivateKeyFromPEM(privateKeyPath);
+        verifyCertificate();
         return createCMSSignature(xmlContent.getBytes("UTF-8"), certificate, privateKey);
     }
 
@@ -78,8 +79,8 @@ public class SignatureUtils {
             List<X509Certificate> certList = new ArrayList<>();
             certList.add(cert);
             Store certStore = new JcaCertStore(certList);
+            ContentSigner signer = new JcaContentSignerBuilder("SHA256withRSA").setProvider("BC").build(privateKey);
             CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
-            ContentSigner signer = new JcaContentSignerBuilder("SHA1withRSA").setProvider("BC").build(privateKey);
             generator.addSignerInfoGenerator(new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider("BC").build()).build(signer, cert));
             generator.addCertificates(certStore);
             CMSTypedData content = new CMSProcessableByteArray(data);
@@ -93,22 +94,22 @@ public class SignatureUtils {
     /**
      * Utility for verifying if my AFIP certificate was created right
      */
-    public void verifyCertificate() throws Exception {
-        logger.info("=== Verificando certificado ===");
+    public static void verifyCertificate() throws Exception {
+        System.out.println("=== Verificando certificado ===");
 
         X509Certificate certificate = loadCertificateFromPEM(certificatePath);
 
         // Verificar información del certificado
-        logger.info("Subject: " + certificate.getSubjectDN().getName());
-        logger.info("Issuer: " + certificate.getIssuerDN().getName());
-        logger.info("Serial Number: " + certificate.getSerialNumber());
-        logger.info("Valid From: " + certificate.getNotBefore());
-        logger.info("Valid Until: " + certificate.getNotAfter());
+        System.out.println("Subject: " + certificate.getSubjectDN().getName());
+        System.out.println("Issuer: " + certificate.getIssuerDN().getName());
+        System.out.println("Serial Number: " + certificate.getSerialNumber());
+        System.out.println("Valid From: " + certificate.getNotBefore());
+        System.out.println("Valid Until: " + certificate.getNotAfter());
 
         // Verificar si está vencido
         try {
             certificate.checkValidity();
-            logger.info("✓ Certificado válido (no vencido)");
+            System.out.println("✓ Certificado válido (no vencido)");
         } catch (Exception e) {
             logger.severe("✗ Certificado vencido o inválido: " + e.getMessage());
             throw e;
@@ -120,6 +121,6 @@ public class SignatureUtils {
             logger.warning("⚠ El certificado no parece contener CUIT en el Subject");
         }
 
-        logger.info("=== Verificación completada ===");
+        System.out.println("=== Verificación completada ===");
     }
 }

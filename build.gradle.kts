@@ -31,6 +31,7 @@ dependencies {
     implementation("org.springframework.ws:spring-ws-support:4.0.5")
     implementation("org.springframework:spring-oxm:6.0.13")
     implementation("org.apache.httpcomponents:httpclient:4.5.14")
+    implementation("com.google.code.gson:gson:2.13.1")
 
     implementation("org.bouncycastle:bcprov-jdk18on:1.78.1")
     implementation("org.bouncycastle:bcpkix-jdk18on:1.78.1")

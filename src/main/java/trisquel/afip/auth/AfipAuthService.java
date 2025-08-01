@@ -76,20 +76,16 @@ public class AfipAuthService {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.newDocument();
-        // Crear elemento raíz
         Element loginTicketRequest = doc.createElement("loginTicketRequest");
         doc.appendChild(loginTicketRequest);
         Element header = doc.createElement("header");
         loginTicketRequest.appendChild(header);
-        // uniqueId (equivalente a $dtNow.ToString("yyMMddHHMM"))
         Element uniqueId = doc.createElement("uniqueId");
         uniqueId.appendChild(doc.createTextNode(now.format(DateTimeFormatter.ofPattern("yyMMddHHmm"))));
         header.appendChild(uniqueId);
-        // generationTime (equivalente a $dtNow.AddMinutes(-10).ToString("s"))
         Element generationTime = doc.createElement("generationTime");
         generationTime.appendChild(doc.createTextNode(now.minusMinutes(10).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
         header.appendChild(generationTime);
-        // expirationTime (equivalente a $dtNow.AddMinutes(+10).ToString("s"))
         Element expirationTime = doc.createElement("expirationTime");
         expirationTime.appendChild(doc.createTextNode(now.plusMinutes(10).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
         header.appendChild(expirationTime);

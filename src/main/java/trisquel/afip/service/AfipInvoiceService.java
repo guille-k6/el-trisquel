@@ -9,7 +9,6 @@ import trisquel.afip.model.AfipInvoiceRequest;
 import trisquel.afip.model.AfipInvoiceResponse;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 // Servicio principal WSFEv1
 @Service
@@ -71,6 +70,7 @@ public class AfipInvoiceService {
 
     private String buildFECAESolicitarRequest(AfipAuth token, AfipInvoiceRequest request) {
         // @formatter:off
+        /*
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
                 "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:ar=\"http://ar.gov.afip.dif.FEV1/\">" +
                 "<soap:Header/>" +
@@ -110,7 +110,9 @@ public class AfipInvoiceService {
                 "</ar:FECAESolicitar>" +
                 "</soap:Body>" +
                 "</soap:Envelope>";
+         */
         // @formatter:on
+        return null;
     }
 
     private String sendSOAPRequest(String soapRequest) {

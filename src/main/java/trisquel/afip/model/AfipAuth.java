@@ -31,8 +31,15 @@ public class AfipAuth {
         this.errorMessage = errorMessage;
     }
 
-    public boolean isExpired() {
-        return OffsetDateTime.now().isAfter(expirationTime.minusMinutes(5)); // 5 min buffer
+    public AfipAuth(String token, String sign, OffsetDateTime expirationTime) {
+        this.token = token;
+        this.sign = sign;
+        this.generationTime = OffsetDateTime.now();
+        this.expirationTime = expirationTime;
+    }
+
+    public boolean isSuccessFul() {
+        return errorMessage == null && token != null && sign != null;
     }
 
     public Long getUniqueAfipId() {

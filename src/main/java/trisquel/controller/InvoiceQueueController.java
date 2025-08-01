@@ -1,11 +1,11 @@
 package trisquel.controller;
 
-import trisquel.afip.config.InvoiceScheduler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import trisquel.afip.config.InvoiceScheduler;
 import trisquel.model.InvoiceQueueStatus;
 import trisquel.repository.InvoiceQueueRepository;
 
@@ -22,8 +22,7 @@ public class InvoiceQueueController {
     private final InvoiceScheduler invoiceScheduler;
     private final InvoiceQueueRepository invoiceQueueRepository;
 
-    public InvoiceQueueController(InvoiceScheduler invoiceScheduler,
-                                  InvoiceQueueRepository invoiceQueueRepository) {
+    public InvoiceQueueController(InvoiceScheduler invoiceScheduler, InvoiceQueueRepository invoiceQueueRepository) {
         this.invoiceScheduler = invoiceScheduler;
         this.invoiceQueueRepository = invoiceQueueRepository;
     }
@@ -31,7 +30,7 @@ public class InvoiceQueueController {
     @PostMapping("/process-queue")
     public ResponseEntity<String> processQueueManually() {
         try {
-            invoiceScheduler.processInvoiceQueueManually();
+            // invoiceScheduler.processInvoiceQueueManually();
             return ResponseEntity.ok("Procesamiento manual iniciado");
         } catch (Exception e) {
             // log.error("Error iniciando procesamiento manual", e);
