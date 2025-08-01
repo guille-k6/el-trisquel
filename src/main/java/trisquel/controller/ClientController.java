@@ -48,15 +48,33 @@ public class ClientController {
         return response;
     }
 
-    @Deprecated
     @PutMapping("/{id}")
-    public ResponseEntity<Client> updateClient(@RequestBody Client client) {
-        return ResponseEntity.ok(clientService.save(client));
+    @Deprecated
+    public ResponseEntity<?> updateClient(@RequestBody Client client) {
+        ResponseEntity<?> response;
+        try {
+            Client savedClient = clientService.save(client);
+            response = ResponseEntity.ok(savedClient);
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+        return response;
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
-        clientService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteClient(@PathVariable Long id) {
+        ResponseEntity<?> response;
+        try {
+            clientService.delete(id);
+            response = ResponseEntity.ok("");
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+        return response;
     }
 }

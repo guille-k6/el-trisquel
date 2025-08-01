@@ -1,12 +1,12 @@
 package trisquel.repository;
 
-import trisquel.model.DailyBookItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import trisquel.model.DailyBookItem;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,4 +28,7 @@ public interface DailyBookItemRepository extends JpaRepository<DailyBookItem, Lo
 
     @Query("SELECT d FROM DailyBookItem d WHERE d.id IN :ids")
     List<DailyBookItem> findByIdIn(@Param("ids") List<Long> ids);
+
+    @Query("SELECT d FROM DailyBookItem d WHERE d.client.id = :id")
+    List<DailyBookItem> findByClient(Long id);
 }
