@@ -1,13 +1,13 @@
 package trisquel.controller;
 
-import trisquel.model.Product;
-import trisquel.service.ProductService;
-import trisquel.utils.ValidationException;
-import trisquel.utils.ValidationExceptionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import trisquel.model.Product;
+import trisquel.service.ProductService;
+import trisquel.utils.ValidationException;
+import trisquel.utils.ValidationExceptionResponse;
 
 import java.util.List;
 
@@ -46,14 +46,17 @@ public class ProductController {
         return response;
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
-        return ResponseEntity.ok(productService.save(product));
-    }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+        ResponseEntity<?> response;
+        try {
+            productService.delete(id);
+            response = ResponseEntity.ok("");
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+        return response;
     }
 }

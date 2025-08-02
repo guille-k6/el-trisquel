@@ -1,16 +1,20 @@
 package trisquel.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trisquel.model.Dto.InvoiceDTO;
 import trisquel.model.Dto.InvoiceInputDTO;
 import trisquel.model.Invoice;
+import trisquel.model.InvoiceQueueStatus;
 import trisquel.service.InvoiceService;
 import trisquel.utils.ValidationException;
 import trisquel.utils.ValidationExceptionResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -26,29 +30,19 @@ public class InvoiceController {
     }
 
     @GetMapping
-    public List<InvoiceDTO> getAllInvoices() {
-        return invoiceService.findAll();
+    public ResponseEntity<Page<InvoiceDTO>> getAllInvoices(@RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                           @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                                           @RequestParam(required = false) Long clientId,
+                                                           @RequestParam(required = false) InvoiceQueueStatus status) {
+
+        Page<InvoiceDTO> invoices = invoiceService.findAll(page, startDate, endDate, clientId, status);
+        return ResponseEntity.ok(invoices);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Invoice> getInvoiceById(@PathVariable Long id) {
         return invoiceService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public ResponseEntity<Invoice> createInvoice(@RequestBody Invoice invoice) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(invoiceService.save(invoice));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Invoice> updateInvoice(@RequestBody Invoice invoice) {
-        return ResponseEntity.ok(invoiceService.save(invoice));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInvoice(@PathVariable Long id) {
-        invoiceService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/new")

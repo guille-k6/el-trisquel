@@ -2,7 +2,9 @@ package trisquel.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import trisquel.model.DailyBook;
 import trisquel.model.Vehicle;
+import trisquel.repository.DailyBookRepository;
 import trisquel.repository.VehicleRepository;
 import trisquel.utils.ValidationErrorItem;
 import trisquel.utils.ValidationException;
@@ -10,15 +12,19 @@ import trisquel.utils.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class VehicleService {
     @Autowired
-    VehicleService(VehicleRepository repository) {
+    VehicleService(VehicleRepository repository, DailyBookRepository dailyBookRepository) {
         this.repository = repository;
+        this.dailyBookRepository = dailyBookRepository;
     }
 
     private final VehicleRepository repository;
+    private final DailyBookRepository dailyBookRepository;
 
     public List<Vehicle> findAll() {
         return repository.findAll();
@@ -63,6 +69,13 @@ public class VehicleService {
 
 
     public void delete(Long id) {
+        List<DailyBook> dailyBooksReferred = dailyBookRepository.findByVehicle(id);
+        if (!dailyBooksReferred.isEmpty()) {
+            Set<Long> idsReferred = dailyBooksReferred.stream().map(DailyBook::getId).collect(Collectors.toSet());
+            ValidationException validationException = new ValidationException();
+            validationException.addValidationError("Error", "El vehiculo está siendo referenciado en los libros diarios: " + idsReferred);
+            throw validationException;
+        }
         repository.deleteById(id);
     }
 }

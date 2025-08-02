@@ -42,7 +42,6 @@ public class ClientService {
 
     private void validateClient(Client client) {
         List<ValidationErrorItem> validationErrors = new ArrayList<>();
-
         if (client.getId() == null || client.getId() == 0) {
             client.setId(null);
         } else {
@@ -54,17 +53,12 @@ public class ClientService {
                 throw validationException;
             }
         }
-
-        // Lista de validadores modulares
         List<Validator<Client>> validators = Arrays.asList(new BasicFieldsValidator(), new DocumentNumberValidator(), new CuitCuilValidator(), new IvaConditionValidator(), new EmailValidator());
-
-        // Ejecutar todas las validaciones
         for (Validator<Client> validator : validators) {
             validator.validate(client, validationErrors);
             // Verificar y lanzar excepción si hay errores
             ValidationException.verifyAndMaybeThrowValidationException(validationErrors);
         }
-
     }
 
     public void delete(Long id) {

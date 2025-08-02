@@ -1,14 +1,14 @@
 package trisquel.controller;
 
-import trisquel.model.Vehicle;
-import trisquel.service.VehicleService;
-import trisquel.utils.ValidationException;
-import trisquel.utils.ValidationExceptionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import trisquel.model.Vehicle;
+import trisquel.service.VehicleService;
+import trisquel.utils.ValidationException;
+import trisquel.utils.ValidationExceptionResponse;
 
 import java.util.List;
 
@@ -47,15 +47,17 @@ public class VehicleController {
         return response;
     }
 
-    // TODO: Useful?
-    @PutMapping("/{id}")
-    public ResponseEntity<Vehicle> updateVehicle(@RequestBody Vehicle vehicle) {
-        return ResponseEntity.ok(vehicleService.save(vehicle));
-    }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVehicle(@PathVariable Long id) {
-        vehicleService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteVehicle(@PathVariable Long id) {
+        ResponseEntity<?> response;
+        try {
+            vehicleService.delete(id);
+            response = ResponseEntity.ok("");
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+        return response;
     }
 }

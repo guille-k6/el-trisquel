@@ -99,9 +99,8 @@ public class InvoiceProcessingService {
         if (interpretedResponse.isExitoso()) {
             invoiceQueue.setStatus(InvoiceQueueStatus.COMPLETED);
             invoiceQueueRepository.save(invoiceQueue);
-            invoice.setCae(interpretedResponse.getCae());
-            invoice.setVtoCae(interpretedResponse.getFechaVencimientoCae());
-            invoiceService.save(invoice);
+            invoiceService.updateAfipFields(invoice, interpretedResponse.getCae(), interpretedResponse.getFechaVencimientoCae());
+            invoiceService.updateInvoiceStatus(invoice, InvoiceQueueStatus.COMPLETED);
             return;
         }
         // Handle invoice that needs reprocess or failed for some reason. I think there may be cases where timeouts, etc.

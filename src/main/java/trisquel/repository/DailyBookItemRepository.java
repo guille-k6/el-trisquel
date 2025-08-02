@@ -31,4 +31,7 @@ public interface DailyBookItemRepository extends JpaRepository<DailyBookItem, Lo
 
     @Query("SELECT d FROM DailyBookItem d WHERE d.client.id = :id")
     List<DailyBookItem> findByClient(Long id);
+
+    @Query("SELECT d FROM DailyBookItem d WHERE d.product.id = :id")
+    List<DailyBookItem> findByProduct(Long id);
 }
