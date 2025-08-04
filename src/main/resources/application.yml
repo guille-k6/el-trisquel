@@ -41,6 +41,13 @@ spring:
           connectiontimeout: 5000
           timeout: 3000
           writetimeout: 5000
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      write-dates-with-zone-id: false
+    deserialization:
+      adjust-dates-to-context-time-zone: false
+    time-zone: America/Argentina/Buenos_Aires  # Added this
 # Configuración de SpringDoc OpenAPI
 springdoc:
   api-docs:
@@ -61,6 +68,7 @@ afip:
   key:
     path: src/main/resources/certificates/MiClavePrivada.key
   service: wsfe
-# Para producción cambiar a:
-# wsaa-url: https://wsaa.afip.gov.ar/ws/services/LoginCms
-# wsfev1-url: https://servicios1.afip.gov.ar/wsfev1/service.asmx
+  # Para producción cambiar a:
+  # wsaa-url: https://wsaa.afip.gov.ar/ws/services/LoginCms
+  # wsfev1-url: https://servicios1.afip.gov.ar/wsfev1/service.asmx
+

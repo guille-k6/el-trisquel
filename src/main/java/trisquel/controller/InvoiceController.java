@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trisquel.model.Dto.InvoiceDTO;
 import trisquel.model.Dto.InvoiceInputDTO;
-import trisquel.model.Invoice;
 import trisquel.model.InvoiceQueueStatus;
 import trisquel.service.InvoiceService;
 import trisquel.utils.ValidationException;
@@ -17,6 +16,7 @@ import trisquel.utils.ValidationExceptionResponse;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/invoice")
@@ -30,19 +30,52 @@ public class InvoiceController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<InvoiceDTO>> getAllInvoices(@RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                           @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                                                           @RequestParam(required = false) Long clientId,
-                                                           @RequestParam(required = false) InvoiceQueueStatus status) {
-
-        Page<InvoiceDTO> invoices = invoiceService.findAll(page, startDate, endDate, clientId, status);
-        return ResponseEntity.ok(invoices);
+    public ResponseEntity<?> getAllInvoices(@RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+                                            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
+                                            @RequestParam(required = false) Long clientId,
+                                            @RequestParam(required = false) InvoiceQueueStatus status) {
+        ResponseEntity<?> response;
+        try {
+            Page<InvoiceDTO> invoices = invoiceService.findAll(page, dateFrom, dateTo, clientId, status);
+            return ResponseEntity.ok(invoices);
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ValidationExceptionResponse(Map.of("Error", List.of(e.getMessage()))));
+        }
+        return response;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Invoice> getInvoiceById(@PathVariable Long id) {
-        return invoiceService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getInvoiceById(@PathVariable Long id) {
+        ResponseEntity<?> response;
+        try {
+            Optional<InvoiceDTO> invoice = invoiceService.findById(id);
+            if (invoice.isEmpty()) {
+                ResponseEntity.notFound().build();
+            }
+            response = ResponseEntity.ok(invoice.get());
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ValidationExceptionResponse(Map.of("Error", List.of(e.getMessage()))));
+        }
+        return response;
+    }
+
+    @GetMapping("/total/{id}")
+    public ResponseEntity<?> updateInvoiceTotal(@PathVariable Long id) {
+        ResponseEntity<?> response;
+        try {
+            invoiceService.updateInvoiceTotal(id);
+            response = ResponseEntity.ok().build();
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ValidationExceptionResponse(Map.of("Error", List.of(e.getMessage()))));
+        }
+        return response;
     }
 
     @PostMapping("/new")

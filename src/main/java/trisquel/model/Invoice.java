@@ -5,6 +5,7 @@ import trisquel.afip.model.AfipComprobante;
 import trisquel.afip.model.AfipConcepto;
 import trisquel.afip.model.AfipMoneda;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -32,10 +33,10 @@ public class Invoice {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
     private Long numero;
-    private Double total;
+    private BigDecimal total;
     private String cae;
     private LocalDate vtoCae;
-    private Long sellPoint = 1L;
+    private Long sellPoint = 2L;
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<InvoiceItem> items = new ArrayList<>();
 
@@ -112,11 +113,11 @@ public class Invoice {
         this.numero = numero;
     }
 
-    public Double getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
-    public void setTotal(Double total) {
+    public void setTotal(BigDecimal total) {
         this.total = total;
     }
 

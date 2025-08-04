@@ -24,7 +24,7 @@ public class InvoiceItemsInputValidator implements Validator<InvoiceInputDTO> {
         validateAmount(item.getAmount(), validationErrors);
         validatePricePerUnit(item.getPricePerUnit(), validationErrors);
         validateIva(item.getIva(), validationErrors);
-        validateProductId(item.getProductId(), validationErrors);
+        validateProductId(item.getProduct().getId(), validationErrors);
     }
 
     private void validateAmount(Integer amount, List<ValidationErrorItem> validationErrors) {

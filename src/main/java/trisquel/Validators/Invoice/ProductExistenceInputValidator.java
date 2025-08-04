@@ -2,7 +2,6 @@ package trisquel.Validators.Invoice;
 
 import trisquel.Validators.Validator;
 import trisquel.model.Dto.InvoiceInputDTO;
-import trisquel.model.InvoiceItem;
 import trisquel.model.Product;
 import trisquel.repository.ProductRepository;
 import trisquel.utils.ValidationErrorItem;
@@ -22,7 +21,7 @@ public class ProductExistenceInputValidator implements Validator<InvoiceInputDTO
     @Override
     public void validate(InvoiceInputDTO invoiceInputDTO, List<ValidationErrorItem> validationErrors) {
         if (invoiceInputDTO.getInvoiceItems() != null && !invoiceInputDTO.getInvoiceItems().isEmpty()) {
-            Set<Long> productIds = invoiceInputDTO.getInvoiceItems().stream().map(InvoiceItem::getProductId).filter(id -> id != null).collect(Collectors.toSet());
+            Set<Long> productIds = invoiceInputDTO.getInvoiceItems().stream().map(ii -> ii.getProduct().getId()).filter(id -> id != null).collect(Collectors.toSet());
 
             if (!productIds.isEmpty()) {
                 validateProductsExist(productIds, validationErrors);

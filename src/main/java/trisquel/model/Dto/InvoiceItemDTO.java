@@ -9,9 +9,10 @@ import java.util.stream.Collectors;
 
 public class InvoiceItemDTO {
     private Long id;
+    private Integer amount;
     private AfipIvaDTO iva;
     private Long invoiceId;
-    private Long productId;
+    private ProductDTO product;
     private BigDecimal pricePerUnit;
     private BigDecimal ivaAmount;
     private BigDecimal total;
@@ -26,10 +27,11 @@ public class InvoiceItemDTO {
         }
         InvoiceItemDTO invoiceItemDTO = new InvoiceItemDTO();
         invoiceItemDTO.setId(invoiceItem.getId());
+        invoiceItemDTO.setAmount(invoiceItem.getAmount());
         invoiceItemDTO.setPricePerUnit(invoiceItem.getPricePerUnit());
         invoiceItemDTO.setIva(AfipIvaDTO.fromEnum(invoiceItem.getIva()));
         invoiceItemDTO.setInvoiceId(invoiceItem.getInvoice().getId());
-        invoiceItemDTO.setProductId(invoiceItem.getProductId());
+        invoiceItemDTO.setProduct(ProductDTO.translateToDTO(invoiceItem.getProduct()));
         invoiceItemDTO.setPricePerUnit(invoiceItem.getPricePerUnit());
         invoiceItemDTO.setIvaAmount(invoiceItem.getIvaAmount());
         invoiceItemDTO.setTotal(invoiceItem.getTotal());
@@ -72,13 +74,13 @@ public class InvoiceItemDTO {
         this.invoiceId = invoiceId;
     }
 
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
+    //    public Long getProductId() {
+    //        return productId;
+    //    }
+    //
+    //    public void setProductId(Long productId) {
+    //        this.productId = productId;
+    //    }
 
     public BigDecimal getIvaAmount() {
         return ivaAmount;
@@ -94,5 +96,21 @@ public class InvoiceItemDTO {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
+    public ProductDTO getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductDTO product) {
+        this.product = product;
     }
 }

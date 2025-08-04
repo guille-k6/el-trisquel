@@ -50,13 +50,6 @@ public class InvoiceProcessingService {
         List<InvoiceQueueStatus> statusesToProcess = Arrays.asList(InvoiceQueueStatus.QUEUED, InvoiceQueueStatus.RETRY);
         List<InvoiceQueue> invoicesToProcess = invoiceQueueRepository.findByStatusInOrderByEnqueuedAtAsc(statusesToProcess);
         for (InvoiceQueue invoiceQueue : invoicesToProcess) {
-            // Reintento máximo 3 veces
-            if (invoiceQueue.getRetryCount() >= 3) {
-                invoiceQueue.setStatus(InvoiceQueueStatus.TOTAL_FAILURE);
-                invoiceQueue.setProcessedAt(ZonedDateTime.now());
-                invoiceQueueRepository.save(invoiceQueue);
-                continue;
-            }
             invoiceQueue.setStatus(InvoiceQueueStatus.BEING_PROCESSED);
             invoiceQueueRepository.save(invoiceQueue);
             processInvoice(invoiceQueue);
@@ -69,7 +62,7 @@ public class InvoiceProcessingService {
             if (afipAuth.getToken() == null && afipAuth.getErrorMessage() != null) {
                 throw new RuntimeException("Fallo en la autenticacion contra AFIP: " + afipAuth.getErrorMessage());
             }
-            Optional<Invoice> optInvoice = invoiceService.findById(invoiceQueue.getInvoiceId());
+            Optional<Invoice> optInvoice = invoiceService.findInvoiceById(invoiceQueue.getInvoiceId());
             if (optInvoice.isEmpty()) {
                 throw new RuntimeException("Invoice not found: " + invoiceQueue.getInvoiceId());
             }
@@ -107,9 +100,15 @@ public class InvoiceProcessingService {
         invoiceQueue.setStatus(InvoiceQueueStatus.FAILED);
         invoiceQueue.incrementRetryCount();
         invoiceQueueRepository.save(invoiceQueue);
-        // Enqueue new Invoice request
-        InvoiceQueue reprocessedInvoiceQueue = InvoiceQueue.createInvoiceQueueFromUncompletedInvoiceQueue(invoiceQueue);
-        invoiceQueueRepository.save(reprocessedInvoiceQueue);
+        Optional<InvoiceQueue> reprocessedInvoiceQueue = InvoiceQueue.createInvoiceQueueFromUncompletedInvoiceQueue(invoiceQueue);
+        if (reprocessedInvoiceQueue.isPresent()) {
+            // Enqueue new Invoice request
+            invoiceQueueRepository.save(reprocessedInvoiceQueue.get());
+        } else {
+            invoiceQueue.setStatus(InvoiceQueueStatus.TOTAL_FAILURE);
+            invoiceQueueRepository.save(invoiceQueue);
+            invoiceService.updateInvoiceStatus(invoice, InvoiceQueueStatus.TOTAL_FAILURE);
+        }
     }
 
     private String invokeFECAEWithRestTemplate(String soapRequest) throws Exception {

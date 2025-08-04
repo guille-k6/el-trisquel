@@ -6,6 +6,7 @@ import trisquel.afip.model.DTO.AfipMonedaDTO;
 import trisquel.model.Invoice;
 import trisquel.model.InvoiceQueueStatus;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -16,17 +17,17 @@ public class InvoiceDTO {
     private LocalDate date;
     private String comment;
     private Boolean paid;
+    private AfipComprobanteDTO comprobante;
+    private AfipConceptoDTO concepto;
+    private AfipMonedaDTO moneda;
     private InvoiceQueueStatus status;
     private OffsetDateTime createdAt;
     private ClientDTO client;
     private Long numero;
-    private Double total;
+    private BigDecimal total;
     private String cae;
     private LocalDate vtoCae;
     private Long sellPoint;
-    private AfipComprobanteDTO comprobante;
-    private AfipConceptoDTO concepto;
-    private AfipMonedaDTO moneda;
     private List<InvoiceItemDTO> items;
 
     public InvoiceDTO() {
@@ -124,11 +125,11 @@ public class InvoiceDTO {
         this.numero = numero;
     }
 
-    public Double getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
-    public void setTotal(Double total) {
+    public void setTotal(BigDecimal total) {
         this.total = total;
     }
 

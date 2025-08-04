@@ -18,8 +18,9 @@ public class InvoiceItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_id", nullable = false)
     private Invoice invoice;
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
     @Column(name = "price_per_unit", precision = 10, scale = 2)
     private BigDecimal pricePerUnit;
     @Column(name = "iva_amount", precision = 10, scale = 2)
@@ -59,13 +60,13 @@ public class InvoiceItem {
         this.iva = iva;
     }
 
-    public Long getProductId() {
-        return productId;
-    }
+    //    public Long getProductId() {
+    //        return product.getId();
+    //    }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
+    //    public void setProductId(Long productId) {
+    //        this.product.setId(productId);
+    //    }
 
     public Invoice getInvoice() {
         return invoice;
@@ -89,5 +90,13 @@ public class InvoiceItem {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

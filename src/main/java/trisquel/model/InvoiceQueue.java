@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 @Entity
 @Table(name = "invoice_queue")
@@ -179,7 +180,14 @@ public class InvoiceQueue {
         this.retryCount = (this.retryCount == null ? 1 : this.retryCount) + 1;
     }
 
-    public static InvoiceQueue createInvoiceQueueFromUncompletedInvoiceQueue(InvoiceQueue invoiceQueue) {
+    /**
+     * @param invoiceQueue
+     * @return Optional with the next invoiceQueue to process or empty if the retryLimit is exceeded
+     */
+    public static Optional<InvoiceQueue> createInvoiceQueueFromUncompletedInvoiceQueue(InvoiceQueue invoiceQueue) {
+        if (invoiceQueue.getRetryCount() >= 3) {
+            return Optional.empty();
+        }
         InvoiceQueue newIQueue = new InvoiceQueue();
         newIQueue.setInvoiceId(invoiceQueue.getInvoiceId());
         newIQueue.setEnqueuedAt(ZonedDateTime.now());
@@ -187,9 +195,9 @@ public class InvoiceQueue {
             invoiceQueue.setStatus(InvoiceQueueStatus.RETRY);
         } else {
             invoiceQueue.setStatus(InvoiceQueueStatus.FAILED);
+            newIQueue.setRetryCount(invoiceQueue.getRetryCount());
         }
-        newIQueue.setRetryCount(invoiceQueue.getRetryCount());
         newIQueue.setGeneratedBy(invoiceQueue.getId());
-        return newIQueue;
+        return Optional.of(newIQueue);
     }
 }

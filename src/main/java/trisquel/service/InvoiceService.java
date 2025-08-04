@@ -53,31 +53,41 @@ public class InvoiceService {
     private final ProductRepository productRepository;
     private final InvoiceQueueRepository invoiceQueueRepository;
 
-    public Page<InvoiceDTO> findAll(int page, LocalDate startDate, LocalDate endDate, Long clientId,
+    public Page<InvoiceDTO> findAll(int page, LocalDate dateFrom, LocalDate dateTo, Long clientId,
                                     InvoiceQueueStatus status) {
         Pageable pageable = PageRequest.of(page, 20, Sort.by("date").descending());
         Specification<Invoice> spec = Specification.where(null);
-        // Filtro por rango de fechas
-        if (startDate != null) {
-            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("date"), startDate));
+        if (dateFrom != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("date"), dateFrom));
         }
-        if (endDate != null) {
-            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("date"), endDate));
+        if (dateTo != null) {
+            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("date"), dateTo));
         }
-        // Filtro por cliente
         if (clientId != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("client").get("id"), clientId));
         }
-        // Filtro por estado
         if (status != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), status));
         }
+
         Page<Invoice> invoicesPage = repository.findAll(spec, pageable);
         return invoicesPage.map(InvoiceDTO::translateToDTO);
     }
 
-    public Optional<Invoice> findById(Long id) {
-        return repository.findById(id);
+    public Optional<InvoiceDTO> findById(Long id) {
+        Optional<Invoice> invoice = repository.findById(id);
+        if (invoice.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(InvoiceDTO.translateToDTO(invoice.get()));
+    }
+
+    public Optional<Invoice> findInvoiceById(Long id) {
+        Optional<Invoice> invoice = repository.findById(id);
+        if (invoice.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(invoice.get());
     }
 
     @Transactional(rollbackFor = Throwable.class)
@@ -88,7 +98,7 @@ public class InvoiceService {
             Client client = clientRepository.findById(invoiceInputDTO.getClientId()).orElseThrow(() -> new ValidationException().addValidationError("Cliente no encontrado", "No se encontró un cliente con el ID: " + invoiceInputDTO.getClientId()));
             Invoice invoice = createInvoiceShell(invoiceInputDTO, client);
             Invoice savedInvoice = repository.save(invoice);
-            List<InvoiceItem> processedItems = processInvoiceItems(invoiceInputDTO.getInvoiceItems(), savedInvoice.getId());
+            List<InvoiceItem> processedItems = processInvoiceItems(invoiceInputDTO.getInvoiceItems(), savedInvoice);
             savedInvoice.setItems(processedItems);
             // InvoicePricing invoicePricing = new InvoicePricing(invoice);
             updateDailyBookItemsInvoices(dbis, savedInvoice.getId());
@@ -121,7 +131,7 @@ public class InvoiceService {
         invoice.setCreatedAt(OffsetDateTime.now());
         invoice.setPaid(false);
         invoice.setStatus(InvoiceQueueStatus.QUEUED);
-        invoice.setTotal(0.0);
+        invoice.setTotal(BigDecimal.ZERO);
         invoice.setComprobante(AfipComprobante.FACT_A);
         invoice.setConcepto(AfipConcepto.PRODUCTO);
         invoice.setMoneda(AfipMoneda.PESO);
@@ -129,16 +139,19 @@ public class InvoiceService {
         return invoice;
     }
 
-    private List<InvoiceItem> processInvoiceItems(List<InvoiceItem> items, Long invoiceId) {
+    private List<InvoiceItem> processInvoiceItems(List<InvoiceItem> items, Invoice invoice) {
+        BigDecimal invoiceTotal = BigDecimal.ZERO;
         for (InvoiceItem item : items) {
-            item.setInvoice(new Invoice(invoiceId));
+            item.setInvoice(new Invoice(invoice.getId()));
             item.setId(null);
             BigDecimal ivaAmount = item.getPricePerUnit().multiply(BigDecimal.valueOf(item.getAmount())).multiply(BigDecimal.valueOf(item.getIva().getPercentage())).divide(new BigDecimal(100));
             item.setIvaAmount(ivaAmount);
             BigDecimal total = item.getPricePerUnit().multiply(BigDecimal.valueOf(item.getAmount())).add(ivaAmount);
             item.setTotal(total);
+            invoiceTotal = invoiceTotal.add(total);
         }
         invoiceItemRepository.saveAll(items);
+        invoice.setTotal(invoiceTotal);
         return items;
     }
 
@@ -155,5 +168,15 @@ public class InvoiceService {
 
     public void updateInvoiceStatus(Invoice invoice, InvoiceQueueStatus status) {
         repository.updateStatus(status, invoice.getId());
+    }
+
+    public void updateInvoiceTotal(Long invoiceId) {
+        Optional<Invoice> invoice = repository.findById(invoiceId);
+        BigDecimal invoiceTotal = BigDecimal.ZERO;
+        for (InvoiceItem item : invoice.get().getItems()) {
+            invoiceTotal = invoiceTotal.add(item.getTotal());
+        }
+        invoice.get().setTotal(invoiceTotal);
+        repository.save(invoice.get());
     }
 }
