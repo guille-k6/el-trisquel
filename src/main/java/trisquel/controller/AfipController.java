@@ -68,6 +68,21 @@ public class AfipController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("last-cbte")
+    public ResponseEntity testLastCBTE() throws Exception {
+        try {
+            AfipAuth auth = wsaaService.autenticar();
+            Long response = invoiceProcessingService.getLastAuthorizedComprobante(auth, 2, AfipComprobante.FACT_A);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/tipo-comprobante")
     public ResponseEntity<DefaultList<?>> tiposCompobante() {
         DefaultList<AfipComprobanteDTO> defaultList = DefaultList.buildDefaultListFromEnum(AfipComprobante.FACT_A, AfipComprobanteDTO::fromEnum);

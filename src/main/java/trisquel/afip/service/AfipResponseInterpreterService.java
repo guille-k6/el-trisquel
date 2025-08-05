@@ -359,4 +359,19 @@ public class AfipResponseInterpreterService {
 
         return caeResponse;
     }
+
+    public static Long getNumberFECompUltimoAutorizado(String responseBody) {
+        String parsedResponse = responseBody.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"").replace("&amp;", "&");
+        String nroCbteString = null;
+        // Buscar el bloque principal de respuesta
+        Pattern nroPatter = Pattern.compile("<CbteNro>(.*?)</CbteNro>", Pattern.DOTALL);
+        Matcher responseMatcher = nroPatter.matcher(parsedResponse);
+        if (responseMatcher.find()) {
+            nroCbteString = responseMatcher.group(1);
+        }
+        if (nroCbteString == null) {
+            throw new RuntimeException("No se encontró el último comprobante autorizado.");
+        }
+        return Long.parseLong(nroCbteString);
+    }
 }

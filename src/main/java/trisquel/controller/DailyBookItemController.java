@@ -1,10 +1,5 @@
 package trisquel.controller;
 
-import trisquel.model.DailyBookItem;
-import trisquel.model.Dto.DailyBookItemDTO;
-import trisquel.service.DailyBookItemService;
-import trisquel.utils.ValidationException;
-import trisquel.utils.ValidationExceptionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +9,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import trisquel.model.DailyBookItem;
+import trisquel.model.Dto.DailyBookItemDTO;
+import trisquel.service.DailyBookItemService;
+import trisquel.utils.ValidationException;
+import trisquel.utils.ValidationExceptionResponse;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -30,11 +30,6 @@ public class DailyBookItemController {
     @Autowired
     public DailyBookItemController(DailyBookItemService dailyBookItemService) {
         this.dailyBookItemService = dailyBookItemService;
-    }
-
-    @GetMapping
-    public List<DailyBookItem> getAllDailyBookItems() {
-        return dailyBookItemService.findAll();
     }
 
     @GetMapping("/{id}")
@@ -74,12 +69,10 @@ public class DailyBookItemController {
     public ResponseEntity<Page<DailyBookItemDTO>> getInvoiceableDailyBookItems(
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "30") int size,
             @RequestParam(required = false) Long clientId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        page = page - 1; // Front starts from page 1 and Pageable from 0.
-        size = 5;
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
-        Page<DailyBookItemDTO> items = dailyBookItemService.findInvoiceableDailyBookItems(pageable, clientId, startDate, endDate);
+        Page<DailyBookItemDTO> items = dailyBookItemService.findInvoiceableDailyBookItems(pageable, clientId, dateFrom, dateTo);
         return ResponseEntity.ok(items);
     }
 

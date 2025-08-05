@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import trisquel.afip.AfipSoapRequestBuilder;
 import trisquel.afip.config.AfipConfiguration;
 import trisquel.afip.model.AfipAuth;
+import trisquel.afip.model.AfipComprobante;
 import trisquel.model.*;
 import trisquel.repository.InvoiceQueueRepository;
 import trisquel.service.InvoiceService;
@@ -32,6 +33,7 @@ public class InvoiceProcessingService {
 
     private final String trisquelCUIT = "30717409775";
     private final String fecaeUrl = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx";
+    private final String ultCompAuthUrl = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?op=FECompUltimoAutorizado";
 
     public InvoiceProcessingService(InvoiceQueueRepository invoiceQueueRepository,
                                     AfipInvoiceService afipInvoiceService, AfipConfiguration afipConfig,
@@ -69,6 +71,7 @@ public class InvoiceProcessingService {
             Invoice invoice = optInvoice.get();
             Client client = invoice.getClient();
             InvoiceIvaBreakdown invoiceBreakdown = new InvoiceIvaBreakdown(invoice);
+            Long lastAuthorizedComprobanteNumber = getLastAuthorizedComprobante(afipAuth, invoice.getSellPoint(), invoice.getComprobante());
             String request = AfipSoapRequestBuilder.buildFECAESolicitarRequest(afipAuth, trisquelCUIT, invoice, client, invoiceBreakdown);
             invoiceQueue.setRequest(request);
             String responseBody = invokeFECAEWithRestTemplate(request);
@@ -127,6 +130,29 @@ public class InvoiceProcessingService {
             throw e;
         } catch (Exception e) {
             // logger.severe("Error en llamada FECAE: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    public Long getLastAuthorizedComprobante(AfipAuth afipAuth, Long sellPoint, AfipComprobante comprobante) {
+        String request = AfipSoapRequestBuilder.buildFECompUltimoAutorizadoRequest(afipAuth, trisquelCUIT, sellPoint, comprobante);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_XML);
+        headers.set("SOAPAction", "http://ar.gov.afip.dif.FEV1/FECompUltimoAutorizado");
+        headers.set("Content-Type", "text/xml; charset=utf-8");
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(request, headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(ultCompAuthUrl, HttpMethod.POST, requestEntity, String.class);
+            String responseBody = response.getBody();
+            Long lastAuthorizedComprobanteNumber = AfipResponseInterpreterService.getNumberFECompUltimoAutorizado(responseBody);
+            return lastAuthorizedComprobanteNumber;
+        } catch (HttpServerErrorException e) {
+            //logger.severe("Error del servidor AFIP en consulta último autorizado: " + e.getStatusCode() + " - " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            //logger.severe("Error en llamada FECompUltimoAutorizado: " + e.getMessage());
             throw e;
         }
     }
