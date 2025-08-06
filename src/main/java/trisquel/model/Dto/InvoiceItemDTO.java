@@ -1,7 +1,9 @@
 package trisquel.model.Dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import trisquel.afip.model.DTO.AfipIvaDTO;
 import trisquel.model.InvoiceItem;
+import trisquel.utils.Deserializers.AfipIvaDTODeserializer;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.stream.Collectors;
 public class InvoiceItemDTO {
     private Long id;
     private Integer amount;
+    @JsonDeserialize(using = AfipIvaDTODeserializer.class)
     private AfipIvaDTO iva;
     private Long invoiceId;
     private ProductDTO product;

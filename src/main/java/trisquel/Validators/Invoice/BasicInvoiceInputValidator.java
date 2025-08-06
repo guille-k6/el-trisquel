@@ -2,7 +2,7 @@ package trisquel.Validators.Invoice;
 
 import trisquel.Validators.Validator;
 import trisquel.model.Dto.InvoiceInputDTO;
-import trisquel.model.InvoiceItem;
+import trisquel.model.Dto.InvoiceItemDTO;
 import trisquel.utils.ValidationErrorItem;
 
 import java.time.LocalDate;
@@ -30,7 +30,7 @@ public class BasicInvoiceInputValidator implements Validator<InvoiceInputDTO> {
         }
     }
 
-    private void validateInvoiceItems(List<InvoiceItem> invoiceItems, List<ValidationErrorItem> validationErrors) {
+    private void validateInvoiceItems(List<InvoiceItemDTO> invoiceItems, List<ValidationErrorItem> validationErrors) {
         if (invoiceItems == null || invoiceItems.isEmpty()) {
             validationErrors.add(new ValidationErrorItem("Error", "La factura debe tener al menos un item asociado"));
         }

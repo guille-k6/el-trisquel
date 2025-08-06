@@ -72,7 +72,7 @@ public class AfipController {
     public ResponseEntity testLastCBTE() throws Exception {
         try {
             AfipAuth auth = wsaaService.autenticar();
-            Long response = invoiceProcessingService.getLastAuthorizedComprobante(auth, 2, AfipComprobante.FACT_A);
+            Long response = invoiceProcessingService.getLastAuthorizedComprobante(auth, 2L, AfipComprobante.FACT_A);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();

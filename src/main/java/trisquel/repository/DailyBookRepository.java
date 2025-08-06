@@ -11,4 +11,7 @@ import java.util.List;
 public interface DailyBookRepository extends JpaRepository<DailyBook, Long> {
     @Query("SELECT d FROM DailyBook d WHERE d.vehicle.id = :id")
     List<DailyBook> findByVehicle(Long id);
+
+    @Query("SELECT d FROM DailyBook d ORDER BY d.date DESC")
+    List<DailyBook> findAllOrdered();
 }

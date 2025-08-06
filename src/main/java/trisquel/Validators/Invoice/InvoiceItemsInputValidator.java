@@ -3,7 +3,7 @@ package trisquel.Validators.Invoice;
 import trisquel.Validators.Validator;
 import trisquel.afip.model.AfipIva;
 import trisquel.model.Dto.InvoiceInputDTO;
-import trisquel.model.InvoiceItem;
+import trisquel.model.Dto.InvoiceItemDTO;
 import trisquel.utils.ValidationErrorItem;
 
 import java.math.BigDecimal;
@@ -14,16 +14,16 @@ public class InvoiceItemsInputValidator implements Validator<InvoiceInputDTO> {
     @Override
     public void validate(InvoiceInputDTO invoiceInputDTO, List<ValidationErrorItem> validationErrors) {
         if (invoiceInputDTO.getInvoiceItems() != null) {
-            for (InvoiceItem item : invoiceInputDTO.getInvoiceItems()) {
+            for (InvoiceItemDTO item : invoiceInputDTO.getInvoiceItems()) {
                 validateItem(item, validationErrors);
             }
         }
     }
 
-    private void validateItem(InvoiceItem item, List<ValidationErrorItem> validationErrors) {
+    private void validateItem(InvoiceItemDTO item, List<ValidationErrorItem> validationErrors) {
         validateAmount(item.getAmount(), validationErrors);
         validatePricePerUnit(item.getPricePerUnit(), validationErrors);
-        validateIva(item.getIva(), validationErrors);
+        validateIva(AfipIva.fromCode(item.getIva().code()), validationErrors);
         validateProductId(item.getProduct().getId(), validationErrors);
     }
 

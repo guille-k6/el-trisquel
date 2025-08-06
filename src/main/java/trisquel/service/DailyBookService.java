@@ -1,14 +1,14 @@
 package trisquel.service;
 
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import trisquel.model.DailyBook;
 import trisquel.model.DailyBookItem;
 import trisquel.model.Dto.DailyBookDTO;
 import trisquel.repository.DailyBookRepository;
 import trisquel.utils.ValidationErrorItem;
 import trisquel.utils.ValidationException;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class DailyBookService {
     private final DailyBookRepository repository;
 
     public List<DailyBookDTO> findAll() {
-        List<DailyBook> dailyBooks = repository.findAll();
+        List<DailyBook> dailyBooks = repository.findAllOrdered();
         return DailyBookDTO.translateToDTOs(dailyBooks);
     }
 

@@ -8,6 +8,10 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "invoice_item")
 public class InvoiceItem {
+    public InvoiceItem() {
+        
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invoice_item_seq")
     @SequenceGenerator(name = "invoice_item_seq", sequenceName = "invoice_item_seq", allocationSize = 1)

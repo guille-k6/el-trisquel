@@ -1,7 +1,5 @@
 package trisquel.model.Dto;
 
-import trisquel.model.InvoiceItem;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +8,12 @@ public class InvoiceInputDTO {
     LocalDate invoiceDate;
     Long clientId;
     List<Long> dbiIds = new ArrayList<>();
-    List<InvoiceItem> invoiceItems = new ArrayList<>();
+    List<InvoiceItemDTO> invoiceItems = new ArrayList<>();
 
     public InvoiceInputDTO() {
     }
 
-    public InvoiceInputDTO(LocalDate invoiceDate, Long clientId, List<Long> dbiIds, List<InvoiceItem> invoiceItems) {
+    public InvoiceInputDTO(LocalDate invoiceDate, Long clientId, List<Long> dbiIds, List<InvoiceItemDTO> invoiceItems) {
         this.invoiceDate = invoiceDate;
         this.clientId = clientId;
         this.dbiIds = dbiIds;
@@ -30,11 +28,11 @@ public class InvoiceInputDTO {
         this.dbiIds = dbiIds;
     }
 
-    public List<InvoiceItem> getInvoiceItems() {
+    public List<InvoiceItemDTO> getInvoiceItems() {
         return invoiceItems;
     }
 
-    public void setInvoiceItems(List<InvoiceItem> invoiceItems) {
+    public void setInvoiceItems(List<InvoiceItemDTO> invoiceItems) {
         this.invoiceItems = invoiceItems;
     }
 

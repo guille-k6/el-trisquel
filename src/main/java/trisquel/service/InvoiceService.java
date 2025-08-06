@@ -12,10 +12,12 @@ import trisquel.Validators.Invoice.*;
 import trisquel.Validators.Validator;
 import trisquel.afip.model.AfipComprobante;
 import trisquel.afip.model.AfipConcepto;
+import trisquel.afip.model.AfipIva;
 import trisquel.afip.model.AfipMoneda;
 import trisquel.model.*;
 import trisquel.model.Dto.InvoiceDTO;
 import trisquel.model.Dto.InvoiceInputDTO;
+import trisquel.model.Dto.InvoiceItemDTO;
 import trisquel.repository.*;
 import trisquel.utils.ValidationErrorItem;
 import trisquel.utils.ValidationException;
@@ -52,6 +54,8 @@ public class InvoiceService {
     private final ClientRepository clientRepository;
     private final ProductRepository productRepository;
     private final InvoiceQueueRepository invoiceQueueRepository;
+
+    private final Long SELL_POINT = 2L;
 
     public Page<InvoiceDTO> findAll(int page, LocalDate dateFrom, LocalDate dateTo, Long clientId,
                                     InvoiceQueueStatus status) {
@@ -135,24 +139,30 @@ public class InvoiceService {
         invoice.setComprobante(AfipComprobante.FACT_A);
         invoice.setConcepto(AfipConcepto.PRODUCTO);
         invoice.setMoneda(AfipMoneda.PESO);
-        invoice.setSellPoint(1L);
+        invoice.setSellPoint(SELL_POINT);
         return invoice;
     }
 
-    private List<InvoiceItem> processInvoiceItems(List<InvoiceItem> items, Invoice invoice) {
+    private List<InvoiceItem> processInvoiceItems(List<InvoiceItemDTO> dtoItems, Invoice invoice) {
         BigDecimal invoiceTotal = BigDecimal.ZERO;
-        for (InvoiceItem item : items) {
+        List<InvoiceItem> invoiceItems = new ArrayList<>();
+        for (InvoiceItemDTO itemDTO : dtoItems) {
+            InvoiceItem item = new InvoiceItem();
             item.setInvoice(new Invoice(invoice.getId()));
-            item.setId(null);
-            BigDecimal ivaAmount = item.getPricePerUnit().multiply(BigDecimal.valueOf(item.getAmount())).multiply(BigDecimal.valueOf(item.getIva().getPercentage())).divide(new BigDecimal(100));
+            item.setAmount(itemDTO.getAmount());
+            item.setIva(AfipIva.fromCode(itemDTO.getIva().code()));
+            item.setPricePerUnit(itemDTO.getPricePerUnit());
+            BigDecimal ivaAmount = itemDTO.getPricePerUnit().multiply(BigDecimal.valueOf(itemDTO.getAmount())).multiply(BigDecimal.valueOf(itemDTO.getIva().percentage())).divide(new BigDecimal(100));
             item.setIvaAmount(ivaAmount);
-            BigDecimal total = item.getPricePerUnit().multiply(BigDecimal.valueOf(item.getAmount())).add(ivaAmount);
+            BigDecimal total = itemDTO.getPricePerUnit().multiply(BigDecimal.valueOf(itemDTO.getAmount())).add(ivaAmount);
             item.setTotal(total);
+            item.setProduct(new Product(itemDTO.getProduct().getId()));
+            invoiceItems.add(item);
             invoiceTotal = invoiceTotal.add(total);
         }
-        invoiceItemRepository.saveAll(items);
+        invoiceItemRepository.saveAll(invoiceItems);
         invoice.setTotal(invoiceTotal);
-        return items;
+        return invoiceItems;
     }
 
     private void updateDailyBookItemsInvoices(List<DailyBookItem> items, Long invoiceId) {
@@ -162,10 +172,12 @@ public class InvoiceService {
         dailyBookItemRepository.saveAll(items);
     }
 
+    @Transactional
     public void updateAfipFields(Invoice invoice, String cae, LocalDate vtoCae) {
         repository.updateAfipResponseFields(cae, vtoCae, invoice.getId());
     }
 
+    @Transactional
     public void updateInvoiceStatus(Invoice invoice, InvoiceQueueStatus status) {
         repository.updateStatus(status, invoice.getId());
     }

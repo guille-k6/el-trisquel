@@ -72,7 +72,7 @@ public class InvoiceProcessingService {
             Client client = invoice.getClient();
             InvoiceIvaBreakdown invoiceBreakdown = new InvoiceIvaBreakdown(invoice);
             Long lastAuthorizedComprobanteNumber = getLastAuthorizedComprobante(afipAuth, invoice.getSellPoint(), invoice.getComprobante());
-            String request = AfipSoapRequestBuilder.buildFECAESolicitarRequest(afipAuth, trisquelCUIT, invoice, client, invoiceBreakdown);
+            String request = AfipSoapRequestBuilder.buildFECAESolicitarRequest(afipAuth, trisquelCUIT, invoice, client, invoiceBreakdown, lastAuthorizedComprobanteNumber);
             invoiceQueue.setRequest(request);
             String responseBody = invokeFECAEWithRestTemplate(request);
             invoiceQueue.setResponse(responseBody);
