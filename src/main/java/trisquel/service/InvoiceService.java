@@ -18,6 +18,7 @@ import trisquel.model.*;
 import trisquel.model.Dto.InvoiceDTO;
 import trisquel.model.Dto.InvoiceInputDTO;
 import trisquel.model.Dto.InvoiceItemDTO;
+import trisquel.model.Dto.PricesSuggestionDTO;
 import trisquel.repository.*;
 import trisquel.utils.ValidationErrorItem;
 import trisquel.utils.ValidationException;
@@ -190,5 +191,16 @@ public class InvoiceService {
         }
         invoice.get().setTotal(invoiceTotal);
         repository.save(invoice.get());
+    }
+
+    public PricesSuggestionDTO suggestPrices(Long clientId, Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ValidationException().addValidationError("Producto no encontrado", "No se encontró un producto con el ID: " + productId));
+        Client client = clientRepository.findById(clientId).orElseThrow(() -> new ValidationException().addValidationError("Cliente no encontrado", "No se encontró un cliente con el ID: " + clientId));
+        //
+        PageRequest pageRequest = PageRequest.of(0, 6);
+        List<Invoice> clientInvoices = repository.findInvoicesByClientIdAndProductId(clientId, productId, pageRequest);
+        List<Invoice> invoices = repository.findInvoicesByProductId(productId, pageRequest);
+        PricesSuggestionDTO suggestionDTO = PricesSuggestionDTO.getPricesSuggestion(product, clientInvoices, invoices);
+        return suggestionDTO;
     }
 }

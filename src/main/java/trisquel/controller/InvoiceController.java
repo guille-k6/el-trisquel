@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trisquel.model.Dto.InvoiceDTO;
 import trisquel.model.Dto.InvoiceInputDTO;
+import trisquel.model.Dto.PricesSuggestionDTO;
 import trisquel.model.InvoiceQueueStatus;
 import trisquel.service.InvoiceService;
 import trisquel.utils.ValidationException;
@@ -84,6 +85,20 @@ public class InvoiceController {
         try {
             invoiceService.processNewInvoiceRequest(invoiceInputDTO);
             response = ResponseEntity.ok("");
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ValidationExceptionResponse(Map.of("Error", List.of(e.getMessage()))));
+        }
+        return response;
+    }
+
+    @GetMapping("/suggest-prices/{clientId}/{productId}")
+    public ResponseEntity<?> suggestPrices(@PathVariable Long clientId, @PathVariable Long productId) {
+        ResponseEntity<?> response;
+        try {
+            PricesSuggestionDTO prices = invoiceService.suggestPrices(clientId, productId);
+            response = ResponseEntity.ok(prices);
         } catch (ValidationException e) {
             response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
         } catch (Exception e) {
