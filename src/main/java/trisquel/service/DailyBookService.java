@@ -2,6 +2,11 @@ package trisquel.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import trisquel.model.DailyBook;
 import trisquel.model.DailyBookItem;
@@ -10,6 +15,7 @@ import trisquel.repository.DailyBookRepository;
 import trisquel.utils.ValidationErrorItem;
 import trisquel.utils.ValidationException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +29,21 @@ public class DailyBookService {
 
     private final DailyBookRepository repository;
 
-    public List<DailyBookDTO> findAll() {
-        List<DailyBook> dailyBooks = repository.findAllOrdered();
-        return DailyBookDTO.translateToDTOs(dailyBooks);
+    public Page<DailyBookDTO> findAll(int page, LocalDate dateFrom, LocalDate dateTo, Long clientId) {
+        Pageable pageable = PageRequest.of(page, 20, Sort.by("date").descending());
+        Specification<DailyBook> spec = Specification.where(null);
+        if (dateFrom != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("date"), dateFrom));
+        }
+        if (dateTo != null) {
+            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("date"), dateTo));
+        }
+        if (clientId != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("client").get("id"), clientId));
+        }
+
+        Page<DailyBook> dailyBooksPage = repository.findAll(spec, pageable);
+        return dailyBooksPage.map(DailyBookDTO::translateToDTO);
     }
 
     public Optional<DailyBookDTO> findById(Long id) {

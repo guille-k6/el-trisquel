@@ -60,7 +60,7 @@ public class InvoiceService {
 
     public Page<InvoiceDTO> findAll(int page, LocalDate dateFrom, LocalDate dateTo, Long clientId,
                                     InvoiceQueueStatus status) {
-        Pageable pageable = PageRequest.of(page, 20, Sort.by("date").descending());
+        Pageable pageable = PageRequest.of(page, 5, Sort.by("date").descending());
         Specification<Invoice> spec = Specification.where(null);
         if (dateFrom != null) {
             spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("date"), dateFrom));

@@ -1,7 +1,11 @@
 package trisquel.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import trisquel.model.DailyBook;
 import trisquel.model.Dto.DailyBookDTO;
+import trisquel.model.Dto.InvoiceDTO;
+import trisquel.model.InvoiceQueueStatus;
 import trisquel.service.DailyBookService;
 import trisquel.utils.ValidationException;
 import trisquel.utils.ValidationExceptionResponse;
@@ -10,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/daily-book")
@@ -24,8 +30,20 @@ public class DailyBookController {
     }
 
     @GetMapping
-    public List<DailyBookDTO> getAllDailyBooks() {
-        return dailyBookService.findAll();
+    public ResponseEntity<?> getAllDailyBooks(@RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
+                                             @RequestParam(required = false) Long clientId) {
+        ResponseEntity<?> response;
+        try {
+            Page<DailyBookDTO> dailyBooks = dailyBookService.findAll(page, dateFrom, dateTo, clientId);
+            return ResponseEntity.ok(dailyBooks);
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ValidationExceptionResponse(Map.of("Error", List.of(e.getMessage()))));
+        }
+        return response;
     }
 
     @GetMapping("/{id}")
