@@ -1,6 +1,7 @@
 package trisquel.model.Dto;
 
 import trisquel.model.DailyBook;
+import trisquel.model.DailyBookItem;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,6 +24,7 @@ public class DailyBookDTO {
     private Long ltTotalFlask;
     private String nitrogenProvider;
     private List<DailyBookItemDTO> items;
+    private boolean editable;
 
     public DailyBookDTO() {
     }
@@ -146,6 +148,14 @@ public class DailyBookDTO {
         this.nitrogenProvider = nitrogenProvider;
     }
 
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
     public static DailyBookDTO translateToDTO(DailyBook dailyBook) {
         DailyBookDTO dailyBookDTO = new DailyBookDTO();
         dailyBookDTO.setId(dailyBook.getId());
@@ -162,10 +172,20 @@ public class DailyBookDTO {
         dailyBookDTO.setLtTotalFlask(dailyBook.getLtTotalFlask());
         dailyBookDTO.setNitrogenProvider(dailyBook.getNitrogenProvider());
         dailyBookDTO.setItems(DailyBookItemDTO.translateToDTOs(dailyBook.getItems()));
+        dailyBookDTO.setEditable(isDailyBookEditable(dailyBook));
         return dailyBookDTO;
     }
 
     public static List<DailyBookDTO> translateToDTOs(List<DailyBook> dailyBooks) {
         return dailyBooks.stream().map(DailyBookDTO::translateToDTO).collect(Collectors.toList());
+    }
+
+    public static boolean isDailyBookEditable(DailyBook dailyBook) {
+        for (DailyBookItem item : dailyBook.getItems()) {
+            if (item.getInvoiceId() != null) {
+                return false;
+            }
+        }
+        return true;
     }
 }

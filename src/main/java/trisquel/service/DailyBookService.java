@@ -88,6 +88,12 @@ public class DailyBookService {
                 validationException.addValidationError("Error", "Libro diario no encontrado");
                 throw validationException;
             }
+            // If any of the daily book items has been invoiced, we wont allow edition
+            if (!DailyBookDTO.isDailyBookEditable(existingDailyBook.get())) {
+                ValidationException validationException = new ValidationException();
+                validationException.addValidationError("Error", "No se puede modificar el libro diario ya que alguno de sus items fue facturado");
+                throw validationException;
+            }
         }
         if (dailyBook.getItems().isEmpty()) {
             validationErrors.add(new ValidationErrorItem("Error", "El libro diario debe tener al menos un item"));

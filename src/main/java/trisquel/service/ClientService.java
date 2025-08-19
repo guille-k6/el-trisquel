@@ -1,10 +1,15 @@
 package trisquel.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import trisquel.Validators.Client.*;
 import trisquel.Validators.Validator;
 import trisquel.model.Client;
+import trisquel.model.ClientForCombo;
 import trisquel.model.DailyBookItem;
 import trisquel.model.Dto.ClientDTO;
 import trisquel.repository.ClientRepository;
@@ -26,9 +31,10 @@ public class ClientService {
     private final ClientRepository repository;
     private final DailyBookItemRepository dailyBookItemRepository;
 
-    public List<ClientDTO> findAll() {
-        List<Client> clients = repository.findAll();
-        return ClientDTO.translateToDTOs(clients);
+    public Page<ClientDTO> findAll(int page, String textFilter) {
+        Pageable pageable = PageRequest.of(page, 20, Sort.by("name").ascending());
+        Page<Client> clients = repository.findBySearchText(textFilter, pageable);
+        return clients.map(ClientDTO::translateToDTO);
     }
 
     public Optional<Client> findById(Long id) {
@@ -71,4 +77,9 @@ public class ClientService {
         }
         repository.deleteById(id);
     }
+
+    public List<ClientForCombo> findAllForCombo() {
+        return repository.getAllForCombo();
+    }
+
 }
