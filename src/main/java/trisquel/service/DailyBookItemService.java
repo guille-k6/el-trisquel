@@ -1,5 +1,8 @@
 package trisquel.service;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import trisquel.model.DailyBookItem;
 import trisquel.model.Dto.DailyBookItemDTO;
 import trisquel.repository.DailyBookItemRepository;
@@ -56,10 +59,22 @@ public class DailyBookItemService {
         return dbi.get().getXVoucher();
     }
 
-    public Page<DailyBookItemDTO> findInvoiceableDailyBookItems(Pageable pageable, Long clientId, LocalDate startDate,
-                                                                LocalDate endDate) {
-        Page<DailyBookItem> dailyBookItems = repository.findInvoiceableWithFilters(pageable, clientId, startDate, endDate);
-        return dailyBookItems.map(DailyBookItemDTO::translateToDTO);
+    public Page<DailyBookItemDTO> findInvoiceableDailyBookItems(int page, Long clientId,
+                                                                LocalDate startDate, LocalDate endDate) {
+        Pageable pageable = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "date"));
+        Specification<DailyBookItem> spec = Specification.where(null);
+        spec = spec.and((root, query, cb) -> cb.isNull(root.get("invoiceId")));
+        if (startDate != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("date"), startDate));
+        }
+        if (endDate != null) {
+            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("date"), endDate));
+        }
+        if (clientId != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("client").get("id"), clientId));
+        }
+        Page<DailyBookItem> dailyBookItemsPage = repository.findAll(spec, pageable);
+        return dailyBookItemsPage.map(DailyBookItemDTO::translateToDTO);
     }
 
     public List<DailyBookItemDTO> getItemsByIds(List<Long> ids) {

@@ -67,12 +67,11 @@ public class DailyBookItemController {
 
     @GetMapping("/invoiceableDailyBookItems")
     public ResponseEntity<Page<DailyBookItemDTO>> getInvoiceableDailyBookItems(
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "30") int size,
-            @RequestParam(required = false) Long clientId,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
-        Page<DailyBookItemDTO> items = dailyBookItemService.findInvoiceableDailyBookItems(pageable, clientId, dateFrom, dateTo);
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
+            @RequestParam(required = false) Long clientId) {
+        Page<DailyBookItemDTO> items = dailyBookItemService.findInvoiceableDailyBookItems(page, clientId, dateFrom, dateTo);
         return ResponseEntity.ok(items);
     }
 

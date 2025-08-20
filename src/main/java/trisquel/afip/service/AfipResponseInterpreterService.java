@@ -110,17 +110,6 @@ public class AfipResponseInterpreterService {
         }
     }
 
-    // Excepción personalizada para errores de parseo
-    public static class AfipParseException extends Exception {
-        public AfipParseException(String mensaje) {
-            super(mensaje);
-        }
-
-        public AfipParseException(String mensaje, Throwable causa) {
-            super(mensaje, causa);
-        }
-    }
-
     public CaeResponse parseFecaeFromResponse(String responseBody) {
         String parsedResponse = responseBody.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"").replace("&amp;", "&");
         CaeResponse caeResponse = new CaeResponse();
@@ -239,54 +228,6 @@ public class AfipResponseInterpreterService {
         // Si no hay estado definido y hay errores, marcar como rechazado
         if (caeResponse.getEstado() == null && !caeResponse.getErrores().isEmpty()) {
             caeResponse.setEstado("R");
-        }
-
-        return caeResponse;
-    }
-
-    private CaeResponse parseFecaeFailedResponse(String errorBody) {
-        String parsedError = errorBody.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"").replace("&amp;", "&");
-        CaeResponse caeResponse = new CaeResponse();
-        caeResponse.setEstado("R"); // Rechazado por defecto
-
-        // Buscar errores en el formato estándar de SOAP fault
-        Pattern soapFaultPattern = Pattern.compile("<faultstring(.*?)</faultstring>", Pattern.DOTALL);
-        Matcher soapFaultMatcher = soapFaultPattern.matcher(parsedError);
-
-        if (soapFaultMatcher.find()) {
-            String errorMessage = soapFaultMatcher.group(1).replaceAll("<[^>]*>", "").trim();
-            caeResponse.getErrores().add("SOAP Fault: " + errorMessage);
-            return caeResponse;
-        }
-
-        // Buscar errores en la estructura específica de FECAE
-        Pattern errorsBlockPattern = Pattern.compile("<Errors>(.*?)</Errors>", Pattern.DOTALL);
-        Matcher errorsBlockMatcher = errorsBlockPattern.matcher(parsedError);
-
-        if (errorsBlockMatcher.find()) {
-            String errorsBlock = errorsBlockMatcher.group(1);
-
-            Pattern errPattern = Pattern.compile("<Err>(.*?)</Err>", Pattern.DOTALL);
-            Matcher errMatcher = errPattern.matcher(errorsBlock);
-
-            while (errMatcher.find()) {
-                String errorBlock = errMatcher.group(1);
-
-                Pattern codePattern = Pattern.compile("<Code>(.*?)</Code>");
-                Pattern msgPattern = Pattern.compile("<Msg>(.*?)</Msg>");
-
-                Matcher codeMatcher = codePattern.matcher(errorBlock);
-                Matcher msgMatcher = msgPattern.matcher(errorBlock);
-
-                String errorCode = codeMatcher.find() ? codeMatcher.group(1) : "";
-                String errorMsg = msgMatcher.find() ? msgMatcher.group(1).trim() : "";
-
-                String fullError = "Código: " + errorCode + " - " + errorMsg;
-                caeResponse.getErrores().add(fullError);
-            }
-        } else {
-            // Si no se encuentra estructura conocida, agregar el error completo
-            caeResponse.getErrores().add("Error no estructurado: " + parsedError);
         }
 
         return caeResponse;

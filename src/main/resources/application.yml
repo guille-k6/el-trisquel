@@ -57,8 +57,8 @@ springdoc:
     enabled: true
     path: /swagger-ui.html
 afip:
-  wsaa-url: https://wsaahomo.afip.gov.ar/ws/services/LoginCms
-  wsfev1-url: https://wswhomo.afip.gov.ar/wsfev1/service.asmx
+  #wsaa-url: https://wsaahomo.afip.gov.ar/ws/services/LoginCms
+  #wsfev1-url: https://wswhomo.afip.gov.ar/wsfev1/service.asmx
   certificate-path: classpath:certificates/certificado.crt
   private-key-path: classpath:certificates/trisquelPrivKey.key
   token-expiration-hours: 12
@@ -68,7 +68,4 @@ afip:
   key:
     path: src/main/resources/certificates/MiClavePrivada.key
   service: wsfe
-  # Para producción cambiar a:
-  # wsaa-url: https://wsaa.afip.gov.ar/ws/services/LoginCms
-  # wsfev1-url: https://servicios1.afip.gov.ar/wsfev1/service.asmx
 

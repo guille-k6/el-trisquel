@@ -32,11 +32,10 @@ public class DailyBookController {
     @GetMapping
     public ResponseEntity<?> getAllDailyBooks(@RequestParam(defaultValue = "0") int page,
                                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
-                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
-                                             @RequestParam(required = false) Long clientId) {
+                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo) {
         ResponseEntity<?> response;
         try {
-            Page<DailyBookDTO> dailyBooks = dailyBookService.findAll(page, dateFrom, dateTo, clientId);
+            Page<DailyBookDTO> dailyBooks = dailyBookService.findAll(page, dateFrom, dateTo);
             return ResponseEntity.ok(dailyBooks);
         } catch (ValidationException e) {
             response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());

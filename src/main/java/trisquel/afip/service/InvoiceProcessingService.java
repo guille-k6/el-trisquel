@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import trisquel.afip.AfipSoapRequestBuilder;
-import trisquel.afip.config.AfipConfiguration;
 import trisquel.afip.model.AfipAuth;
 import trisquel.afip.model.AfipComprobante;
 import trisquel.model.*;
@@ -25,7 +24,6 @@ public class InvoiceProcessingService {
 
     private static final Logger log = LoggerFactory.getLogger(InvoiceProcessingService.class);
     private final InvoiceQueueRepository invoiceQueueRepository;
-    private final AfipInvoiceService afipInvoiceService;
     private final InvoiceService invoiceService;
     private final WsaaService wsaaService;
     private final AfipResponseInterpreterService responseInterpreterService;
@@ -35,13 +33,11 @@ public class InvoiceProcessingService {
     private final String fecaeUrl = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx";
     private final String ultCompAuthUrl = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?op=FECompUltimoAutorizado";
 
-    public InvoiceProcessingService(InvoiceQueueRepository invoiceQueueRepository,
-                                    AfipInvoiceService afipInvoiceService, AfipConfiguration afipConfig,
-                                    InvoiceService invoiceService, RestTemplate restTemplate,
+    public InvoiceProcessingService(InvoiceQueueRepository invoiceQueueRepository, InvoiceService invoiceService,
+                                    RestTemplate restTemplate,
                                     AfipResponseInterpreterService afipResponseInterpreterService,
                                     WsaaService wsaaService) {
         this.invoiceQueueRepository = invoiceQueueRepository;
-        this.afipInvoiceService = afipInvoiceService;
         this.invoiceService = invoiceService;
         this.wsaaService = wsaaService;
         this.responseInterpreterService = afipResponseInterpreterService;
@@ -126,10 +122,10 @@ public class InvoiceProcessingService {
             ResponseEntity<String> response = restTemplate.exchange(fecaeUrl, HttpMethod.POST, requestEntity, String.class);
             return response.getBody();
         } catch (HttpServerErrorException e) {
-            //logger.severe("Error del servidor AFIP en facturación: " + e.getStatusCode() + " - " + e.getMessage());
+            e.printStackTrace();
             throw e;
         } catch (Exception e) {
-            // logger.severe("Error en llamada FECAE: " + e.getMessage());
+            e.printStackTrace();
             throw e;
         }
     }
@@ -149,10 +145,10 @@ public class InvoiceProcessingService {
             Long lastAuthorizedComprobanteNumber = AfipResponseInterpreterService.getNumberFECompUltimoAutorizado(responseBody);
             return lastAuthorizedComprobanteNumber;
         } catch (HttpServerErrorException e) {
-            //logger.severe("Error del servidor AFIP en consulta último autorizado: " + e.getStatusCode() + " - " + e.getMessage());
+            e.printStackTrace();
             throw e;
         } catch (Exception e) {
-            //logger.severe("Error en llamada FECompUltimoAutorizado: " + e.getMessage());
+            e.printStackTrace();
             throw e;
         }
     }

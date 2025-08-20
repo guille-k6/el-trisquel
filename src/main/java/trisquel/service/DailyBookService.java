@@ -29,7 +29,7 @@ public class DailyBookService {
 
     private final DailyBookRepository repository;
 
-    public Page<DailyBookDTO> findAll(int page, LocalDate dateFrom, LocalDate dateTo, Long clientId) {
+    public Page<DailyBookDTO> findAll(int page, LocalDate dateFrom, LocalDate dateTo) {
         Pageable pageable = PageRequest.of(page, 20, Sort.by("date").descending());
         Specification<DailyBook> spec = Specification.where(null);
         if (dateFrom != null) {
@@ -37,9 +37,6 @@ public class DailyBookService {
         }
         if (dateTo != null) {
             spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("date"), dateTo));
-        }
-        if (clientId != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("client").get("id"), clientId));
         }
 
         Page<DailyBook> dailyBooksPage = repository.findAll(spec, pageable);
