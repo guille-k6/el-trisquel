@@ -14,16 +14,22 @@ public class InvoiceIvaBreakdown {
 
     public InvoiceIvaBreakdown(Invoice invoice) {
         this.ivaMap = new HashMap<>();
+
+        ivaMap.put(AfipIva.IVA_0p, new IvaData(BigDecimal.ZERO, BigDecimal.ZERO));
+        ivaMap.put(AfipIva.IVA_5p, new IvaData(BigDecimal.ZERO, BigDecimal.ZERO));
+        ivaMap.put(AfipIva.IVA_105p, new IvaData(BigDecimal.ZERO, BigDecimal.ZERO));
+        ivaMap.put(AfipIva.IVA_21p, new IvaData(BigDecimal.ZERO, BigDecimal.ZERO));
+        ivaMap.put(AfipIva.IVA_250p, new IvaData(BigDecimal.ZERO, BigDecimal.ZERO));
+        ivaMap.put(AfipIva.IVA_27p, new IvaData(BigDecimal.ZERO, BigDecimal.ZERO));
+
         for (InvoiceItem item : invoice.getItems()) {
             BigDecimal itemNetAmount = item.getPricePerUnit().multiply(BigDecimal.valueOf(item.getAmount()));
             BigDecimal itemIvaAmount = item.getIvaAmount();
             BigDecimal itemTotal = item.getTotal();
-
             // Acumular totales
             invoiceNetTotal = invoiceNetTotal.add(itemNetAmount);
             invoiceTotal = invoiceTotal.add(itemTotal);
             ivaTotal = ivaTotal.add(itemIvaAmount);
-
             // Agrupar por tipo de IVA
             IvaData ivaData = ivaMap.get(item.getIva());
             if (ivaData == null) {

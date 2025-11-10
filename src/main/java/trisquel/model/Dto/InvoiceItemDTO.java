@@ -19,6 +19,7 @@ public class InvoiceItemDTO {
     private BigDecimal pricePerUnit;
     private BigDecimal ivaAmount;
     private BigDecimal total;
+    private String productNameAlias;
 
 
     InvoiceItemDTO() {
@@ -38,6 +39,7 @@ public class InvoiceItemDTO {
         invoiceItemDTO.setPricePerUnit(invoiceItem.getPricePerUnit());
         invoiceItemDTO.setIvaAmount(invoiceItem.getIvaAmount());
         invoiceItemDTO.setTotal(invoiceItem.getTotal());
+        invoiceItemDTO.setProductNameAlias(invoiceItem.getProductNameAlias());
         return invoiceItemDTO;
     }
 
@@ -115,5 +117,13 @@ public class InvoiceItemDTO {
 
     public void setProduct(ProductDTO product) {
         this.product = product;
+    }
+
+    public String getProductNameAlias() {
+        return productNameAlias;
+    }
+
+    public void setProductNameAlias(String productNameAlias) {
+        this.productNameAlias = productNameAlias;
     }
 }

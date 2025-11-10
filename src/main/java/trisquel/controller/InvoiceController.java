@@ -28,6 +28,7 @@ public class InvoiceController {
     @Autowired
     public InvoiceController(InvoiceService invoiceService) {
         this.invoiceService = invoiceService;
+
     }
 
     @GetMapping

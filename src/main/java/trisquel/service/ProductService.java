@@ -63,7 +63,7 @@ public class ProductService {
         if (!itemsReferred.isEmpty()) {
             Set<Long> idsReferred = itemsReferred.stream().map(dbi -> dbi.getDailyBook().getId()).collect(Collectors.toSet());
             ValidationException validationException = new ValidationException();
-            validationException.addValidationError("Error", "El cliente está siendo referenciado en los libros diarios: " + idsReferred);
+            validationException.addValidationError("Error", "El producto está siendo referenciado en los libros diarios: " + idsReferred);
             throw validationException;
         }
         repository.deleteById(id);

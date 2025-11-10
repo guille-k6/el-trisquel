@@ -1,0 +1,137 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="FacturaA4_SinCalculos" language="java" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="30" bottomMargin="30" uuid="e1c2c5f6-33aa-4a2a-9b1a-5b5d9d02a5f0">
+	<style name="base" pdfFontName="Helvetica"/>
+	<style name="h1" fontSize="16.0" bold="true"/>
+	<style name="h2" fontSize="12.0" bold="true"/>
+	<style name="small" fontSize="9.0"/>
+	<style name="th" bold="true"/>
+	<style name="td"/>
+	<parameter name="P_SELLER_NAME" class="java.lang.String"/>
+	<parameter name="P_SELLER_ADDRESS" class="java.lang.String"/>
+	<parameter name="P_SELLER_CUIT" class="java.lang.String"/>
+	<parameter name="P_CLIENT_NAME" class="java.lang.String"/>
+	<parameter name="P_CLIENT_ADDRESS" class="java.lang.String"/>
+	<parameter name="P_CLIENT_CUIT" class="java.lang.String"/>
+	<parameter name="P_INVOICE_NUMBER" class="java.lang.String"/>
+	<parameter name="P_INVOICE_DATE" class="java.lang.String"/>
+	<parameter name="P_SUBTOTAL" class="java.math.BigDecimal"/>
+	<parameter name="P_IVA" class="java.math.BigDecimal"/>
+	<parameter name="P_TOTAL" class="java.math.BigDecimal"/>
+	<parameter name="P_QR_IMAGE" forPrompting="false" class="java.awt.Image"/>
+	<field name="description" class="java.lang.String"/>
+	<field name="quantity" class="java.math.BigDecimal"/>
+	<field name="unit_price" class="java.math.BigDecimal"/>
+	<field name="iva_rate" class="java.math.BigDecimal"/>
+	<field name="line_net_amount" class="java.math.BigDecimal"/>
+	<field name="line_iva_amount" class="java.math.BigDecimal"/>
+	<field name="line_total" class="java.math.BigDecimal"/>
+	<title height="110">
+		<element kind="staticText" uuid="507d1f51-9cd9-41d9-9bad-34a58aaff846" x="0" y="0" width="300" height="18" fontSize="16.0" bold="true" hTextAlign="Left">
+			<text><![CDATA[Factura]]></text>
+		</element>
+		<element kind="textField" uuid="ad0795f2-8a31-4103-a6f9-975db11b5a48" x="0" y="26" width="300" height="16" bold="true">
+			<expression><![CDATA[$P{P_SELLER_NAME}]]></expression>
+		</element>
+		<element kind="textField" uuid="b043f8e7-9027-48b3-9748-da194043f1f8" x="0" y="44" width="300" height="14">
+			<expression><![CDATA[$P{P_SELLER_ADDRESS}]]></expression>
+		</element>
+		<element kind="textField" uuid="73f9b170-9a37-4133-9ae0-52bd7e9b62c5" x="0" y="60" width="300" height="14">
+			<expression><![CDATA["CUIT: " + $P{P_SELLER_CUIT}]]></expression>
+		</element>
+		<element kind="staticText" uuid="bfe82259-5ca1-422d-8f98-cf6c0d806a8a" x="320" y="26" width="195" height="16" bold="true" hTextAlign="Right">
+			<text><![CDATA[N° de comprobante]]></text>
+		</element>
+		<element kind="textField" uuid="7076cdf9-23b7-4b66-b05f-d57e791f1a08" x="320" y="42" width="195" height="16" hTextAlign="Right">
+			<expression><![CDATA[$P{P_INVOICE_NUMBER}]]></expression>
+		</element>
+		<element kind="staticText" uuid="1efaea23-bccd-4a24-bb32-2192553aae3f" x="320" y="62" width="195" height="14" hTextAlign="Right">
+			<text><![CDATA[Fecha]]></text>
+		</element>
+		<element kind="textField" uuid="93d9bb5c-d33f-40ed-93fc-1ea48d926019" x="320" y="78" width="195" height="16" hTextAlign="Right">
+			<expression><![CDATA[$P{P_INVOICE_DATE}]]></expression>
+		</element>
+	</title>
+	<pageHeader height="64">
+		<element kind="staticText" uuid="5b0e12af-7198-439f-a818-2a5d46b5432a" x="0" y="0" width="300" height="16" bold="true">
+			<text><![CDATA[Cliente]]></text>
+		</element>
+		<element kind="textField" uuid="f9bc87f8-c471-4569-a00e-47882814ec13" x="0" y="18" width="300" height="14">
+			<expression><![CDATA[$P{P_CLIENT_NAME}]]></expression>
+		</element>
+		<element kind="textField" uuid="68747663-e585-482b-9aad-713e1bd0e0c5" x="0" y="34" width="300" height="14">
+			<expression><![CDATA[$P{P_CLIENT_ADDRESS}]]></expression>
+		</element>
+		<element kind="textField" uuid="1b679f9a-0c50-44a8-aa2a-2a6ae7bec282" x="0" y="50" width="300" height="14">
+			<expression><![CDATA["CUIT: " + $P{P_CLIENT_CUIT}]]></expression>
+		</element>
+	</pageHeader>
+	<columnHeader height="22">
+		<element kind="rectangle" uuid="d5a840b1-081e-4979-8229-12348e55bd42" x="0" y="0" width="515" height="22"/>
+		<element kind="staticText" uuid="00206a52-ec41-490e-a04f-d240904b1aa2" x="6" y="3" width="205" height="16" bold="true">
+			<text><![CDATA[Ítem]]></text>
+		</element>
+		<element kind="staticText" uuid="64a5f764-cc68-46b2-a7ff-ab1d8c9a9323" x="211" y="3" width="60" height="16" bold="true" hTextAlign="Right">
+			<text><![CDATA[Cant.]]></text>
+		</element>
+		<element kind="staticText" uuid="3cb4fde7-09f5-4bf3-aafe-7fb6feab3082" x="271" y="3" width="70" height="16" bold="true" hTextAlign="Right">
+			<text><![CDATA[P. Unit.]]></text>
+		</element>
+		<element kind="staticText" uuid="276f75ba-ccd2-4904-8f6c-5bf53599b7d6" x="341" y="3" width="50" height="16" bold="true" hTextAlign="Right">
+			<text><![CDATA[IVA %]]></text>
+		</element>
+		<element kind="staticText" uuid="7547f276-d52a-414a-9e17-8964d3f4df4d" x="391" y="3" width="60" height="16" bold="true" hTextAlign="Right">
+			<text><![CDATA[Neto]]></text>
+		</element>
+		<element kind="staticText" uuid="881072f8-4629-456b-aa18-5b4144873cb7" x="451" y="3" width="64" height="16" bold="true" hTextAlign="Right">
+			<text><![CDATA[Total]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="17">
+			<element kind="textField" uuid="58adc572-d82c-4068-af6f-5f8419dee859" x="6" y="1" width="205" height="16">
+				<expression><![CDATA[$F{description}]]></expression>
+			</element>
+			<element kind="textField" uuid="6bcbe2e0-7373-47d2-9246-de1d4355c47f" x="211" y="1" width="60" height="16" pattern="#,#00.##" hTextAlign="Right">
+				<expression><![CDATA[$F{quantity}]]></expression>
+			</element>
+			<element kind="textField" uuid="af6ee9da-8a98-4d0b-89f2-b88e9547c89e" x="271" y="1" width="70" height="16" pattern="#,#00.00" hTextAlign="Right">
+				<expression><![CDATA[$F{unit_price}]]></expression>
+			</element>
+			<element kind="textField" uuid="26646882-2a80-4619-8233-f8ed7018993d" x="341" y="1" width="50" height="16" pattern="##0.##%" hTextAlign="Right">
+				<expression><![CDATA[$F{iva_rate}]]></expression>
+			</element>
+			<element kind="textField" uuid="4d948dc0-2e12-47e5-ba23-854ac99cb84c" x="391" y="1" width="60" height="16" pattern="#,#00.00" hTextAlign="Right">
+				<expression><![CDATA[$F{line_net_amount}]]></expression>
+			</element>
+			<element kind="textField" uuid="cecc1356-66dc-4d3b-a2e8-21fe3e81a955" x="451" y="1" width="64" height="16" pattern="#,#00.00" hTextAlign="Right">
+				<expression><![CDATA[$F{line_total}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<summary height="160">
+		<element kind="staticText" uuid="873c8183-3a53-40a9-9c4d-47640ac551bc" x="356" y="10" width="80" height="16" hTextAlign="Right">
+			<text><![CDATA[Subtotal]]></text>
+		</element>
+		<element kind="textField" uuid="cfd18597-fc50-4a50-a084-9c8e15ed8421" x="436" y="10" width="73" height="16" pattern="#,#00.00" hTextAlign="Right">
+			<expression><![CDATA[$P{P_SUBTOTAL}]]></expression>
+		</element>
+		<element kind="staticText" uuid="e60c49be-8652-4561-8411-0c45f17ab537" x="356" y="30" width="80" height="16" hTextAlign="Right">
+			<text><![CDATA[IVA]]></text>
+		</element>
+		<element kind="textField" uuid="c6d73427-3082-4f65-b943-60881bb966ee" x="436" y="30" width="73" height="16" pattern="#,#00.00" hTextAlign="Right">
+			<expression><![CDATA[$P{P_IVA}]]></expression>
+		</element>
+		<element kind="staticText" uuid="590b1a64-ff18-442d-99bb-5cdd95c4ee9f" x="356" y="50" width="80" height="18" bold="true" hTextAlign="Right">
+			<text><![CDATA[TOTAL]]></text>
+		</element>
+		<element kind="textField" uuid="13943ac0-39f2-4f3f-b53c-7e49b0be5ee2" x="436" y="50" width="73" height="18" pattern="#,#00.00" bold="true" hTextAlign="Right">
+			<expression><![CDATA[$P{P_TOTAL}]]></expression>
+		</element>
+		<element kind="image" uuid="f6c1fde8-310d-449c-8d1b-4e60ab54b32b" x="0" y="8" width="120" height="120">
+			<expression><![CDATA[$P{P_QR_IMAGE}]]></expression>
+		</element>
+		<element kind="staticText" uuid="d9bbb5ef-856e-4e33-9d34-5d23ef2e637c" x="0" y="132" width="200" height="14" fontSize="8.0">
+			<text><![CDATA[Escanear para ver detalles del comprobante]]></text>
+		</element>
+	</summary>
+</jasperReport>

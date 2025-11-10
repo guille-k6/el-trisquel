@@ -40,4 +40,8 @@ public class ConfigurationMap {
     public void setValue(JsonNode value) {
         this.value = value;
     }
+
+    public String getValueAsString(String key) {
+        return value.get(key).asText();
+    }
 }

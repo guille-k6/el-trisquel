@@ -31,6 +31,8 @@ public class InvoiceItem {
     private BigDecimal ivaAmount;
     @Column(name = "total", precision = 10, scale = 2)
     private BigDecimal total;
+    @Column(name = "product_name_alias")
+    private String productNameAlias;
 
     public Long getId() {
         return id;
@@ -64,14 +66,6 @@ public class InvoiceItem {
         this.iva = iva;
     }
 
-    //    public Long getProductId() {
-    //        return product.getId();
-    //    }
-
-    //    public void setProductId(Long productId) {
-    //        this.product.setId(productId);
-    //    }
-
     public Invoice getInvoice() {
         return invoice;
     }
@@ -102,5 +96,13 @@ public class InvoiceItem {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public String getProductNameAlias() {
+        return productNameAlias;
+    }
+
+    public void setProductNameAlias(String productNameAlias) {
+        this.productNameAlias = productNameAlias;
     }
 }

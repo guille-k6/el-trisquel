@@ -37,6 +37,12 @@ dependencies {
     implementation("org.bouncycastle:bcpkix-jdk18on:1.78.1")
     implementation("org.bouncycastle:bcutil-jdk18on:1.78.1")
 
+    implementation("net.sf.jasperreports:jasperreports:7.0.3")
+    implementation("net.sf.jasperreports:jasperreports-pdf:7.0.3")
+    implementation("net.sf.jasperreports:jasperreports-fonts:7.0.3")
+    implementation("com.google.zxing:core:3.5.3")
+    implementation("com.google.zxing:javase:3.5.3")
+
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")

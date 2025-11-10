@@ -17,6 +17,8 @@ public class Product {
 
     private String name;
 
+    private String measureUnit;
+
     public Product() {
 
     }
@@ -35,5 +37,13 @@ public class Product {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getMeasureUnit() {
+        return measureUnit;
+    }
+
+    public void setMeasureUnit(String measureUnit) {
+        this.measureUnit = measureUnit;
     }
 }
