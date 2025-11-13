@@ -1,5 +1,6 @@
 package trisquel.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,18 +16,23 @@ import java.util.Optional;
 @RequestMapping("/configuration")
 public class ConfigurationController {
     private final ConfigurationService configurationService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    ConfigurationController(ConfigurationService configurationService) {
+    ConfigurationController(ConfigurationService configurationService, ObjectMapper objectMapper) {
         this.configurationService = configurationService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/{key}")
-    public ResponseEntity<ConfigurationMap> configuration(@PathVariable String key) {
+    public ResponseEntity<?> configuration(@PathVariable String key) {
 
         Optional<ConfigurationMap> configuration = configurationService.findByKey(key);
         if (configuration.isEmpty()) {
-            return ResponseEntity.ok().build();
+            ConfigurationMap configurationMap = new ConfigurationMap();
+            configurationMap.setKey(key);
+            configurationMap.setValue(objectMapper.createObjectNode());
+            return ResponseEntity.ok(configurationMap);
         }
         return configurationService.findByKey(key).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
@@ -40,6 +46,7 @@ public class ConfigurationController {
         } catch (ValidationException e) {
             response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
         return response;

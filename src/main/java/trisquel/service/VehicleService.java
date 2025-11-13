@@ -1,7 +1,9 @@
 package trisquel.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import trisquel.model.ConfigurationMap;
 import trisquel.model.DailyBook;
 import trisquel.model.Vehicle;
 import trisquel.repository.DailyBookRepository;
@@ -18,13 +20,16 @@ import java.util.stream.Collectors;
 @Service
 public class VehicleService {
     @Autowired
-    VehicleService(VehicleRepository repository, DailyBookRepository dailyBookRepository) {
+    VehicleService(VehicleRepository repository, DailyBookRepository dailyBookRepository,
+                   ConfigurationService configurationService) {
         this.repository = repository;
         this.dailyBookRepository = dailyBookRepository;
+        this.configurationService = configurationService;
     }
 
     private final VehicleRepository repository;
     private final DailyBookRepository dailyBookRepository;
+    private final ConfigurationService configurationService;
 
     public List<Vehicle> findAll() {
         return repository.findAll();
@@ -77,5 +82,20 @@ public class VehicleService {
             throw validationException;
         }
         repository.deleteById(id);
+    }
+
+    public Optional<Vehicle> getDefaultVehicle() {
+        Optional<ConfigurationMap> defaultEntities = configurationService.findByKey("default");
+        if (defaultEntities.isEmpty()) {
+            return Optional.empty();
+        }
+        JsonNode defaultVehicle = defaultEntities.get().getValue().get("vehiculoDefault");
+        if (defaultVehicle == null) {
+            return Optional.empty();
+        }
+        Vehicle vehicle = new Vehicle();
+        vehicle.setId(defaultVehicle.get("id").asLong());
+        vehicle.setName(defaultVehicle.get("name").asText());
+        return Optional.of(vehicle);
     }
 }

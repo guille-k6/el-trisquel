@@ -3,6 +3,8 @@ package trisquel.model.Dto;
 import trisquel.model.Vehicle;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class VehicleDTO {
     private Long id;
@@ -59,5 +61,9 @@ public class VehicleDTO {
         vehicleDTO.setPurchaseDate(vehicle.getPurchaseDate());
         vehicleDTO.setPurchaseDatePrice(vehicle.getPurchaseDatePrice());
         return vehicleDTO;
+    }
+
+    public static List<VehicleDTO> translateToDTO(List<Vehicle> vehicles) {
+        return vehicles.stream().map(VehicleDTO::translateToDTO).collect(Collectors.toList());
     }
 }

@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import trisquel.model.Dto.Combo.ProductComboDTO;
+import trisquel.model.Dto.ProductDTO;
 import trisquel.model.Product;
 import trisquel.service.ProductService;
 import trisquel.utils.ValidationException;
 import trisquel.utils.ValidationExceptionResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -25,6 +28,16 @@ public class ProductController {
     @GetMapping
     public List<Product> getAllProducts() {
         return productService.findAll();
+    }
+
+    @GetMapping("/combo")
+    public ProductComboDTO getProductsForCombo() {
+        List<Product> products = productService.findAll();
+        Optional<Product> defaultProduct = productService.getDefaultProduct();
+        if (defaultProduct.isPresent()) {
+            return new ProductComboDTO(ProductDTO.translateToDTO(defaultProduct.get()), ProductDTO.translateToDTO(products));
+        }
+        return new ProductComboDTO(ProductDTO.translateToDTO(products));
     }
 
     @GetMapping("/{id}")

@@ -2,6 +2,9 @@ package trisquel.model.Dto;
 
 import trisquel.model.Product;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ProductDTO {
     private Long id;
     private String name;
@@ -50,5 +53,9 @@ public class ProductDTO {
         productDTO.setName(product.getName());
         productDTO.setMeasureUnit(product.getMeasureUnit());
         return productDTO;
+    }
+
+    public static List<ProductDTO> translateToDTO(List<Product> products) {
+        return products.stream().map(ProductDTO::translateToDTO).collect(Collectors.toList());
     }
 }

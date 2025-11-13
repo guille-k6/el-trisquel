@@ -5,12 +5,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import trisquel.model.Dto.Combo.VehicleComboDTO;
+import trisquel.model.Dto.VehicleDTO;
 import trisquel.model.Vehicle;
 import trisquel.service.VehicleService;
 import trisquel.utils.ValidationException;
 import trisquel.utils.ValidationExceptionResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/vehicles")
@@ -26,6 +29,17 @@ public class VehicleController {
     @GetMapping
     public List<Vehicle> getAllVehicles() {
         return vehicleService.findAll();
+    }
+
+    @GetMapping("/combo")
+    public VehicleComboDTO getVehiclesForCombo() {
+        List<Vehicle> vehicles = vehicleService.findAll();
+        Optional<Vehicle> defaultVehicle = vehicleService.getDefaultVehicle();
+        if (defaultVehicle.isPresent()) {
+            return new VehicleComboDTO(VehicleDTO.translateToDTO(defaultVehicle.get()), VehicleDTO.translateToDTO(vehicles));
+        }
+        return new VehicleComboDTO(VehicleDTO.translateToDTO(vehicles));
+
     }
 
     @GetMapping("/{id}")

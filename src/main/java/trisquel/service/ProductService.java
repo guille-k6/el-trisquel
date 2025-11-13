@@ -1,7 +1,9 @@
 package trisquel.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import trisquel.model.ConfigurationMap;
 import trisquel.model.DailyBookItem;
 import trisquel.model.Product;
 import trisquel.repository.DailyBookItemRepository;
@@ -18,13 +20,16 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
     @Autowired
-    public ProductService(ProductRepository repository, DailyBookItemRepository dailyBookItemRepository) {
+    public ProductService(ProductRepository repository, DailyBookItemRepository dailyBookItemRepository,
+                          ConfigurationService configurationService) {
         this.repository = repository;
         this.dailyBookItemRepository = dailyBookItemRepository;
+        this.configurationService = configurationService;
     }
 
     private final ProductRepository repository;
     private final DailyBookItemRepository dailyBookItemRepository;
+    private final ConfigurationService configurationService;
 
     public List<Product> findAll() {
         return repository.findAll();
@@ -67,5 +72,20 @@ public class ProductService {
             throw validationException;
         }
         repository.deleteById(id);
+    }
+
+    public Optional<Product> getDefaultProduct() {
+        Optional<ConfigurationMap> defaultEntities = configurationService.findByKey("default");
+        if (defaultEntities.isEmpty()) {
+            return Optional.empty();
+        }
+        JsonNode defaultProduct = defaultEntities.get().getValue().get("productoDefault");
+        if (defaultProduct == null) {
+            return Optional.empty();
+        }
+        Product product = new Product();
+        product.setId(defaultProduct.get("id").asLong());
+        product.setName(defaultProduct.get("name").asText());
+        return Optional.of(product);
     }
 }
