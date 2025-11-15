@@ -2,6 +2,7 @@ package trisquel.model.Dto;
 
 import trisquel.model.DailyBook;
 import trisquel.model.DailyBookItem;
+import trisquel.model.NitrogenProvider;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,7 +23,7 @@ public class DailyBookDTO {
     private Long ltExtractedTank;
     private Long ltRemainingFlask;
     private Long ltTotalFlask;
-    private String nitrogenProvider;
+    private NitrogenProvider provider;
     private List<DailyBookItemDTO> items;
     private boolean editable;
 
@@ -140,12 +141,12 @@ public class DailyBookDTO {
         this.pressureTankAfter = pressureTankAfter;
     }
 
-    public String getNitrogenProvider() {
-        return nitrogenProvider;
+    public NitrogenProvider getProvider() {
+        return provider;
     }
 
-    public void setNitrogenProvider(String nitrogenProvider) {
-        this.nitrogenProvider = nitrogenProvider;
+    public void setProvider(NitrogenProvider provider) {
+        this.provider = provider;
     }
 
     public boolean isEditable() {
@@ -170,7 +171,7 @@ public class DailyBookDTO {
         dailyBookDTO.setLtExtractedTank(dailyBook.getLtExtractedTank());
         dailyBookDTO.setLtRemainingFlask(dailyBook.getLtRemainingFlask());
         dailyBookDTO.setLtTotalFlask(dailyBook.getLtTotalFlask());
-        dailyBookDTO.setNitrogenProvider(dailyBook.getNitrogenProvider());
+        dailyBookDTO.setProvider(dailyBook.getProvider());
         dailyBookDTO.setItems(DailyBookItemDTO.translateToDTOs(dailyBook.getItems()));
         dailyBookDTO.setEditable(isDailyBookEditable(dailyBook));
         return dailyBookDTO;

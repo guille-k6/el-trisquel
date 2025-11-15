@@ -1,7 +1,9 @@
 package trisquel.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Service;
 import trisquel.model.ConfigurationMap;
+import trisquel.model.NitrogenProvider;
 import trisquel.repository.ConfigurationRepository;
 import trisquel.utils.ValidationErrorItem;
 import trisquel.utils.ValidationException;
@@ -48,5 +50,18 @@ public class ConfigurationService {
             validationErrors.add(new ValidationErrorItem("Error", "El campo valor es obligatorio"));
         }
         ValidationException.verifyAndMaybeThrowValidationException(validationErrors);
+    }
+
+    public Optional<NitrogenProvider> getDefaultNitrogenProvider() {
+        Optional<ConfigurationMap> defaultEntities = repository.findByKey("default");
+        if (defaultEntities.isEmpty()) {
+            return Optional.empty();
+        }
+        JsonNode defaultNitrogenProvider = defaultEntities.get().getValue().get("proveedorDefault");
+        if (defaultNitrogenProvider == null) {
+            return Optional.empty();
+        }
+        NitrogenProvider proveedor = NitrogenProvider.fromId(defaultNitrogenProvider.get("id").asInt());
+        return Optional.of(proveedor);
     }
 }

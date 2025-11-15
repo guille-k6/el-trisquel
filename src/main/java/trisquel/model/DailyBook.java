@@ -23,7 +23,7 @@ public class DailyBook {
     private Long ltExtractedTank;
     private Long ltRemainingFlask;
     private Long ltTotalFlask;
-    private String nitrogenProvider; // Linde - Air Liquide for now
+    private NitrogenProvider provider;
     @OneToMany(mappedBy = "dailyBook", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DailyBookItem> items;
     @ManyToOne
@@ -134,11 +134,13 @@ public class DailyBook {
         this.pressureTankAfter = pressureTankAfter;
     }
 
-    public String getNitrogenProvider() {
-        return nitrogenProvider;
+    public NitrogenProvider getProvider() {
+        return provider;
     }
 
-    public void setNitrogenProvider(String nitrogenProvider) {
-        this.nitrogenProvider = nitrogenProvider;
+    public void setProvider(NitrogenProvider provider) {
+        this.provider = provider;
     }
+
+
 }

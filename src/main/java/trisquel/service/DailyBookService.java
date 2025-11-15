@@ -113,7 +113,7 @@ public class DailyBookService {
         if (dailyBook.getVehicle() == null) {
             validationErrors.add(new ValidationErrorItem("Error", "El libro diario debe tener vehiculo"));
         }
-        if (dailyBook.getNitrogenProvider() == null) {
+        if (dailyBook.getProvider() == null) {
             validationErrors.add(new ValidationErrorItem("Error", "El libro diario debe tener proveedor de nitrógeno"));
         }
         if (dailyBook.getPressureTankBefore() == null) {
