@@ -141,6 +141,7 @@ public class InvoiceService {
         invoice.setConcepto(AfipConcepto.PRODUCTO);
         invoice.setMoneda(AfipMoneda.PESO);
         invoice.setSellPoint(SELL_POINT);
+        invoice.setSellCondition(dto.getSellCondition());
         return invoice;
     }
 
@@ -158,6 +159,7 @@ public class InvoiceService {
             BigDecimal total = itemDTO.getPricePerUnit().multiply(BigDecimal.valueOf(itemDTO.getAmount())).add(ivaAmount);
             item.setTotal(total);
             item.setProduct(new Product(itemDTO.getProduct().getId()));
+            item.setProductNameAlias(itemDTO.getProductNameAlias());
             invoiceItems.add(item);
             invoiceTotal = invoiceTotal.add(total);
         }
@@ -181,6 +183,11 @@ public class InvoiceService {
     @Transactional
     public void updateInvoiceStatus(Invoice invoice, InvoiceQueueStatus status) {
         repository.updateStatus(status, invoice.getId());
+    }
+
+    @Transactional
+    public void updateInvoiceNumber(Invoice invoice, Long lastAuthorizedComprobanteNumber) {
+        repository.updateNumber(lastAuthorizedComprobanteNumber, invoice.getId());
     }
 
     public void updateInvoiceTotal(Long invoiceId) {

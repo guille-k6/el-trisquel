@@ -20,6 +20,7 @@ public class Client {
     private String email;
     @Column(name = "iva_condition")
     private AfipCondicionIva condicionIva;
+    private String commercialAddress;
 
     public Long getId() {
         return id;
@@ -85,4 +86,11 @@ public class Client {
         this.condicionIva = condicionIva;
     }
 
+    public String getCommercialAddress() {
+        return commercialAddress;
+    }
+
+    public void setCommercialAddress(String commercialAddress) {
+        this.commercialAddress = commercialAddress;
+    }
 }

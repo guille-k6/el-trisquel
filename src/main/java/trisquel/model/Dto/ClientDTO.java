@@ -16,6 +16,7 @@ public class ClientDTO {
     private Long docNumber;
     private String email;
     private AfipCondicionIvaDTO condicionIva;
+    private String commercialAddress;
 
     public ClientDTO(Long id, String name, String address, String phoneNumber, AfipTipoDocDTO docType, Long docNumber,
                      String email) {
@@ -95,6 +96,14 @@ public class ClientDTO {
         this.condicionIva = condicionIva;
     }
 
+    public String getCommercialAddress() {
+        return commercialAddress;
+    }
+
+    public void setCommercialAddress(String commercialAddress) {
+        this.commercialAddress = commercialAddress;
+    }
+
     public static ClientDTO translateToDTO(Client client) {
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setId(client.getId());
@@ -105,6 +114,7 @@ public class ClientDTO {
         clientDTO.setDocNumber(client.getDocNumber());
         clientDTO.setEmail(client.getEmail());
         clientDTO.setCondicionIva(AfipCondicionIvaDTO.fromEnum(client.getCondicionIva()));
+        clientDTO.setCommercialAddress(client.getCommercialAddress());
         return clientDTO;
     }
 

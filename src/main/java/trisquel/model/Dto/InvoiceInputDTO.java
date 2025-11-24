@@ -1,5 +1,7 @@
 package trisquel.model.Dto;
 
+import trisquel.afip.model.SellCondition;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,7 @@ public class InvoiceInputDTO {
     Long clientId;
     List<Long> dbiIds = new ArrayList<>();
     List<InvoiceItemDTO> invoiceItems = new ArrayList<>();
+    SellCondition sellCondition;
 
     public InvoiceInputDTO() {
     }
@@ -50,5 +53,13 @@ public class InvoiceInputDTO {
 
     public void setClientId(Long clientId) {
         this.clientId = clientId;
+    }
+
+    public SellCondition getSellCondition() {
+        return sellCondition;
+    }
+
+    public void setSellCondition(SellCondition sellCondition) {
+        this.sellCondition = sellCondition;
     }
 }

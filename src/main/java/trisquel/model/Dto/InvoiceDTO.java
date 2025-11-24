@@ -3,6 +3,7 @@ package trisquel.model.Dto;
 import trisquel.afip.model.DTO.AfipComprobanteDTO;
 import trisquel.afip.model.DTO.AfipConceptoDTO;
 import trisquel.afip.model.DTO.AfipMonedaDTO;
+import trisquel.afip.model.SellCondition;
 import trisquel.model.Invoice;
 import trisquel.model.InvoiceQueueStatus;
 
@@ -28,6 +29,7 @@ public class InvoiceDTO {
     private String cae;
     private LocalDate vtoCae;
     private Long sellPoint;
+    private SellCondition sellCondition;
     private List<InvoiceItemDTO> items;
 
     public InvoiceDTO() {
@@ -54,6 +56,7 @@ public class InvoiceDTO {
         invoiceDTO.setConcepto(AfipConceptoDTO.fromEnum(invoice.getConcepto()));
         invoiceDTO.setMoneda(AfipMonedaDTO.fromEnum(invoice.getMoneda()));
         invoiceDTO.setItems(InvoiceItemDTO.translateToDTOs(invoice.getItems()));
+        invoiceDTO.setSellCondition(invoice.getSellCondition());
         return invoiceDTO;
     }
 
@@ -187,5 +190,13 @@ public class InvoiceDTO {
 
     public void setItems(List<InvoiceItemDTO> items) {
         this.items = items;
+    }
+
+    public SellCondition getSellCondition() {
+        return sellCondition;
+    }
+
+    public void setSellCondition(SellCondition sellCondition) {
+        this.sellCondition = sellCondition;
     }
 }

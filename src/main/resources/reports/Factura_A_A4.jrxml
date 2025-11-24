@@ -1,374 +1,462 @@
 <!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
-<jasperReport name="FacturaElectronica_AFIP" language="java" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="30" bottomMargin="30" uuid="45404c5e-ecf7-40d7-829b-62bf0f314b09">
-	<property name="net.sf.jasperreports.awt.ignore.missing.font" value="false"/>
-	<style name="base" fontName="Arial"/>
-	<style name="h1" style="base" fontSize="16.0" bold="true"/>
-	<style name="h2" style="base" fontSize="12.0" bold="true"/>
-	<style name="small" style="base" fontSize="9.0"/>
-	<style name="th" style="base" bold="true"/>
-	<style name="td" style="base"/>
-	<parameter name="P_SELLER_NAME" class="java.lang.String"/>
-	<parameter name="P_SELLER_ADDRESS" class="java.lang.String"/>
-	<parameter name="P_SELLER_CITY" class="java.lang.String"/>
-	<parameter name="P_SELLER_PROVINCE" class="java.lang.String"/>
-	<parameter name="P_SELLER_POSTAL_CODE" class="java.lang.String"/>
-	<parameter name="P_SELLER_CUIT" class="java.lang.String"/>
-	<parameter name="P_SELLER_IVA_CONDITION" class="java.lang.String"/>
-	<parameter name="P_SELLER_GROSS_INCOME" class="java.lang.String"/>
-	<parameter name="P_SELLER_START_DATE" class="java.lang.String"/>
-	<parameter name="P_SELLER_PHONE" class="java.lang.String"/>
-	<parameter name="P_SELLER_EMAIL" class="java.lang.String"/>
-	<parameter name="P_CLIENT_NAME" class="java.lang.String"/>
-	<parameter name="P_CLIENT_ADDRESS" class="java.lang.String"/>
-	<parameter name="P_CLIENT_CITY" class="java.lang.String"/>
-	<parameter name="P_CLIENT_PROVINCE" class="java.lang.String"/>
-	<parameter name="P_CLIENT_POSTAL_CODE" class="java.lang.String"/>
-	<parameter name="P_CLIENT_CUIT" class="java.lang.String"/>
-	<parameter name="P_CLIENT_IVA_CONDITION" class="java.lang.String"/>
-	<parameter name="P_CLIENT_DOC_TYPE" class="java.lang.String"/>
-	<parameter name="P_CLIENT_DOC_NUMBER" class="java.lang.String"/>
-	<parameter name="P_INVOICE_TYPE" class="java.lang.String"/>
-	<parameter name="P_INVOICE_TYPE_CODE" class="java.lang.String"/>
-	<parameter name="P_INVOICE_NUMBER" class="java.lang.String"/>
-	<parameter name="P_INVOICE_DATE" class="java.lang.String"/>
-	<parameter name="P_SERVICE_DATE_FROM" class="java.lang.String"/>
-	<parameter name="P_SERVICE_DATE_TO" class="java.lang.String"/>
-	<parameter name="P_DUE_DATE" class="java.lang.String"/>
-	<parameter name="P_CURRENCY_CODE" class="java.lang.String"/>
-	<parameter name="P_CURRENCY_RATE" class="java.math.BigDecimal"/>
-	<parameter name="P_POS_NUMBER" class="java.lang.String"/>
-	<parameter name="P_CAE" class="java.lang.String"/>
-	<parameter name="P_CAE_DUE_DATE" class="java.lang.String"/>
-	<parameter name="P_BARCODE" class="java.lang.String"/>
-	<parameter name="P_SUBTOTAL_NETO" class="java.math.BigDecimal"/>
-	<parameter name="P_TOTAL_IVA" class="java.math.BigDecimal"/>
-	<parameter name="P_TOTAL_TRIBUTOS" class="java.math.BigDecimal"/>
-	<parameter name="P_TOTAL_EXENTO" class="java.math.BigDecimal"/>
-	<parameter name="P_TOTAL_FINAL" class="java.math.BigDecimal"/>
-	<parameter name="P_IVA_105_BASE" class="java.math.BigDecimal"/>
-	<parameter name="P_IVA_105_AMOUNT" class="java.math.BigDecimal"/>
-	<parameter name="P_IVA_210_BASE" class="java.math.BigDecimal"/>
-	<parameter name="P_IVA_210_AMOUNT" class="java.math.BigDecimal"/>
-	<parameter name="P_IVA_270_BASE" class="java.math.BigDecimal"/>
-	<parameter name="P_IVA_270_AMOUNT" class="java.math.BigDecimal"/>
-	<parameter name="P_IVA_0_BASE" class="java.math.BigDecimal"/>
-	<parameter name="P_PERC_IIBB_AMOUNT" class="java.math.BigDecimal"/>
-	<parameter name="P_PERC_IVA_AMOUNT" class="java.math.BigDecimal"/>
-	<parameter name="P_PERC_GANANCIAS_AMOUNT" class="java.math.BigDecimal"/>
-	<parameter name="P_IMP_INTERNOS_AMOUNT" class="java.math.BigDecimal"/>
-	<parameter name="P_QR_IMAGE" forPrompting="false" class="java.awt.Image"/>
-	<parameter name="P_TRISQUEL_LOGO" class="java.awt.Image"/>
-	<field name="description" class="java.lang.String"/>
-	<field name="quantity" class="java.math.BigDecimal"/>
-	<field name="unit_price" class="java.math.BigDecimal"/>
-	<field name="iva_rate" class="java.math.BigDecimal"/>
-	<field name="line_net_amount" class="java.math.BigDecimal"/>
-	<field name="line_iva_amount" class="java.math.BigDecimal"/>
-	<field name="line_total" class="java.math.BigDecimal"/>
-	<field name="product_code" class="java.lang.String"/>
-	<field name="unit_measure" class="java.lang.String"/>
-	<title height="130">
-		<element kind="rectangle" uuid="8584c0e7-8c48-4a1f-96cd-8e4367528051" x="271" y="4" width="60" height="50">
-			<pen lineWidth="1.0"/>
-		</element>
-		<element kind="textField" uuid="595d772b-5358-4278-a65b-005229c4602f" x="280" y="14" width="42" height="30" fontSize="20.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
-			<expression><![CDATA[$P{P_INVOICE_TYPE_CODE}]]></expression>
-		</element>
-		<element kind="textField" uuid="0e67f106-64be-4c54-be0c-339eaa089749" x="110" y="4" width="155" height="16" fontName="Arial" fontSize="10.0" bold="true">
-			<expression><![CDATA[$P{P_SELLER_NAME}]]></expression>
-		</element>
-		<element kind="textField" uuid="7940c21c-8f83-4376-901e-96f5078d42ae" x="110" y="78" width="155" height="15" fontName="Arial" fontSize="10.0">
-			<expression><![CDATA[$P{P_SELLER_ADDRESS}]]></expression>
-		</element>
-		<element kind="textField" uuid="db9945f6-3079-4dda-b44f-d3b7ffeb4134" x="140" y="42" width="125" height="15" forecolor="rgba(0, 0, 0, 0.88235295)" fontName="Arial" fontSize="10.0">
-			<expression><![CDATA[$P{P_SELLER_PHONE}]]></expression>
-		</element>
-		<element kind="textField" uuid="8cc6eb66-1cc4-4ad4-941c-cbf2e24c168c" x="140" y="60" width="127" height="15" forecolor="rgba(0, 0, 0, 0.88235295)" fontName="Arial" fontSize="10.0">
-			<expression><![CDATA[$P{P_SELLER_EMAIL}]]></expression>
-		</element>
-		<element kind="textField" uuid="a5faf9cc-fb33-4b6a-a7b5-ba5687a3befa" x="140" y="23" width="125" height="15" fontName="Arial" fontSize="10.0">
-			<expression><![CDATA[$P{P_SELLER_CUIT}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="textField" uuid="23f0687e-1c40-4f92-a614-78408b1e404a" x="110" y="96" width="155" height="15" fontName="Arial" fontSize="10.0">
-			<expression><![CDATA[$P{P_SELLER_IVA_CONDITION}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="textField" uuid="c908c727-9530-4d83-80e0-724c57ae3314" x="434" y="40" width="80" height="15" fontName="Arial" fontSize="10.0">
-			<expression><![CDATA[$P{P_SELLER_GROSS_INCOME}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="textField" uuid="62c16f9a-54c9-4e7a-b3c9-2efd259dded9" x="434" y="58" width="80" height="15" fontName="Arial" fontSize="10.0">
-			<expression><![CDATA[$P{P_SELLER_START_DATE}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="textField" uuid="6058b42a-8aeb-46ab-915c-db2290da0ed5" x="343" y="77" width="171" height="16" fontName="Arial" fontSize="10.0">
-			<expression><![CDATA["Pto. Vta: " + $P{P_POS_NUMBER}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="textField" uuid="31d4757d-deb1-4f34-8c45-d6d65eebeef2" x="434" y="22" width="80" height="15" fontName="Arial" fontSize="10.0">
-			<expression><![CDATA[$P{P_INVOICE_DATE}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="image" uuid="a9a4c547-6d04-4ac1-8d35-bf5c75991f37" x="0" y="0" width="100" height="100">
-			<expression><![CDATA[$P{P_TRISQUEL_LOGO}]]></expression>
-			<property name="com.jaspersoft.studio.unit.width" value="px"/>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<property name="com.jaspersoft.studio.unit.x" value="px"/>
-			<property name="com.jaspersoft.studio.unit.y" value="px"/>
-			<box>
-				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-			</box>
-		</element>
-		<element kind="textField" uuid="5e9e0cfb-74d3-4ccc-9018-a9d8efabdeed" x="343" y="5" width="172" height="15" fontName="Arial" fontSize="10.0">
-			<expression><![CDATA[ "Comp. Nro: " + $P{P_INVOICE_NUMBER}]]></expression>
-		</element>
-		<element kind="staticText" uuid="8a2cb721-2ddf-49e9-b698-6a8c3dcd50ee" x="110" y="23" width="30" height="15" fontName="Arial" fontSize="10.0" bold="true">
-			<text><![CDATA[CUIT:]]></text>
-			<property name="com.jaspersoft.studio.unit.width" value="px"/>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="staticText" uuid="42530195-7bb4-4efc-b55a-e0f72777e5e2" x="110" y="42" width="30" height="15" fontName="Arial" fontSize="10.0" bold="true">
-			<text><![CDATA[Tel:]]></text>
-			<property name="com.jaspersoft.studio.unit.width" value="px"/>
-		</element>
-		<element kind="staticText" uuid="f53195c0-1d46-4811-b41b-1ee495efc40b" x="343" y="22" width="91" height="15" fontName="Arial" fontSize="10.0" bold="true">
-			<text><![CDATA[Fecha de emisión:]]></text>
-			<property name="com.jaspersoft.studio.unit.width" value="px"/>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="staticText" uuid="2d6fce47-a19f-458f-b688-1458d799621d" x="343" y="58" width="91" height="15" fontName="Arial" fontSize="10.0" bold="true">
-			<text><![CDATA[Ingresos brutos:]]></text>
-			<property name="com.jaspersoft.studio.unit.width" value="px"/>
-		</element>
-		<element kind="staticText" uuid="485ebb1c-3deb-4a59-926b-d7390f6e697e" x="343" y="40" width="91" height="15" markup="none" fontName="Arial" fontSize="10.0" strikeThrough="false" bold="true">
-			<text><![CDATA[Inicio de actividad:]]></text>
-			<property name="com.jaspersoft.studio.unit.width" value="px"/>
-		</element>
-		<element kind="staticText" uuid="9354e437-5bb1-4057-8dda-e7be646ac6f1" x="110" y="60" width="30" height="15" fontName="Arial" fontSize="10.0" bold="true">
-			<text><![CDATA[Mail:]]></text>
-			<property name="com.jaspersoft.studio.unit.width" value="px"/>
-		</element>
-		<property name="com.jaspersoft.studio.unit.height" value="px"/>
-	</title>
-	<pageHeader height="120">
-		<element kind="textField" uuid="43dd7f42-fe02-4235-9356-c51d6dc24741" x="5" y="10" width="250" height="14" bold="true">
-			<expression><![CDATA[$P{P_CLIENT_NAME}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="textField" uuid="e07c7e1d-189f-4ddd-8b97-aa1f8f477b69" x="5" y="30" width="250" height="14">
-			<expression><![CDATA[$P{P_CLIENT_ADDRESS}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="textField" uuid="88cf3f5a-077d-43ec-baed-48255ee28148" x="5" y="70" width="505" height="14">
-			<expression><![CDATA[
-                $P{P_CLIENT_CITY} + ", " + $P{P_CLIENT_PROVINCE} + " (CP " + $P{P_CLIENT_POSTAL_CODE} + ")"]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="textField" uuid="67baf406-f1fb-48a2-8c53-d857ccd937b2" x="5" y="50" width="250" height="14">
-			<expression><![CDATA[$P{P_CLIENT_DOC_TYPE} + ": " + $P{P_CLIENT_DOC_NUMBER}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="textField" uuid="9a5ded51-2b8d-4985-8bf4-c3136b108744" x="260" y="11" width="250" height="14">
-			<expression><![CDATA["CUIT: " + $P{P_CLIENT_CUIT}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="textField" uuid="38fb92b4-5e9b-4c20-bac1-bdbb734bf3d5" x="260" y="31" width="250" height="14">
-			<expression><![CDATA[$P{P_CLIENT_IVA_CONDITION}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="line" uuid="1e719d45-9879-4b20-8a91-979f63039160" positionType="FixRelativeToBottom" x="0" y="0" width="515" height="1">
-			<pen lineStyle="Solid"/>
-		</element>
-		<element kind="line" uuid="2233af70-1493-40e0-85b7-1b1211d21eb2" positionType="FixRelativeToBottom" x="0" y="110" width="515" height="1">
-			<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
-			<property name="com.jaspersoft.studio.unit.y" value="px"/>
-			<pen lineStyle="Solid"/>
-		</element>
-		<property name="com.jaspersoft.studio.unit.height" value="px"/>
-	</pageHeader>
-	<columnHeader height="22">
-		<element kind="rectangle" uuid="31f11643-36b1-4ffe-b3b2-06878d929d35" x="0" y="0" width="515" height="22" backcolor="#DBDBDB">
-			<pen lineWidth="0.0"/>
-		</element>
-		<element kind="staticText" uuid="bfb7250d-d942-4f06-8ddd-d005460f7efe" x="5" y="3" width="50" height="16" fontSize="9.0" bold="true">
-			<text><![CDATA[Código]]></text>
-		</element>
-		<element kind="staticText" uuid="7a5f84b9-b788-4c76-b3f8-1568d79ac88d" x="60" y="3" width="160" height="16" fontSize="9.0" bold="true">
-			<text><![CDATA[Descripción]]></text>
-		</element>
-		<element kind="staticText" uuid="85455c00-79fc-487b-afc5-924f29b1d3e7" x="225" y="3" width="40" height="16" fontSize="9.0" bold="true" hTextAlign="Center">
-			<text><![CDATA[U.Med]]></text>
-		</element>
-		<element kind="staticText" uuid="913fe384-b409-42d3-bd33-7bb31e08fbe2" x="270" y="3" width="45" height="16" fontSize="9.0" bold="true" hTextAlign="Right">
-			<text><![CDATA[Cant.]]></text>
-		</element>
-		<element kind="staticText" uuid="d33528a9-7c66-46a1-a002-6c1ab1b10d47" x="320" y="3" width="55" height="16" fontSize="9.0" bold="true" hTextAlign="Right">
-			<text><![CDATA[P. Unit.]]></text>
-		</element>
-		<element kind="staticText" uuid="d0a04041-b706-46e9-b51b-8a2eda23e131" x="380" y="3" width="35" height="16" fontSize="9.0" bold="true" hTextAlign="Right">
-			<text><![CDATA[IVA%]]></text>
-		</element>
-		<element kind="staticText" uuid="3c951e74-05c4-4303-857a-0458ca89e3b5" x="420" y="3" width="45" height="16" fontSize="9.0" bold="true" hTextAlign="Right">
-			<text><![CDATA[Neto]]></text>
-		</element>
-		<element kind="staticText" uuid="f80997f8-fb89-4f3b-a057-93af9973b769" x="470" y="3" width="40" height="16" fontSize="9.0" bold="true" hTextAlign="Right">
-			<text><![CDATA[Total]]></text>
-		</element>
-	</columnHeader>
-	<detail>
-		<band height="17">
-			<element kind="textField" uuid="de49c258-3d04-4362-9b29-0892a532425f" x="5" y="1" width="50" height="15" fontSize="9.0">
-				<expression><![CDATA[$F{product_code}]]></expression>
-			</element>
-			<element kind="textField" uuid="1ab723e5-06ba-488b-84c5-7f70ae1b4d53" x="60" y="1" width="160" height="15" fontSize="9.0">
-				<expression><![CDATA[$F{description}]]></expression>
-			</element>
-			<element kind="textField" uuid="f8d52110-0688-44f4-96ed-5f926b8ddddb" x="225" y="1" width="40" height="15" fontSize="9.0" hTextAlign="Center">
-				<expression><![CDATA[$F{unit_measure}]]></expression>
-			</element>
-			<element kind="textField" uuid="7ba1cc9e-1db6-45c4-a6a4-158670203f1b" x="270" y="1" width="45" height="15" fontSize="9.0" pattern="#,##0.##" hTextAlign="Right">
-				<expression><![CDATA[$F{quantity}]]></expression>
-			</element>
-			<element kind="textField" uuid="45698fc0-99b1-4952-8b94-58f3b4060c4a" x="320" y="1" width="55" height="15" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-				<expression><![CDATA[$F{unit_price}]]></expression>
-			</element>
-			<element kind="textField" uuid="edf268ba-55f9-49c7-bc04-e9e5e2ca4ec9" x="380" y="1" width="35" height="15" fontSize="9.0" pattern="##0.0%" hTextAlign="Right">
-				<expression><![CDATA[$F{iva_rate}]]></expression>
-			</element>
-			<element kind="textField" uuid="a5e50cdc-4c0a-423c-97d8-d8200eb92f27" x="420" y="1" width="45" height="15" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-				<expression><![CDATA[$F{line_net_amount}]]></expression>
-			</element>
-			<element kind="textField" uuid="2009b900-f4b5-4fa8-ad0f-f8a4d21cd8cc" x="470" y="1" width="40" height="15" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-				<expression><![CDATA[$F{line_total}]]></expression>
-			</element>
-		</band>
-	</detail>
-	<summary height="300">
-		<element kind="rectangle" uuid="3c31c432-d8ea-4905-8728-1c186a270b57" x="10" y="36" width="234" height="16" backcolor="#DBDBDB">
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
-			<property name="com.jaspersoft.studio.unit.width" value="px"/>
-			<pen lineWidth="0.0" lineColor="rgba(0, 0, 0, 0.5411765)"/>
-		</element>
-		<element kind="staticText" uuid="800de0c0-9bf1-4f82-8266-4ff87878feb5" x="15" y="38" width="60" height="12" fontName="Arial" fontSize="9.0" bold="true">
-			<text><![CDATA[Alícuota]]></text>
-		</element>
-		<element kind="staticText" uuid="389e4e5d-b723-46d0-9623-e7890f67f56b" x="85" y="38" width="70" height="12" fontName="Arial" fontSize="9.0" bold="true" hTextAlign="Right">
-			<text><![CDATA[Base Imponible]]></text>
-		</element>
-		<element kind="staticText" uuid="845ad06a-3fad-43d7-97be-7f8908d4d959" x="170" y="38" width="70" height="12" fontName="Arial" fontSize="9.0" bold="true" hTextAlign="Left">
-			<text><![CDATA[Importe]]></text>
-		</element>
-		<element kind="staticText" uuid="ea388860-9552-40dd-8277-9450949bc0f6" x="15" y="54" width="60" height="12" fontName="Arial" fontSize="9.0">
-			<text><![CDATA[10.5%]]></text>
-		</element>
-		<element kind="textField" uuid="f2533096-749b-4183-8cce-d590a280a0d4" x="85" y="54" width="70" height="12" fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_IVA_105_BASE}]]></expression>
-		</element>
-		<element kind="textField" uuid="04997539-a79e-4bf9-a7ee-649a30f0579f" x="170" y="54" width="70" height="12" fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_IVA_105_AMOUNT}]]></expression>
-		</element>
-		<element kind="staticText" uuid="3fa2f724-541c-4e4d-a2fe-8140a3d2f3ea" x="15" y="70" width="60" height="12" fontName="Arial" fontSize="9.0">
-			<text><![CDATA[21.0%]]></text>
-		</element>
-		<element kind="textField" uuid="7453b327-4eb8-4a9c-ab6b-4655385bd971" x="85" y="70" width="70" height="12" fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_IVA_210_BASE}]]></expression>
-		</element>
-		<element kind="textField" uuid="c77bffac-164b-440c-801a-d27b06a175d0" x="170" y="70" width="70" height="12" fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_IVA_210_AMOUNT}]]></expression>
-		</element>
-		<element kind="staticText" uuid="6132143d-d1ab-4b52-ae02-b4098453ae03" x="15" y="88" width="60" height="12" fontName="Arial" fontSize="9.0">
-			<text><![CDATA[27.0%]]></text>
-		</element>
-		<element kind="textField" uuid="cba50eb7-0603-449b-99a8-f78fad792807" x="85" y="88" width="70" height="12" fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_IVA_270_BASE}]]></expression>
-		</element>
-		<element kind="textField" uuid="ae193ba8-9c66-4694-ae52-8b025315574a" x="170" y="88" width="70" height="12" fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_IVA_270_AMOUNT}]]></expression>
-		</element>
-		<element kind="staticText" uuid="8cec64b8-4d18-4edb-8a4a-ffd7302e05e1" x="15" y="104" width="60" height="12" fontName="Arial" fontSize="9.0">
-			<text><![CDATA[0.0% (Exento)]]></text>
-		</element>
-		<element kind="textField" uuid="ca293fd2-bb10-44fc-be35-65b731ec2f95" x="85" y="104" width="70" height="12" fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_IVA_0_BASE}]]></expression>
-		</element>
-		<element kind="staticText" uuid="330b5f09-ec48-415d-8dea-54f0f34189c7" x="295" y="37" width="100" height="14" fontName="Arial" fontSize="11.0" bold="true">
-			<text><![CDATA[OTROS TRIBUTOS]]></text>
-		</element>
-		<element kind="staticText" uuid="f8e23314-df09-4385-94ca-bbac9f5efaf5" x="295" y="54" width="120" height="12" fontName="Arial" fontSize="9.0">
-			<text><![CDATA[Perc. Ing. Brutos:]]></text>
-		</element>
-		<element kind="textField" uuid="392e7a3d-552b-46ac-bfbc-8bc51c656da1" x="420" y="54" width="70" height="12" fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_PERC_IIBB_AMOUNT}]]></expression>
-		</element>
-		<element kind="staticText" uuid="0807ae4c-84d3-4ef1-9857-1cc14c05533b" x="295" y="69" width="120" height="12" fontName="Arial" fontSize="9.0">
-			<text><![CDATA[Perc. IVA:]]></text>
-		</element>
-		<element kind="textField" uuid="bf61c061-c465-425d-a2db-781a85ed2985" x="420" y="69" width="70" height="12" fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_PERC_IVA_AMOUNT}]]></expression>
-		</element>
-		<element kind="staticText" uuid="70af1704-c78c-4e3e-a798-35c1aeebdbce" x="295" y="84" width="120" height="12" fontName="Arial" fontSize="9.0">
-			<text><![CDATA[Perc. Ganancias:]]></text>
-		</element>
-		<element kind="textField" uuid="3e022ab8-59d0-4058-8097-40189bbc8461" x="420" y="84" width="70" height="12" fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_PERC_GANANCIAS_AMOUNT}]]></expression>
-		</element>
-		<element kind="staticText" uuid="7c170895-3fdf-4477-914e-b467f41b0021" x="290" y="144" width="120" height="14" fontSize="11.0" hTextAlign="Right">
-			<text><![CDATA[Subtotal (Neto):]]></text>
-		</element>
-		<element kind="textField" uuid="e570a558-93c8-4f7c-bd68-e73ac3ef4c23" x="420" y="144" width="80" height="14" fontSize="11.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_SUBTOTAL_NETO}]]></expression>
-		</element>
-		<element kind="staticText" uuid="bb4fae2f-c57e-4b1f-a551-aab9f6d966bf" x="290" y="164" width="120" height="14" fontSize="11.0" hTextAlign="Right">
-			<text><![CDATA[IVA Total:]]></text>
-		</element>
-		<element kind="textField" uuid="f2ed31e5-2083-474a-b2e0-955fa13fac7a" x="420" y="164" width="80" height="14" fontSize="11.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_TOTAL_IVA}]]></expression>
-		</element>
-		<element kind="staticText" uuid="bcfddf1b-2b71-4fd4-9c26-5d94d7a5fc8d" x="290" y="184" width="120" height="14" fontSize="11.0" hTextAlign="Right">
-			<text><![CDATA[Otros Tributos:]]></text>
-		</element>
-		<element kind="textField" uuid="1c5dc70b-76ca-4267-ba5a-f1d0decc78a6" x="420" y="184" width="80" height="14" fontSize="11.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_TOTAL_TRIBUTOS}]]></expression>
-		</element>
-		<element kind="staticText" uuid="d7daaad7-d463-45c0-86f0-120ab3445b44" x="290" y="204" width="120" height="14" fontSize="11.0" hTextAlign="Right">
-			<text><![CDATA[Exento:]]></text>
-		</element>
-		<element kind="textField" uuid="4fc66492-539a-4678-8720-df9f343e651f" x="420" y="204" width="80" height="14" fontSize="11.0" pattern="#,##0.00" hTextAlign="Right">
-			<expression><![CDATA[$P{P_TOTAL_EXENTO}]]></expression>
-		</element>
-		<element kind="staticText" uuid="7b386321-82f4-4c5d-bfb2-dc1e66f3402a" x="295" y="232" width="120" height="16" fontSize="12.0" bold="true" hTextAlign="Right">
-			<text><![CDATA[TOTAL:]]></text>
-		</element>
-		<element kind="textField" uuid="15d3931f-f973-442d-9d4f-0697ec7c54f1" x="420" y="231" width="80" height="18" fontSize="12.0" pattern="#,##0.00" bold="true" hTextAlign="Right">
-			<expression><![CDATA[$P{P_TOTAL_FINAL}]]></expression>
-		</element>
-		<element kind="staticText" uuid="f7256e28-52f1-401e-b1a8-87b65be3326f" x="4" y="146" width="40" height="14" fontName="Arial" fontSize="10.0" bold="true">
-			<text><![CDATA[C.A.E.:]]></text>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="textField" uuid="c3dbb164-1005-40fb-9383-12e8683a1b5a" x="44" y="146" width="120" height="14" fontName="Arial" fontSize="10.0">
-			<expression><![CDATA[$P{P_CAE}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="staticText" uuid="5c640edb-82f2-4b94-8e89-678a7f9d8665" x="4" y="164" width="60" height="14" fontName="Arial" fontSize="10.0" bold="true">
-			<text><![CDATA[Vto. C.A.E.:]]></text>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="textField" uuid="4355d530-b211-4b0b-b6dc-965479fabb86" x="64" y="164" width="80" height="14" fontName="Arial" fontSize="10.0">
-			<expression><![CDATA[$P{P_CAE_DUE_DATE}]]></expression>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-		</element>
-		<element kind="image" uuid="aa56a9a7-7216-4d30-9544-e6127ae27bb7" x="175" y="144" width="105" height="105">
-			<expression><![CDATA[$P{P_QR_IMAGE}]]></expression>
-		</element>
-		<element kind="staticText" uuid="b99198cb-ecab-4a14-b1f1-e120ea273084" x="130" y="272" width="230" height="12" fontName="Arial" fontSize="8.0">
-			<text><![CDATA[Comprobante Autorizado por AFIP - Escanear QR para verificar]]></text>
-		</element>
-		<property name="com.jaspersoft.studio.unit.height" value="px"/>
-	</summary>
+<jasperReport name="FacturaElectronica_AFIP" language="java" pageWidth="595" pageHeight="842"
+              whenNoDataType="AllSectionsNoDetail" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="30"
+              bottomMargin="30" uuid="45404c5e-ecf7-40d7-829b-62bf0f314b09">
+    <property name="net.sf.jasperreports.awt.ignore.missing.font" value="false"/>
+    <style name="base" fontName="Arial"/>
+    <style name="h1" style="base" fontSize="16.0" bold="true"/>
+    <style name="h2" style="base" fontSize="12.0" bold="true"/>
+    <style name="small" style="base" fontSize="9.0"/>
+    <style name="th" style="base" bold="true"/>
+    <style name="td" style="base"/>
+    <parameter name="P_SELLER_NAME" class="java.lang.String"/>
+    <parameter name="P_SELLER_ADDRESS" class="java.lang.String"/>
+    <parameter name="P_SELLER_CITY" class="java.lang.String"/>
+    <parameter name="P_SELLER_PROVINCE" class="java.lang.String"/>
+    <parameter name="P_SELLER_POSTAL_CODE" class="java.lang.String"/>
+    <parameter name="P_SELLER_CUIT" class="java.lang.String"/>
+    <parameter name="P_SELLER_IVA_CONDITION" class="java.lang.String"/>
+    <parameter name="P_SELLER_GROSS_INCOME" class="java.lang.String"/>
+    <parameter name="P_SELLER_START_DATE" class="java.lang.String"/>
+    <parameter name="P_SELLER_PHONE" class="java.lang.String"/>
+    <parameter name="P_SELLER_EMAIL" class="java.lang.String"/>
+    <parameter name="P_CLIENT_NAME" class="java.lang.String"/>
+    <parameter name="P_CLIENT_ADDRESS" class="java.lang.String"/>
+    <parameter name="P_CLIENT_CITY" class="java.lang.String"/>
+    <parameter name="P_CLIENT_PROVINCE" class="java.lang.String"/>
+    <parameter name="P_CLIENT_POSTAL_CODE" class="java.lang.String"/>
+    <parameter name="P_CLIENT_CUIT" class="java.lang.String"/>
+    <parameter name="P_CLIENT_IVA_CONDITION" class="java.lang.String"/>
+    <parameter name="P_CLIENT_DOC_TYPE" class="java.lang.String"/>
+    <parameter name="P_CLIENT_DOC_NUMBER" class="java.lang.String"/>
+    <parameter name="P_INVOICE_TYPE" class="java.lang.String"/>
+    <parameter name="P_INVOICE_TYPE_CODE" class="java.lang.String"/>
+    <parameter name="P_INVOICE_NUMBER" class="java.lang.String"/>
+    <parameter name="P_INVOICE_DATE" class="java.lang.String"/>
+    <parameter name="P_SERVICE_DATE_FROM" class="java.lang.String"/>
+    <parameter name="P_SERVICE_DATE_TO" class="java.lang.String"/>
+    <parameter name="P_DUE_DATE" class="java.lang.String"/>
+    <parameter name="P_CURRENCY_CODE" class="java.lang.String"/>
+    <parameter name="P_CURRENCY_RATE" class="java.math.BigDecimal"/>
+    <parameter name="P_POS_NUMBER" class="java.lang.String"/>
+    <parameter name="P_CAE" class="java.lang.String"/>
+    <parameter name="P_CAE_DUE_DATE" class="java.lang.String"/>
+    <parameter name="P_BARCODE" class="java.lang.String"/>
+    <parameter name="P_SUBTOTAL_NETO" class="java.math.BigDecimal"/>
+    <parameter name="P_TOTAL_IVA" class="java.math.BigDecimal"/>
+    <parameter name="P_TOTAL_TRIBUTOS" class="java.math.BigDecimal"/>
+    <parameter name="P_TOTAL_EXENTO" class="java.math.BigDecimal"/>
+    <parameter name="P_TOTAL_FINAL" class="java.math.BigDecimal"/>
+    <parameter name="P_IVA_105_BASE" class="java.math.BigDecimal"/>
+    <parameter name="P_IVA_105_AMOUNT" class="java.math.BigDecimal"/>
+    <parameter name="P_IVA_210_BASE" class="java.math.BigDecimal"/>
+    <parameter name="P_IVA_210_AMOUNT" class="java.math.BigDecimal"/>
+    <parameter name="P_IVA_270_BASE" class="java.math.BigDecimal"/>
+    <parameter name="P_IVA_270_AMOUNT" class="java.math.BigDecimal"/>
+    <parameter name="P_IVA_0_BASE" class="java.math.BigDecimal"/>
+    <parameter name="P_PERC_IIBB_AMOUNT" class="java.math.BigDecimal"/>
+    <parameter name="P_PERC_IVA_AMOUNT" class="java.math.BigDecimal"/>
+    <parameter name="P_PERC_GANANCIAS_AMOUNT" class="java.math.BigDecimal"/>
+    <parameter name="P_IMP_INTERNOS_AMOUNT" class="java.math.BigDecimal"/>
+    <parameter name="P_QR_IMAGE" forPrompting="false" class="java.awt.Image"/>
+    <parameter name="P_TRISQUEL_LOGO" class="java.awt.Image"/>
+    <parameter name="P_SELL_CONDITION" class="java.lang.String"/>
+    <field name="description" class="java.lang.String"/>
+    <field name="quantity" class="java.math.BigDecimal"/>
+    <field name="unit_price" class="java.math.BigDecimal"/>
+    <field name="iva_rate" class="java.math.BigDecimal"/>
+    <field name="line_net_amount" class="java.math.BigDecimal"/>
+    <field name="line_iva_amount" class="java.math.BigDecimal"/>
+    <field name="line_total" class="java.math.BigDecimal"/>
+    <field name="product_code" class="java.lang.String"/>
+    <field name="unit_measure" class="java.lang.String"/>
+    <title height="130">
+        <element kind="rectangle" uuid="8584c0e7-8c48-4a1f-96cd-8e4367528051" x="273" y="21" width="50" height="50">
+            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+            <pen lineWidth="1.0"/>
+        </element>
+        <element kind="textField" uuid="595d772b-5358-4278-a65b-005229c4602f" x="277" y="35" width="42" height="30"
+                 fontSize="20.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+            <expression><![CDATA[$P{P_INVOICE_TYPE_CODE}]]></expression>
+        </element>
+        <element kind="textField" uuid="0e67f106-64be-4c54-be0c-339eaa089749" x="110" y="4" width="155" height="16"
+                 fontName="Arial" fontSize="10.0" bold="true">
+            <expression><![CDATA[$P{P_SELLER_NAME}]]></expression>
+        </element>
+        <element kind="textField" uuid="7940c21c-8f83-4376-901e-96f5078d42ae" x="110" y="54" width="155" height="15"
+                 fontName="Arial" fontSize="10.0">
+            <expression><![CDATA[$P{P_SELLER_ADDRESS}]]></expression>
+        </element>
+        <element kind="textField" uuid="db9945f6-3079-4dda-b44f-d3b7ffeb4134" x="140" y="37" width="125" height="15"
+                 forecolor="rgba(0, 0, 0, 0.88235295)" fontName="Arial" fontSize="10.0">
+            <expression><![CDATA[$P{P_SELLER_PHONE}]]></expression>
+        </element>
+        <element kind="textField" uuid="8cc6eb66-1cc4-4ad4-941c-cbf2e24c168c" x="140" y="88" width="175" height="15"
+                 forecolor="rgba(0, 0, 0, 0.88235295)" fontName="Arial" fontSize="10.0">
+            <expression><![CDATA[$P{P_SELLER_EMAIL}]]></expression>
+        </element>
+        <element kind="textField" uuid="a5faf9cc-fb33-4b6a-a7b5-ba5687a3befa" x="140" y="21" width="125" height="15"
+                 fontName="Arial" fontSize="10.0">
+            <expression><![CDATA[$P{P_SELLER_CUIT}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="textField" uuid="23f0687e-1c40-4f92-a614-78408b1e404a" x="110" y="71" width="155" height="15"
+                 fontName="Arial" fontSize="10.0">
+            <expression><![CDATA[$P{P_SELLER_IVA_CONDITION}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="textField" uuid="c908c727-9530-4d83-80e0-724c57ae3314" x="434" y="58" width="80" height="15"
+                 fontName="Arial" fontSize="10.0">
+            <expression><![CDATA[$P{P_SELLER_GROSS_INCOME}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="textField" uuid="62c16f9a-54c9-4e7a-b3c9-2efd259dded9" x="434" y="40" width="80" height="15"
+                 fontName="Arial" fontSize="10.0">
+            <expression><![CDATA[$P{P_SELLER_START_DATE}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="textField" uuid="6058b42a-8aeb-46ab-915c-db2290da0ed5" x="343" y="77" width="171" height="16"
+                 fontName="Arial" fontSize="10.0">
+            <expression><![CDATA["Pto. Vta: " + $P{P_POS_NUMBER}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="textField" uuid="31d4757d-deb1-4f34-8c45-d6d65eebeef2" x="434" y="22" width="80" height="15"
+                 fontName="Arial" fontSize="10.0">
+            <expression><![CDATA[$P{P_INVOICE_DATE}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="image" uuid="a9a4c547-6d04-4ac1-8d35-bf5c75991f37" x="0" y="0" width="100" height="100">
+            <expression><![CDATA[$P{P_TRISQUEL_LOGO}]]></expression>
+            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+            <property name="com.jaspersoft.studio.unit.x" value="px"/>
+            <property name="com.jaspersoft.studio.unit.y" value="px"/>
+            <box>
+                <topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                <bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+            </box>
+        </element>
+        <element kind="textField" uuid="5e9e0cfb-74d3-4ccc-9018-a9d8efabdeed" x="343" y="5" width="172" height="15"
+                 fontName="Arial" fontSize="10.0">
+            <expression><![CDATA[ "Comp. Nro: " + $P{P_INVOICE_NUMBER}]]></expression>
+        </element>
+        <element kind="staticText" uuid="8a2cb721-2ddf-49e9-b698-6a8c3dcd50ee" x="109" y="21" width="30" height="15"
+                 fontName="Arial" fontSize="10.0" bold="true" hTextAlign="Left">
+            <text><![CDATA[CUIT:]]></text>
+            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="staticText" uuid="42530195-7bb4-4efc-b55a-e0f72777e5e2" x="109" y="37" width="30" height="15"
+                 fontName="Arial" fontSize="10.0" bold="true" hTextAlign="Left">
+            <text><![CDATA[Tel:]]></text>
+            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+        </element>
+        <element kind="staticText" uuid="f53195c0-1d46-4811-b41b-1ee495efc40b" x="343" y="22" width="91" height="15"
+                 fontName="Arial" fontSize="10.0" bold="true">
+            <text><![CDATA[Fecha de emisión:]]></text>
+            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="staticText" uuid="2d6fce47-a19f-458f-b688-1458d799621d" x="343" y="58" width="91" height="15"
+                 fontName="Arial" fontSize="10.0" bold="true">
+            <text><![CDATA[Ingresos brutos:]]></text>
+            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+        </element>
+        <element kind="staticText" uuid="485ebb1c-3deb-4a59-926b-d7390f6e697e" x="343" y="40" width="91" height="15"
+                 markup="none" fontName="Arial" fontSize="10.0" bold="true" strikeThrough="false">
+            <text><![CDATA[Inicio de actividad:]]></text>
+            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+        </element>
+        <element kind="staticText" uuid="9354e437-5bb1-4057-8dda-e7be646ac6f1" x="109" y="88" width="30" height="15"
+                 fontName="Arial" fontSize="10.0" bold="true" hTextAlign="Left">
+            <text><![CDATA[Mail:]]></text>
+            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+        </element>
+        <element kind="staticText" uuid="da550fee-af74-4ef8-b06c-1338ff282156" x="273" y="19" width="50" height="20"
+                 fontName="Arial" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+            <text><![CDATA[Factura]]></text>
+            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+        </element>
+        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+    </title>
+    <pageHeader height="85">
+        <element kind="textField" uuid="43dd7f42-fe02-4235-9356-c51d6dc24741" x="5" y="10" width="250" height="14"
+                 bold="true">
+            <expression><![CDATA[$P{P_CLIENT_NAME}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="textField" uuid="e07c7e1d-189f-4ddd-8b97-aa1f8f477b69" x="5" y="30" width="250" height="14">
+            <expression><![CDATA[$P{P_CLIENT_ADDRESS}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="textField" uuid="88cf3f5a-077d-43ec-baed-48255ee28148" x="260" y="50" width="250" height="14">
+            <expression><![CDATA["Condición de venta: " + $P{P_SELL_CONDITION}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+            <property name="com.jaspersoft.studio.unit.y" value="px"/>
+        </element>
+        <element kind="textField" uuid="9a5ded51-2b8d-4985-8bf4-c3136b108744" x="260" y="10" width="250" height="14">
+            <expression><![CDATA["CUIT: " + $P{P_CLIENT_CUIT}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="textField" uuid="38fb92b4-5e9b-4c20-bac1-bdbb734bf3d5" x="260" y="30" width="250" height="14">
+            <expression><![CDATA["Condición frente al IVA: " + $P{P_CLIENT_IVA_CONDITION}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+            <property name="com.jaspersoft.studio.unit.y" value="px"/>
+        </element>
+        <element kind="line" uuid="1e719d45-9879-4b20-8a91-979f63039160" positionType="FixRelativeToBottom" x="0" y="0"
+                 width="515" height="1">
+            <pen lineStyle="Solid"/>
+        </element>
+        <element kind="line" uuid="2233af70-1493-40e0-85b7-1b1211d21eb2" positionType="FixRelativeToBottom" x="0" y="77"
+                 width="515" height="1">
+            <property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+            <property name="com.jaspersoft.studio.unit.y" value="px"/>
+            <pen lineStyle="Solid"/>
+        </element>
+        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+    </pageHeader>
+    <columnHeader height="22">
+        <element kind="rectangle" uuid="31f11643-36b1-4ffe-b3b2-06878d929d35" x="0" y="0" width="515" height="22"
+                 backcolor="#DBDBDB">
+            <pen lineWidth="0.0"/>
+        </element>
+        <element kind="staticText" uuid="bfb7250d-d942-4f06-8ddd-d005460f7efe" x="5" y="3" width="50" height="16"
+                 fontSize="9.0" bold="true" vTextAlign="Middle">
+            <text><![CDATA[Código]]></text>
+        </element>
+        <element kind="staticText" uuid="7a5f84b9-b788-4c76-b3f8-1568d79ac88d" x="60" y="3" width="160" height="16"
+                 fontSize="9.0" bold="true" vTextAlign="Middle">
+            <text><![CDATA[Descripción]]></text>
+        </element>
+        <element kind="staticText" uuid="85455c00-79fc-487b-afc5-924f29b1d3e7" x="225" y="3" width="40" height="16"
+                 fontSize="9.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+            <text><![CDATA[U.Med]]></text>
+        </element>
+        <element kind="staticText" uuid="913fe384-b409-42d3-bd33-7bb31e08fbe2" x="270" y="3" width="45" height="16"
+                 fontSize="9.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+            <text><![CDATA[Cant.]]></text>
+        </element>
+        <element kind="staticText" uuid="d33528a9-7c66-46a1-a002-6c1ab1b10d47" x="320" y="3" width="55" height="16"
+                 fontSize="9.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+            <text><![CDATA[P. Unit.]]></text>
+        </element>
+        <element kind="staticText" uuid="d0a04041-b706-46e9-b51b-8a2eda23e131" x="380" y="3" width="35" height="16"
+                 fontSize="9.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+            <text><![CDATA[IVA]]></text>
+        </element>
+        <element kind="staticText" uuid="3c951e74-05c4-4303-857a-0458ca89e3b5" x="420" y="3" width="45" height="16"
+                 fontSize="9.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+            <text><![CDATA[Neto]]></text>
+        </element>
+        <element kind="staticText" uuid="f80997f8-fb89-4f3b-a057-93af9973b769" x="470" y="3" width="40" height="16"
+                 fontSize="9.0" bold="true" hTextAlign="Right" vTextAlign="Middle">
+            <text><![CDATA[Total]]></text>
+        </element>
+    </columnHeader>
+    <detail>
+        <band height="17">
+            <element kind="textField" uuid="de49c258-3d04-4362-9b29-0892a532425f" x="5" y="1" width="50" height="15"
+                     fontSize="9.0">
+                <expression><![CDATA[$F{product_code}]]></expression>
+            </element>
+            <element kind="textField" uuid="1ab723e5-06ba-488b-84c5-7f70ae1b4d53" x="60" y="1" width="160" height="15"
+                     fontSize="9.0">
+                <expression><![CDATA[$F{description}]]></expression>
+            </element>
+            <element kind="textField" uuid="f8d52110-0688-44f4-96ed-5f926b8ddddb" x="225" y="1" width="40" height="15"
+                     fontSize="9.0" hTextAlign="Center">
+                <expression><![CDATA[$F{unit_measure}]]></expression>
+            </element>
+            <element kind="textField" uuid="7ba1cc9e-1db6-45c4-a6a4-158670203f1b" x="270" y="1" width="45" height="15"
+                     fontSize="9.0" pattern="#,##0.##" hTextAlign="Right">
+                <expression><![CDATA[$F{quantity}]]></expression>
+            </element>
+            <element kind="textField" uuid="45698fc0-99b1-4952-8b94-58f3b4060c4a" x="320" y="1" width="55" height="15"
+                     fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                <expression><![CDATA[$F{unit_price}]]></expression>
+            </element>
+            <element kind="textField" uuid="edf268ba-55f9-49c7-bc04-e9e5e2ca4ec9" x="380" y="1" width="35" height="15"
+                     fontSize="9.0" pattern="##0.0%" hTextAlign="Right">
+                <expression><![CDATA[$F{iva_rate}]]></expression>
+            </element>
+            <element kind="textField" uuid="a5e50cdc-4c0a-423c-97d8-d8200eb92f27" x="420" y="1" width="45" height="15"
+                     fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                <expression><![CDATA[$F{line_net_amount}]]></expression>
+            </element>
+            <element kind="textField" uuid="2009b900-f4b5-4fa8-ad0f-f8a4d21cd8cc" x="470" y="1" width="40" height="15"
+                     fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                <expression><![CDATA[$F{line_total}]]></expression>
+            </element>
+        </band>
+    </detail>
+    <summary height="300">
+        <element kind="rectangle" uuid="f45c03b9-109b-4a0b-aaf2-f1b81b83f80c" x="297" y="37" width="203" height="16"
+                 backcolor="#DBDBDB">
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+            <property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+            <pen lineWidth="0.0" lineColor="rgba(0, 0, 0, 0.5411765)"/>
+        </element>
+        <element kind="rectangle" uuid="3c31c432-d8ea-4905-8728-1c186a270b57" x="0" y="37" width="234" height="16"
+                 backcolor="#DBDBDB">
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+            <property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+            <pen lineWidth="0.0" lineColor="rgba(0, 0, 0, 0.5411765)"/>
+        </element>
+        <element kind="staticText" uuid="800de0c0-9bf1-4f82-8266-4ff87878feb5" x="5" y="39" width="60" height="12"
+                 fontName="Arial" fontSize="9.0" bold="true">
+            <text><![CDATA[Alícuota]]></text>
+        </element>
+        <element kind="staticText" uuid="389e4e5d-b723-46d0-9623-e7890f67f56b" x="75" y="39" width="70" height="12"
+                 fontName="Arial" fontSize="9.0" bold="true" hTextAlign="Right">
+            <text><![CDATA[Base Imponible]]></text>
+        </element>
+        <element kind="staticText" uuid="845ad06a-3fad-43d7-97be-7f8908d4d959" x="160" y="39" width="70" height="12"
+                 fontName="Arial" fontSize="9.0" bold="true" hTextAlign="Right">
+            <text><![CDATA[Importe]]></text>
+        </element>
+        <element kind="staticText" uuid="ea388860-9552-40dd-8277-9450949bc0f6" x="5" y="55" width="60" height="12"
+                 fontName="Arial" fontSize="9.0">
+            <text><![CDATA[10.5%]]></text>
+        </element>
+        <element kind="textField" uuid="f2533096-749b-4183-8cce-d590a280a0d4" x="75" y="55" width="70" height="12"
+                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_IVA_105_BASE}]]></expression>
+        </element>
+        <element kind="textField" uuid="04997539-a79e-4bf9-a7ee-649a30f0579f" x="160" y="55" width="70" height="12"
+                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_IVA_105_AMOUNT}]]></expression>
+        </element>
+        <element kind="staticText" uuid="3fa2f724-541c-4e4d-a2fe-8140a3d2f3ea" x="5" y="71" width="60" height="12"
+                 fontName="Arial" fontSize="9.0">
+            <text><![CDATA[21.0%]]></text>
+        </element>
+        <element kind="textField" uuid="7453b327-4eb8-4a9c-ab6b-4655385bd971" x="75" y="71" width="70" height="12"
+                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_IVA_210_BASE}]]></expression>
+        </element>
+        <element kind="textField" uuid="c77bffac-164b-440c-801a-d27b06a175d0" x="160" y="71" width="70" height="12"
+                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_IVA_210_AMOUNT}]]></expression>
+        </element>
+        <element kind="staticText" uuid="6132143d-d1ab-4b52-ae02-b4098453ae03" x="5" y="89" width="60" height="12"
+                 fontName="Arial" fontSize="9.0">
+            <text><![CDATA[27.0%]]></text>
+        </element>
+        <element kind="textField" uuid="cba50eb7-0603-449b-99a8-f78fad792807" x="75" y="89" width="70" height="12"
+                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_IVA_270_BASE}]]></expression>
+        </element>
+        <element kind="textField" uuid="ae193ba8-9c66-4694-ae52-8b025315574a" x="160" y="89" width="70" height="12"
+                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_IVA_270_AMOUNT}]]></expression>
+        </element>
+        <element kind="staticText" uuid="8cec64b8-4d18-4edb-8a4a-ffd7302e05e1" x="5" y="105" width="60" height="12"
+                 fontName="Arial" fontSize="9.0">
+            <text><![CDATA[0.0% (Exento)]]></text>
+        </element>
+        <element kind="textField" uuid="ca293fd2-bb10-44fc-be35-65b731ec2f95" x="75" y="105" width="70" height="12"
+                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_IVA_0_BASE}]]></expression>
+        </element>
+        <element kind="staticText" uuid="330b5f09-ec48-415d-8dea-54f0f34189c7" x="302" y="38" width="100" height="14"
+                 fontName="Arial" bold="true" vTextAlign="Middle">
+            <text><![CDATA[Otros tributos]]></text>
+        </element>
+        <element kind="staticText" uuid="f8e23314-df09-4385-94ca-bbac9f5efaf5" x="297" y="55" width="120" height="12"
+                 fontName="Arial" fontSize="9.0">
+            <text><![CDATA[Perc. Ing. Brutos: $]]></text>
+        </element>
+        <element kind="textField" uuid="392e7a3d-552b-46ac-bfbc-8bc51c656da1" x="422" y="55" width="70" height="12"
+                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_PERC_IIBB_AMOUNT}]]></expression>
+        </element>
+        <element kind="staticText" uuid="0807ae4c-84d3-4ef1-9857-1cc14c05533b" x="297" y="70" width="120" height="12"
+                 fontName="Arial" fontSize="9.0">
+            <text><![CDATA[Perc. IVA: $]]></text>
+        </element>
+        <element kind="textField" uuid="bf61c061-c465-425d-a2db-781a85ed2985" x="422" y="70" width="70" height="12"
+                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_PERC_IVA_AMOUNT}]]></expression>
+        </element>
+        <element kind="staticText" uuid="70af1704-c78c-4e3e-a798-35c1aeebdbce" x="297" y="85" width="120" height="12"
+                 fontName="Arial" fontSize="9.0">
+            <text><![CDATA[Perc. Ganancias: $]]></text>
+        </element>
+        <element kind="textField" uuid="3e022ab8-59d0-4058-8097-40189bbc8461" x="422" y="85" width="70" height="12"
+                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_PERC_GANANCIAS_AMOUNT}]]></expression>
+        </element>
+        <element kind="staticText" uuid="7c170895-3fdf-4477-914e-b467f41b0021" x="290" y="144" width="120" height="14"
+                 fontSize="11.0" hTextAlign="Right">
+            <text><![CDATA[Importe neto gravado: $]]></text>
+        </element>
+        <element kind="textField" uuid="e570a558-93c8-4f7c-bd68-e73ac3ef4c23" x="420" y="144" width="80" height="14"
+                 fontSize="11.0" pattern="#,##0.00" linkType="None" linkTarget="Self" hTextAlign="Right">
+            <expression><![CDATA[$P{P_SUBTOTAL_NETO}]]></expression>
+        </element>
+        <element kind="staticText" uuid="bb4fae2f-c57e-4b1f-a551-aab9f6d966bf" x="290" y="164" width="120" height="14"
+                 fontSize="11.0" hTextAlign="Right">
+            <text><![CDATA[IVA Total: $]]></text>
+        </element>
+        <element kind="textField" uuid="f2ed31e5-2083-474a-b2e0-955fa13fac7a" x="420" y="164" width="80" height="14"
+                 fontSize="11.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_TOTAL_IVA}]]></expression>
+        </element>
+        <element kind="staticText" uuid="bcfddf1b-2b71-4fd4-9c26-5d94d7a5fc8d" x="290" y="184" width="120" height="14"
+                 fontSize="11.0" hTextAlign="Right">
+            <text><![CDATA[Otros Tributos: $]]></text>
+        </element>
+        <element kind="textField" uuid="1c5dc70b-76ca-4267-ba5a-f1d0decc78a6" x="420" y="184" width="80" height="14"
+                 fontSize="11.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_TOTAL_TRIBUTOS}]]></expression>
+        </element>
+        <element kind="staticText" uuid="d7daaad7-d463-45c0-86f0-120ab3445b44" x="290" y="204" width="120" height="14"
+                 fontSize="11.0" hTextAlign="Right">
+            <text><![CDATA[Exento: $]]></text>
+        </element>
+        <element kind="textField" uuid="4fc66492-539a-4678-8720-df9f343e651f" x="420" y="204" width="80" height="14"
+                 fontSize="11.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{P_TOTAL_EXENTO}]]></expression>
+        </element>
+        <element kind="staticText" uuid="7b386321-82f4-4c5d-bfb2-dc1e66f3402a" x="295" y="232" width="120" height="16"
+                 fontSize="12.0" bold="true" hTextAlign="Right">
+            <text><![CDATA[TOTAL: $]]></text>
+        </element>
+        <element kind="textField" uuid="15d3931f-f973-442d-9d4f-0697ec7c54f1" x="420" y="231" width="80" height="18"
+                 fontSize="12.0" pattern="#,##0.00" bold="true" hTextAlign="Right">
+            <expression><![CDATA[$P{P_TOTAL_FINAL}]]></expression>
+        </element>
+        <element kind="staticText" uuid="f7256e28-52f1-401e-b1a8-87b65be3326f" x="15" y="251" width="60" height="14"
+                 fontName="Arial" fontSize="10.0" bold="true">
+            <text><![CDATA[C.A.E.:]]></text>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="textField" uuid="c3dbb164-1005-40fb-9383-12e8683a1b5a" x="75" y="251" width="120" height="14"
+                 fontName="Arial" fontSize="10.0">
+            <expression><![CDATA[$P{P_CAE}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="staticText" uuid="5c640edb-82f2-4b94-8e89-678a7f9d8665" x="15" y="268" width="60" height="14"
+                 fontName="Arial" fontSize="10.0" bold="true">
+            <text><![CDATA[Vto. C.A.E.:]]></text>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="textField" uuid="4355d530-b211-4b0b-b6dc-965479fabb86" x="75" y="268" width="120" height="14"
+                 fontName="Arial" fontSize="10.0">
+            <expression><![CDATA[$P{P_CAE_DUE_DATE}]]></expression>
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </element>
+        <element kind="image" uuid="aa56a9a7-7216-4d30-9544-e6127ae27bb7" x="15" y="143" width="105" height="105">
+            <expression><![CDATA[$P{P_QR_IMAGE}]]></expression>
+        </element>
+        <element kind="staticText" uuid="b99198cb-ecab-4a14-b1f1-e120ea273084" x="160" y="284" width="230" height="12"
+                 fontName="Arial" fontSize="8.0">
+            <text><![CDATA[Comprobante Autorizado por AFIP - Escanear QR para verificar]]></text>
+        </element>
+        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+    </summary>
 </jasperReport>

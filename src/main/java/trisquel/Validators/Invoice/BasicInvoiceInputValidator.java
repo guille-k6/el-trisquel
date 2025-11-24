@@ -1,6 +1,7 @@
 package trisquel.Validators.Invoice;
 
 import trisquel.Validators.Validator;
+import trisquel.afip.model.SellCondition;
 import trisquel.model.Dto.InvoiceInputDTO;
 import trisquel.model.Dto.InvoiceItemDTO;
 import trisquel.utils.ValidationErrorItem;
@@ -13,6 +14,7 @@ public class BasicInvoiceInputValidator implements Validator<InvoiceInputDTO> {
     @Override
     public void validate(InvoiceInputDTO invoiceInputDTO, List<ValidationErrorItem> validationErrors) {
         validateInvoiceDate(invoiceInputDTO.getInvoiceDate(), validationErrors);
+        validateInvoiceSellCondition(invoiceInputDTO.getSellCondition(), validationErrors);
         validateClientId(invoiceInputDTO.getClientId(), validationErrors);
         validateInvoiceItems(invoiceInputDTO.getInvoiceItems(), validationErrors);
         validateDbiIds(invoiceInputDTO.getDbiIds(), validationErrors);
@@ -21,6 +23,12 @@ public class BasicInvoiceInputValidator implements Validator<InvoiceInputDTO> {
     private void validateInvoiceDate(LocalDate invoiceDate, List<ValidationErrorItem> validationErrors) {
         if (invoiceDate == null) {
             validationErrors.add(new ValidationErrorItem("Error", "La factura debe tener fecha"));
+        }
+    }
+
+    private void validateInvoiceSellCondition(SellCondition sellCondition, List<ValidationErrorItem> validationErrors) {
+        if (sellCondition == null) {
+            validationErrors.add(new ValidationErrorItem("Error", "La debe tener una condición de venta"));
         }
     }
 

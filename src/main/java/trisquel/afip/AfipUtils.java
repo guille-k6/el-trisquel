@@ -16,7 +16,11 @@ public class AfipUtils {
     }
 
     public static String toAfipNumberFormat(BigDecimal value) {
-        return value.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros().toString();
+        if (value == null) {
+            return "0.00";
+        }
+        // 2 decimales fijos y siempre en formato plano (sin E+6)
+        return value.setScale(2, RoundingMode.HALF_UP).toPlainString();
     }
 
 }

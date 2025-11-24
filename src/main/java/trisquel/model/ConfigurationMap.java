@@ -44,4 +44,8 @@ public class ConfigurationMap {
     public String getValueAsString(String key) {
         return value.get(key).asText();
     }
+
+    public long getValueAsLong(String key) {
+        return value.get(key).asLong();
+    }
 }

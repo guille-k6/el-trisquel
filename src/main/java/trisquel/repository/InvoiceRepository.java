@@ -24,6 +24,11 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>, JpaSpec
     void updateAfipResponseFields(@Param("cae") String cae, @Param("vtoCae") LocalDate vtoCae, @Param("id") Long id);
 
 
+    @Modifying
+    @Query("UPDATE Invoice i SET i.numero = :lastAuthorizedComprobanteNumber WHERE i.id = :id")
+    void updateNumber(@Param("lastAuthorizedComprobanteNumber") Long lastAuthorizedComprobanteNumber,
+                      @Param("id") Long id);
+
     @Query("""
                 SELECT DISTINCT i
                 FROM Invoice i

@@ -10,6 +10,9 @@ import trisquel.afip.service.InvoiceProcessingService;
 import trisquel.afip.service.WsaaService;
 import trisquel.model.Dto.DefaultList;
 
+import java.util.Arrays;
+import java.util.List;
+
 @RestController
 @RequestMapping("/afip")
 public class AfipController {
@@ -39,7 +42,7 @@ public class AfipController {
     public ResponseEntity testLastCBTE() throws Exception {
         try {
             AfipAuth auth = wsaaService.autenticar();
-            Long response = invoiceProcessingService.getLastAuthorizedComprobante(auth, 2L, AfipComprobante.FACT_A);
+            Long response = invoiceProcessingService.getLastAuthorizedComprobante(auth, "3893838338", 2L, AfipComprobante.FACT_A);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,5 +89,9 @@ public class AfipController {
         return ResponseEntity.ok(defaultList);
     }
 
-
+    @GetMapping("condicion-venta")
+    public ResponseEntity<?> sellCondition() {
+        List<SellCondition> sellConditions = Arrays.stream(SellCondition.values()).toList();
+        return ResponseEntity.ok(sellConditions);
+    }
 }

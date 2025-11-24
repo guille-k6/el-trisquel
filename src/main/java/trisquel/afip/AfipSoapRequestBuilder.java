@@ -7,14 +7,14 @@ import trisquel.model.Client;
 import trisquel.model.Invoice;
 import trisquel.model.InvoiceIvaBreakdown;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class AfipSoapRequestBuilder {
     //@formatter:off
-    public static String buildFECAESolicitarRequest(AfipAuth afipAuth, String trisquelCUIT,
+    public static String buildFECAESolicitarRequest(AfipAuth afipAuth, String cuit,
                                              Invoice invoice, Client client,
                                              InvoiceIvaBreakdown invoiceBreakdown, Long lastAuthorizedComprobanteNumber) {
-        final String CUIT = "30717409775"; // TODO: Evitar hardcode y poner el del trisquel.
 
 
         StringBuilder xml = new StringBuilder();
@@ -28,7 +28,7 @@ public class AfipSoapRequestBuilder {
 
         // FECAESolicitar
         xml.append("<ar:FECAESolicitar>");
-        appendAuth(xml, afipAuth, CUIT);
+        appendAuth(xml, afipAuth, cuit);
         appendFeCAEReq(xml, invoice, client, invoiceBreakdown, lastAuthorizedComprobanteNumber);
         xml.append("</ar:FECAESolicitar>");
 
@@ -38,11 +38,11 @@ public class AfipSoapRequestBuilder {
         return xml.toString();
     }
 
-    private static void appendAuth(StringBuilder xml, AfipAuth afipAuth, String trisquelCUIT) {
+    private static void appendAuth(StringBuilder xml, AfipAuth afipAuth, String cuit) {
         xml.append("<ar:Auth>")
             .append("<ar:Token>").append(afipAuth.getToken()).append("</ar:Token>")
             .append("<ar:Sign>").append(afipAuth.getSign()).append("</ar:Sign>")
-            .append("<ar:Cuit>").append(trisquelCUIT).append("</ar:Cuit>")
+            .append("<ar:Cuit>").append(cuit).append("</ar:Cuit>")
         .append("</ar:Auth>");
     }
 
@@ -96,9 +96,16 @@ public class AfipSoapRequestBuilder {
     private static String buildCompactAfipIvaXml(InvoiceIvaBreakdown invoiceBreakdown) {
         StringBuilder xml = new StringBuilder();
         xml.append("<ar:Iva>");
+        boolean hasAlicuotas = false;
         for (Map.Entry<AfipIva, InvoiceIvaBreakdown.IvaData> entry : invoiceBreakdown.getIvaMap().entrySet()) {
             AfipIva tipoIva = entry.getKey();
             InvoiceIvaBreakdown.IvaData ivaData = entry.getValue();
+            BigDecimal base = ivaData.getBaseImponible();
+            BigDecimal importe = ivaData.getImporteIva();
+            if (base.compareTo(BigDecimal.ZERO) == 0 && importe.compareTo(BigDecimal.ZERO) == 0) {
+                continue;
+            }
+            hasAlicuotas = true;
             xml.append("<ar:AlicIva>")
                     .append("<ar:Id>").append(tipoIva.getCode()).append("</ar:Id>")
                     .append("<ar:BaseImp>").append(AfipUtils.toAfipNumberFormat(ivaData.getBaseImponible())).append("</ar:BaseImp>")
@@ -107,6 +114,9 @@ public class AfipSoapRequestBuilder {
         }
 
         xml.append("</ar:Iva>");
+        if (!hasAlicuotas) {
+            return "";
+        }
         return xml.toString();
         //@formatter:on
     }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import trisquel.afip.model.AfipComprobante;
 import trisquel.afip.model.AfipConcepto;
 import trisquel.afip.model.AfipMoneda;
+import trisquel.afip.model.SellCondition;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,6 +38,8 @@ public class Invoice {
     private String cae;
     private LocalDate vtoCae;
     private Long sellPoint = 2L;
+    private SellCondition sellCondition;
+
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<InvoiceItem> items = new ArrayList<>();
 
@@ -175,5 +178,13 @@ public class Invoice {
 
     public void setMoneda(AfipMoneda moneda) {
         this.moneda = moneda;
+    }
+
+    public SellCondition getSellCondition() {
+        return sellCondition;
+    }
+
+    public void setSellCondition(SellCondition sellCondition) {
+        this.sellCondition = sellCondition;
     }
 }
