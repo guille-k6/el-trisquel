@@ -1,6 +1,9 @@
 package trisquel.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +17,7 @@ import trisquel.afip.model.AfipComprobante;
 import trisquel.afip.model.AfipConcepto;
 import trisquel.afip.model.AfipIva;
 import trisquel.afip.model.AfipMoneda;
+import trisquel.async.InvoiceCreatedEvent;
 import trisquel.model.*;
 import trisquel.model.Dto.InvoiceDTO;
 import trisquel.model.Dto.InvoiceInputDTO;
@@ -38,7 +42,7 @@ public class InvoiceService {
     public InvoiceService(InvoiceRepository invoiceRepository, InvoiceItemRepository invoiceItemRepository,
                           DailyBookItemRepository dailyBookItemRepository, DailyBookRepository dailyBookRepository,
                           ClientRepository clientRepository, ProductRepository productRepository,
-                          InvoiceQueueRepository invoiceQueueRepository) {
+                          InvoiceQueueRepository invoiceQueueRepository, ApplicationEventPublisher eventPublisher) {
         this.repository = invoiceRepository;
         this.invoiceItemRepository = invoiceItemRepository;
         this.dailyBookItemRepository = dailyBookItemRepository;
@@ -46,8 +50,10 @@ public class InvoiceService {
         this.clientRepository = clientRepository;
         this.productRepository = productRepository;
         this.invoiceQueueRepository = invoiceQueueRepository;
+        this.eventPublisher = eventPublisher;
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(InvoiceService.class);
     private final InvoiceRepository repository;
     private final InvoiceItemRepository invoiceItemRepository;
     private final DailyBookItemRepository dailyBookItemRepository;
@@ -55,6 +61,8 @@ public class InvoiceService {
     private final ClientRepository clientRepository;
     private final ProductRepository productRepository;
     private final InvoiceQueueRepository invoiceQueueRepository;
+    private final ApplicationEventPublisher eventPublisher;
+
 
     private final Long SELL_POINT = 2L;
 
@@ -88,11 +96,11 @@ public class InvoiceService {
     }
 
     public Optional<Invoice> findInvoiceById(Long id) {
-        Optional<Invoice> invoice = repository.findById(id);
-        if (invoice.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(invoice.get());
+        return repository.findById(id);
+    }
+
+    public Optional<Invoice> findFullInvoiceById(Long id) {
+        return repository.findInvoiceByIdWithDetails(id);
     }
 
     @Transactional(rollbackFor = Throwable.class)
@@ -105,11 +113,11 @@ public class InvoiceService {
             Invoice savedInvoice = repository.save(invoice);
             List<InvoiceItem> processedItems = processInvoiceItems(invoiceInputDTO.getInvoiceItems(), savedInvoice);
             savedInvoice.setItems(processedItems);
-            // InvoicePricing invoicePricing = new InvoicePricing(invoice);
             updateDailyBookItemsInvoices(dbis, savedInvoice.getId());
             invoiceQueueRepository.save(new InvoiceQueue(savedInvoice.getId()));
+            eventPublisher.publishEvent(new InvoiceCreatedEvent(savedInvoice.getId()));
         } catch (Throwable t) {
-            System.out.println(t);
+            logger.warn("Error processing new invoice request", t);
             throw t;
         }
     }

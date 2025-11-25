@@ -7,12 +7,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         jdbc:
           batch_size: 50
-        format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   task:
@@ -24,23 +23,6 @@ spring:
         core-size: 2
         max-size: 5
         queue-capacity: 100
-  mail:
-    host: localhost
-    port: 1025
-    username: hello
-    password: hello
-
-    properties:
-      mail:
-        smtp:
-          ssl:
-            trust: "*"
-          auth: true
-          starttls:
-            enable: true
-          connectiontimeout: 5000
-          timeout: 3000
-          writetimeout: 5000
   jackson:
     serialization:
       write-dates-as-timestamps: false
@@ -57,8 +39,6 @@ springdoc:
     enabled: true
     path: /swagger-ui.html
 afip:
-  #wsaa-url: https://wsaahomo.afip.gov.ar/ws/services/LoginCms
-  #wsfev1-url: https://wswhomo.afip.gov.ar/wsfev1/service.asmx
   certificate-path: classpath:certificates/certificado.crt
   private-key-path: classpath:certificates/trisquelPrivKey.key
   token-expiration-hours: 12

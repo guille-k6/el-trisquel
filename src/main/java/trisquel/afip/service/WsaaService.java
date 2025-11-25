@@ -15,13 +15,10 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
+import trisquel.afip.config.AfipURLs;
 import trisquel.afip.model.AfipAuth;
 import trisquel.afip.repository.AfipAuthRepository;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.net.URI;
@@ -36,7 +33,6 @@ import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,7 +51,6 @@ public class WsaaService {
 
     private final AfipAuthRepository afipAuthRepository;
 
-    private static final String WSAA_URL = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms";
 
     @PostConstruct
     public void init() {
@@ -143,21 +138,11 @@ public class WsaaService {
                 </soapenv:Envelope>
                 """.formatted(base64);
 
-        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder().uri(URI.create(WSAA_URL)).header("Content-Type", "text/xml; charset=utf-8").header("SOAPAction", "").POST(java.net.http.HttpRequest.BodyPublishers.ofString(soap)).build();
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder().uri(URI.create(AfipURLs.WsaaURL)).header("Content-Type", "text/xml; charset=utf-8").header("SOAPAction", "").POST(java.net.http.HttpRequest.BodyPublishers.ofString(soap)).build();
 
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         return response.body();
-    }
-
-    private Map<String, String> extraerCredenciales(String responseXml) throws Exception {
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document doc = builder.parse(new ByteArrayInputStream(responseXml.getBytes(StandardCharsets.UTF_8)));
-
-        String token = doc.getElementsByTagName("token").item(0).getTextContent();
-        String sign = doc.getElementsByTagName("sign").item(0).getTextContent();
-
-        return Map.of("token", token, "sign", sign);
     }
 
     private AfipAuth parseAuthenticationFromResponse(String responseBody) {

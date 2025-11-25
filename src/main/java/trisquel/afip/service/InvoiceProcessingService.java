@@ -4,10 +4,13 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import trisquel.afip.AfipSoapRequestBuilder;
+import trisquel.afip.config.AfipURLs;
 import trisquel.afip.model.AfipAuth;
 import trisquel.afip.model.AfipComprobante;
 import trisquel.model.*;
@@ -23,17 +26,13 @@ import java.util.Optional;
 @Service
 public class InvoiceProcessingService {
 
-    private static final Logger log = LoggerFactory.getLogger(InvoiceProcessingService.class);
+    private static final Logger logger = LoggerFactory.getLogger(InvoiceProcessingService.class);
     private final InvoiceQueueRepository invoiceQueueRepository;
     private final InvoiceService invoiceService;
     private final WsaaService wsaaService;
     private final AfipResponseInterpreterService responseInterpreterService;
     private final RestTemplate restTemplate;
     private final ConfigurationService configurationService;
-
-
-    private final String fecaeUrl = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx";
-    private final String ultCompAuthUrl = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?op=FECompUltimoAutorizado";
 
     public InvoiceProcessingService(InvoiceQueueRepository invoiceQueueRepository, InvoiceService invoiceService,
                                     RestTemplate restTemplate,
@@ -47,47 +46,54 @@ public class InvoiceProcessingService {
         this.configurationService = configurationService;
     }
 
+    @Async
+    @Scheduled(fixedRate = 900000) // every 15min
     public void processQueuedInvoices() {
+        logger.info("Running scheduled invoice processing");
         Optional<ConfigurationMap> orgInfo = configurationService.findByKey("org");
         if (orgInfo.isEmpty()) {
-            // TODO: logger everywhere
-            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("No org info found, skipping invoice processing");
+            return;
         }
         String cuit = orgInfo.get().getValueAsString("cuit");
-        List<InvoiceQueueStatus> statusesToProcess = Arrays.asList(InvoiceQueueStatus.QUEUED, InvoiceQueueStatus.RETRY);
-        List<InvoiceQueue> invoicesToProcess = invoiceQueueRepository.findByStatusInOrderByEnqueuedAtAsc(statusesToProcess);
-        for (InvoiceQueue invoiceQueue : invoicesToProcess) {
-            invoiceQueue.setStatus(InvoiceQueueStatus.BEING_PROCESSED);
-            invoiceQueueRepository.save(invoiceQueue);
-            processInvoice(invoiceQueue, cuit);
+        if (cuit == null || cuit.isEmpty()) {
+            logger.error("CUIT not found, skipping invoice processing");
+            return;
         }
+        List<InvoiceQueue> invoicesToProcess = invoiceQueueRepository.findByStatusInOrderByEnqueuedAtAsc(Arrays.asList(InvoiceQueueStatus.QUEUED, InvoiceQueueStatus.RETRY));
+        if (invoicesToProcess.isEmpty()) {
+            logger.debug("No invoices to process");
+            return;
+        }
+        logger.info("Processing {} invoices", invoicesToProcess.size());
+        for (InvoiceQueue invoiceQueue : invoicesToProcess) {
+            Optional<Invoice> invoice = invoiceService.findFullInvoiceById(invoiceQueue.getInvoiceId());
+            try {
+                invoiceQueue.setStatus(InvoiceQueueStatus.BEING_PROCESSED);
+                invoiceQueueRepository.save(invoiceQueue);
+                processInvoice(invoiceQueue, invoice.get(), cuit);
+            } catch (Exception e) {
+                logger.error("Error processing invoice queue ID {}: {}", invoiceQueue.getId(), e.getMessage(), e);
+                handleReprocessInvoiceQueue(invoiceQueue, invoice.get());
+            }
+        }
+        logger.info("Finished processing invoices");
     }
 
-    private void processInvoice(InvoiceQueue invoiceQueue, String cuit) {
-        try {
-            AfipAuth afipAuth = wsaaService.autenticar();
-            if (afipAuth.getToken() == null && afipAuth.getErrorMessage() != null) {
-                throw new RuntimeException("Fallo en la autenticacion contra AFIP: " + afipAuth.getErrorMessage());
-            }
-            Optional<Invoice> optInvoice = invoiceService.findInvoiceById(invoiceQueue.getInvoiceId());
-            if (optInvoice.isEmpty()) {
-                throw new RuntimeException("Invoice not found: " + invoiceQueue.getInvoiceId());
-            }
-            Invoice invoice = optInvoice.get();
-            Client client = invoice.getClient();
-            InvoiceIvaBreakdown invoiceBreakdown = new InvoiceIvaBreakdown(invoice);
-            Long lastAuthorizedComprobanteNumber = getLastAuthorizedComprobante(afipAuth, cuit, invoice.getSellPoint(), invoice.getComprobante());
-            String request = AfipSoapRequestBuilder.buildFECAESolicitarRequest(afipAuth, cuit, invoice, client, invoiceBreakdown, lastAuthorizedComprobanteNumber);
-            invoiceQueue.setRequest(request);
-            String responseBody = invokeFECAEWithRestTemplate(request);
-            invoiceQueue.setResponse(responseBody);
-            AfipResponseInterpreterService.CaeResponse interpretedResponse = responseInterpreterService.parseFecaeFromResponse(responseBody);
-            handleInvoiceQueueResponseProcess(invoiceQueue, interpretedResponse, invoice, lastAuthorizedComprobanteNumber);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            // TODO: handleProcessingError(invoiceQueue, e.getMessage());
+    private void processInvoice(InvoiceQueue invoiceQueue, Invoice invoice, String cuit) throws Exception {
+        AfipAuth afipAuth = wsaaService.autenticar();
+        if (afipAuth.getToken() == null && afipAuth.getErrorMessage() != null) {
+            throw new RuntimeException("Fallo en la autenticacion contra AFIP: " + afipAuth.getErrorMessage());
         }
+        Client client = invoice.getClient();
+        InvoiceIvaBreakdown invoiceBreakdown = new InvoiceIvaBreakdown(invoice);
+        Long lastAuthorizedComprobanteNumber = getLastAuthorizedComprobante(afipAuth, cuit, invoice.getSellPoint(), invoice.getComprobante());
+        String request = AfipSoapRequestBuilder.buildFECAESolicitarRequest(afipAuth, cuit, invoice, client, invoiceBreakdown, lastAuthorizedComprobanteNumber);
+        invoiceQueue.setRequest(request);
+        String responseBody = invokeFECAEWithRestTemplate(request);
+        invoiceQueue.setResponse(responseBody);
+        AfipResponseInterpreterService.CaeResponse interpretedResponse = responseInterpreterService.parseFecaeFromResponse(responseBody);
+        handleInvoiceQueueResponseProcess(invoiceQueue, interpretedResponse, invoice, lastAuthorizedComprobanteNumber);
     }
 
     @Transactional
@@ -103,9 +109,13 @@ public class InvoiceProcessingService {
             invoiceService.updateAfipFields(invoice, interpretedResponse.getCae(), interpretedResponse.getFechaVencimientoCae());
             invoiceService.updateInvoiceStatus(invoice, InvoiceQueueStatus.COMPLETED);
             invoiceService.updateInvoiceNumber(invoice, lastAuthorizedComprobanteNumber);
-            return;
+        } else {
+            // Handle invoice that needs reprocess or failed for some reason. I think there may be cases where timeouts, etc.
+            handleReprocessInvoiceQueue(invoiceQueue, invoice);
         }
-        // Handle invoice that needs reprocess or failed for some reason. I think there may be cases where timeouts, etc.
+    }
+
+    private void handleReprocessInvoiceQueue(InvoiceQueue invoiceQueue, Invoice invoice) {
         invoiceQueue.setStatus(InvoiceQueueStatus.FAILED);
         invoiceQueue.incrementRetryCount();
         invoiceQueueRepository.save(invoiceQueue);
@@ -123,13 +133,13 @@ public class InvoiceProcessingService {
     private String invokeFECAEWithRestTemplate(String soapRequest) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_XML);
-        headers.set("SOAPAction", "http://ar.gov.afip.dif.FEV1/FECAESolicitar");
+        headers.set("SOAPAction", AfipURLs.fecaeSolicitarAction);
         headers.set("Content-Type", "text/xml; charset=utf-8");
 
         HttpEntity<String> requestEntity = new HttpEntity<>(soapRequest, headers);
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(fecaeUrl, HttpMethod.POST, requestEntity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(AfipURLs.fecaeUrl, HttpMethod.POST, requestEntity, String.class);
             return response.getBody();
         } catch (HttpServerErrorException e) {
             e.printStackTrace();
@@ -145,13 +155,13 @@ public class InvoiceProcessingService {
         String request = AfipSoapRequestBuilder.buildFECompUltimoAutorizadoRequest(afipAuth, cuit, sellPoint, comprobante);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_XML);
-        headers.set("SOAPAction", "http://ar.gov.afip.dif.FEV1/FECompUltimoAutorizado");
+        headers.set("SOAPAction", AfipURLs.FECompUltimoAutorizadoAction);
         headers.set("Content-Type", "text/xml; charset=utf-8");
 
         HttpEntity<String> requestEntity = new HttpEntity<>(request, headers);
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(ultCompAuthUrl, HttpMethod.POST, requestEntity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(AfipURLs.ultCompAuthUrl, HttpMethod.POST, requestEntity, String.class);
             String responseBody = response.getBody();
             Long lastAuthorizedComprobanteNumber = AfipResponseInterpreterService.getNumberFECompUltimoAutorizado(responseBody);
             return lastAuthorizedComprobanteNumber;

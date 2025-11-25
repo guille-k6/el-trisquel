@@ -12,6 +12,7 @@ import trisquel.model.InvoiceQueueStatus;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface InvoiceRepository extends JpaRepository<Invoice, Long>, JpaSpecificationExecutor<Invoice> {
@@ -23,6 +24,8 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>, JpaSpec
     @Query("UPDATE Invoice i SET i.cae = :cae, i.vtoCae = :vtoCae WHERE i.id = :id")
     void updateAfipResponseFields(@Param("cae") String cae, @Param("vtoCae") LocalDate vtoCae, @Param("id") Long id);
 
+    @Query("SELECT i FROM Invoice i " + "LEFT JOIN FETCH i.items items " + "LEFT JOIN FETCH items.product " + "LEFT JOIN FETCH i.client " + "WHERE i.id = :id")
+    Optional<Invoice> findInvoiceByIdWithDetails(@Param("id") Long id);
 
     @Modifying
     @Query("UPDATE Invoice i SET i.numero = :lastAuthorizedComprobanteNumber WHERE i.id = :id")
