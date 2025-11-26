@@ -8,4 +8,7 @@ public class AfipURLs {
     public static final String fecaeSolicitarAction = "http://ar.gov.afip.dif.FEV1/FECAESolicitar";
     public static final String FECompUltimoAutorizadoAction = "http://ar.gov.afip.dif.FEV1/FECompUltimoAutorizado";
 
+    //
+    public static final Long sellPoint = 2L;
+
 }

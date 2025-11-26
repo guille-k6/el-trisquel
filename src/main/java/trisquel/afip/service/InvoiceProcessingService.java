@@ -62,7 +62,7 @@ public class InvoiceProcessingService {
         }
         List<InvoiceQueue> invoicesToProcess = invoiceQueueRepository.findByStatusInOrderByEnqueuedAtAsc(Arrays.asList(InvoiceQueueStatus.QUEUED, InvoiceQueueStatus.RETRY));
         if (invoicesToProcess.isEmpty()) {
-            logger.debug("No invoices to process");
+            logger.info("No invoices to process");
             return;
         }
         logger.info("Processing {} invoices", invoicesToProcess.size());

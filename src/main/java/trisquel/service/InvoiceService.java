@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trisquel.Validators.Invoice.*;
 import trisquel.Validators.Validator;
+import trisquel.afip.config.AfipURLs;
 import trisquel.afip.model.AfipComprobante;
 import trisquel.afip.model.AfipConcepto;
 import trisquel.afip.model.AfipIva;
@@ -62,9 +63,6 @@ public class InvoiceService {
     private final ProductRepository productRepository;
     private final InvoiceQueueRepository invoiceQueueRepository;
     private final ApplicationEventPublisher eventPublisher;
-
-
-    private final Long SELL_POINT = 2L;
 
     public Page<InvoiceDTO> findAll(int page, LocalDate dateFrom, LocalDate dateTo, Long clientId,
                                     InvoiceQueueStatus status) {
@@ -148,7 +146,7 @@ public class InvoiceService {
         invoice.setComprobante(AfipComprobante.FACT_A);
         invoice.setConcepto(AfipConcepto.PRODUCTO);
         invoice.setMoneda(AfipMoneda.PESO);
-        invoice.setSellPoint(SELL_POINT);
+        invoice.setSellPoint(AfipURLs.sellPoint);
         invoice.setSellCondition(dto.getSellCondition());
         return invoice;
     }

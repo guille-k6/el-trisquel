@@ -102,8 +102,8 @@ public class InvoiceReportService {
         // Comprobante
         p.put("P_INVOICE_TYPE", invoice.getComprobante().getDescription());
         p.put("P_INVOICE_TYPE_CODE", invoice.getComprobante().getLetter());
-        p.put("P_POS_NUMBER", invoice.getSellPoint().toString());
-        p.put("P_INVOICE_NUMBER", invoice.getNumero().toString());
+        p.put("P_POS_NUMBER", addZeroes(invoice.getSellPoint().toString(), 5));
+        p.put("P_INVOICE_NUMBER", addZeroes(invoice.getNumero().toString(), 8));
         p.put("P_INVOICE_DATE", d(invoice.getDate()));
         p.put("P_SELL_CONDITION", invoice.getSellCondition().getName());
         // Moneda
@@ -146,6 +146,14 @@ public class InvoiceReportService {
 
     private static String d(LocalDate d) {
         return String.format("%02d/%02d/%d", d.getDayOfMonth(), d.getMonthValue(), d.getYear());
+    }
+
+    private String addZeroes(String posNumber, int precision) {
+        int zeroesNeeded = precision - posNumber.length();
+        for (int i = 0; i < zeroesNeeded; i++) {
+            posNumber = "0" + posNumber;
+        }
+        return posNumber;
     }
 
     private BufferedImage generateQrImage(String text, int size) {
