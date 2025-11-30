@@ -48,4 +48,6 @@ afip:
   key:
     path: src/main/resources/certificates/MiClavePrivada.key
   service: wsfe
-
+jwt:
+  secret: HFC#Vf9NgCu/m70E,{Zf^w6Nvc5AHBttv_rm1hK8?l!
+  expiration: 86400000 # 86400000 ms = 24 horas
