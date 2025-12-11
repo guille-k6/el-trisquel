@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/el_trisquel
-    username: mainuser
-    password: root
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB:el_trisquel}
+    username: ${POSTGRES_USER:mainuser}
+    password: ${POSTGRES_PASSWORD:root}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -39,15 +39,16 @@ springdoc:
     enabled: true
     path: /swagger-ui.html
 afip:
-  certificate-path: classpath:certificates/certificado.crt
-  private-key-path: classpath:certificates/trisquelPrivKey.key
-  token-expiration-hours: 12
-  max-retries: 3
   cert:
-    path: src/main/resources/certificates/certpem.pem
+    path: ${AFIP_CERT_PATH:classpath:certificates/certpem.pem}
   key:
-    path: src/main/resources/certificates/MiClavePrivada.key
+    path: ${AFIP_KEY_PATH:classpath:certificates/MiClavePrivada.key}
   service: wsfe
 jwt:
-  secret: HFC#Vf9NgCu/m70E,{Zf^w6Nvc5AHBttv_rm1hK8?l!
-  expiration: 86400000 # 86400000 ms = 24 horas
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}
+report:
+  invoice:
+    path: ${INVOICE_A_PATH:classpath:reports/Factura_A_A4.jrxml}
+  logo:
+    path: ${INVOICE_LOGO_PATH:classpath:image/trisquellogo.jpg}

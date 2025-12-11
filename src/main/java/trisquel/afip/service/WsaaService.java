@@ -14,13 +14,14 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import trisquel.afip.config.AfipURLs;
 import trisquel.afip.model.AfipAuth;
 import trisquel.afip.repository.AfipAuthRepository;
 
-import java.io.FileInputStream;
-import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
@@ -40,11 +41,8 @@ import java.util.regex.Pattern;
 @Service
 public class WsaaService {
 
-    @Value("${afip.cert.path}")
-    private String certPath;
-
-    @Value("${afip.key.path}")
-    private String keyPath;
+    private final Resource certResource;
+    private final Resource keyResource;
 
     @Value("${afip.service}")
     private String service;
@@ -57,8 +55,11 @@ public class WsaaService {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
     }
 
-    WsaaService(AfipAuthRepository afipAuthRepository) {
+    WsaaService(AfipAuthRepository afipAuthRepository, @Value("${afip.cert.path}") Resource certResource,
+                @Value("${afip.key.path}") Resource keyResource) {
         this.afipAuthRepository = afipAuthRepository;
+        this.certResource = certResource;
+        this.keyResource = keyResource;
     }
 
     public AfipAuth autenticar() throws Exception {
@@ -94,7 +95,7 @@ public class WsaaService {
 
     private byte[] firmarTRA(String traXml) throws Exception {
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        X509Certificate cert = (X509Certificate) cf.generateCertificate(new FileInputStream(certPath));
+        X509Certificate cert = (X509Certificate) cf.generateCertificate(certResource.getInputStream());
         PrivateKey privateKey = cargarClavePrivada();
 
         CMSProcessableByteArray content = new CMSProcessableByteArray(traXml.getBytes(StandardCharsets.UTF_8));
@@ -109,7 +110,8 @@ public class WsaaService {
     }
 
     private PrivateKey cargarClavePrivada() throws Exception {
-        try (PEMParser pemParser = new PEMParser(new FileReader(keyPath))) {
+        try (Reader reader = new InputStreamReader(keyResource.getInputStream(), StandardCharsets.UTF_8); PEMParser pemParser = new PEMParser(reader)) {
+
             Object object = pemParser.readObject();
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
 

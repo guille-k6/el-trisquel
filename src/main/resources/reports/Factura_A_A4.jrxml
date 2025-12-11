@@ -3,7 +3,7 @@
               whenNoDataType="AllSectionsNoDetail" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="30"
               bottomMargin="30" uuid="45404c5e-ecf7-40d7-829b-62bf0f314b09">
     <property name="net.sf.jasperreports.awt.ignore.missing.font" value="false"/>
-    <style name="base" fontName="Arial"/>
+    <style name="base" fontName="SansSerif"/>
     <style name="h1" style="base" fontSize="16.0" bold="true"/>
     <style name="h2" style="base" fontSize="12.0" bold="true"/>
     <style name="small" style="base" fontSize="9.0"/>
@@ -80,48 +80,48 @@
             <expression><![CDATA[$P{P_INVOICE_TYPE_CODE}]]></expression>
         </element>
         <element kind="textField" uuid="0e67f106-64be-4c54-be0c-339eaa089749" x="109" y="12" width="155" height="16"
-                 fontName="Arial" fontSize="10.0" bold="true">
+                 fontName="SansSerif" fontSize="10.0" bold="true">
             <expression><![CDATA[$P{P_SELLER_NAME}]]></expression>
         </element>
         <element kind="textField" uuid="7940c21c-8f83-4376-901e-96f5078d42ae" x="109" y="58" width="231" height="15"
-                 fontName="Arial" fontSize="10.0">
+                 fontName="SansSerif" fontSize="10.0">
             <expression><![CDATA[$P{P_SELLER_ADDRESS}]]></expression>
         </element>
         <element kind="textField" uuid="db9945f6-3079-4dda-b44f-d3b7ffeb4134" x="140" y="43" width="125" height="15"
-                 forecolor="rgba(0, 0, 0, 0.88235295)" fontName="Arial" fontSize="10.0">
+                 forecolor="rgba(0, 0, 0, 0.88235295)" fontName="SansSerif" fontSize="10.0">
             <expression><![CDATA[$P{P_SELLER_PHONE}]]></expression>
         </element>
         <element kind="textField" uuid="8cc6eb66-1cc4-4ad4-941c-cbf2e24c168c" x="140" y="73" width="200" height="15"
-                 forecolor="rgba(0, 0, 0, 0.88235295)" fontName="Arial" fontSize="10.0">
+                 forecolor="rgba(0, 0, 0, 0.88235295)" fontName="SansSerif" fontSize="10.0">
             <expression><![CDATA[$P{P_SELLER_EMAIL}]]></expression>
         </element>
         <element kind="textField" uuid="a5faf9cc-fb33-4b6a-a7b5-ba5687a3befa" x="140" y="28" width="125" height="15"
-                 fontName="Arial" fontSize="10.0">
+                 fontName="SansSerif" fontSize="10.0">
             <expression><![CDATA[$P{P_SELLER_CUIT}]]></expression>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
         <element kind="textField" uuid="23f0687e-1c40-4f92-a614-78408b1e404a" x="109" y="88" width="231" height="15"
-                 fontName="Arial" fontSize="10.0">
+                 fontName="SansSerif" fontSize="10.0">
             <expression><![CDATA["IVA: " + $P{P_SELLER_IVA_CONDITION}]]></expression>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
-        <element kind="textField" uuid="c908c727-9530-4d83-80e0-724c57ae3314" x="434" y="57" width="80" height="15"
-                 fontName="Arial" fontSize="10.0">
+        <element kind="textField" uuid="c908c727-9530-4d83-80e0-724c57ae3314" x="440" y="57" width="74" height="15"
+                 fontName="SansSerif" fontSize="10.0">
             <expression><![CDATA[$P{P_SELLER_GROSS_INCOME}]]></expression>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
-        <element kind="textField" uuid="62c16f9a-54c9-4e7a-b3c9-2efd259dded9" x="434" y="42" width="80" height="15"
-                 fontName="Arial" fontSize="10.0">
+        <element kind="textField" uuid="62c16f9a-54c9-4e7a-b3c9-2efd259dded9" x="440" y="42" width="74" height="15"
+                 fontName="SansSerif" fontSize="10.0">
             <expression><![CDATA[$P{P_SELLER_START_DATE}]]></expression>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
         <element kind="textField" uuid="6058b42a-8aeb-46ab-915c-db2290da0ed5" x="343" y="72" width="171" height="16"
-                 fontName="Arial" fontSize="10.0">
+                 fontName="SansSerif" fontSize="10.0">
             <expression><![CDATA["Pto. Vta: " + $P{P_POS_NUMBER}]]></expression>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
-        <element kind="textField" uuid="31d4757d-deb1-4f34-8c45-d6d65eebeef2" x="434" y="27" width="80" height="15"
-                 fontName="Arial" fontSize="10.0">
+        <element kind="textField" uuid="31d4757d-deb1-4f34-8c45-d6d65eebeef2" x="440" y="27" width="74" height="15"
+                 fontName="SansSerif" fontSize="10.0">
             <expression><![CDATA[$P{P_INVOICE_DATE}]]></expression>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
@@ -139,44 +139,44 @@
             </box>
         </element>
         <element kind="textField" uuid="5e9e0cfb-74d3-4ccc-9018-a9d8efabdeed" x="343" y="12" width="172" height="15"
-                 fontName="Arial" fontSize="10.0" bold="true">
-            <expression>
-                <![CDATA["Factura " + $P{P_INVOICE_TYPE_CODE} + " " + $P{P_POS_NUMBER} +  "-" + $P{P_INVOICE_NUMBER}]]></expression>
+                 fontName="SansSerif" fontSize="10.0" bold="true">
+            <expression><![CDATA[
+                "Factura " + $P{P_INVOICE_TYPE_CODE} + " " + $P{P_POS_NUMBER} +  "-" + $P{P_INVOICE_NUMBER}]]></expression>
         </element>
         <element kind="staticText" uuid="8a2cb721-2ddf-49e9-b698-6a8c3dcd50ee" x="109" y="28" width="30" height="15"
-                 fontName="Arial" fontSize="10.0" bold="true" hTextAlign="Left">
+                 fontName="SansSerif" fontSize="10.0" bold="true" hTextAlign="Left">
             <text><![CDATA[CUIT:]]></text>
             <property name="com.jaspersoft.studio.unit.width" value="px"/>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
         <element kind="staticText" uuid="42530195-7bb4-4efc-b55a-e0f72777e5e2" x="109" y="43" width="30" height="15"
-                 fontName="Arial" fontSize="10.0" bold="true" hTextAlign="Left">
+                 fontName="SansSerif" fontSize="10.0" bold="true" hTextAlign="Left">
             <text><![CDATA[Tel:]]></text>
             <property name="com.jaspersoft.studio.unit.width" value="px"/>
         </element>
-        <element kind="staticText" uuid="f53195c0-1d46-4811-b41b-1ee495efc40b" x="343" y="27" width="91" height="15"
-                 fontName="Arial" fontSize="10.0" bold="true">
+        <element kind="staticText" uuid="f53195c0-1d46-4811-b41b-1ee495efc40b" x="343" y="27" width="97" height="15"
+                 fontName="SansSerif" fontSize="10.0" bold="true">
             <text><![CDATA[Fecha de emisión:]]></text>
             <property name="com.jaspersoft.studio.unit.width" value="px"/>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
-        <element kind="staticText" uuid="2d6fce47-a19f-458f-b688-1458d799621d" x="343" y="57" width="91" height="15"
-                 fontName="Arial" fontSize="10.0" bold="true">
+        <element kind="staticText" uuid="2d6fce47-a19f-458f-b688-1458d799621d" x="343" y="57" width="97" height="15"
+                 fontName="SansSerif" fontSize="10.0" bold="true">
             <text><![CDATA[Ingresos brutos:]]></text>
             <property name="com.jaspersoft.studio.unit.width" value="px"/>
         </element>
-        <element kind="staticText" uuid="485ebb1c-3deb-4a59-926b-d7390f6e697e" x="343" y="42" width="91" height="15"
-                 markup="none" fontName="Arial" fontSize="10.0" bold="true" strikeThrough="false">
+        <element kind="staticText" uuid="485ebb1c-3deb-4a59-926b-d7390f6e697e" x="343" y="42" width="97" height="15"
+                 markup="none" fontName="SansSerif" fontSize="10.0" bold="true" strikeThrough="false">
             <text><![CDATA[Inicio de actividad:]]></text>
             <property name="com.jaspersoft.studio.unit.width" value="px"/>
         </element>
         <element kind="staticText" uuid="9354e437-5bb1-4057-8dda-e7be646ac6f1" x="109" y="73" width="30" height="15"
-                 fontName="Arial" fontSize="10.0" bold="true" hTextAlign="Left">
+                 fontName="SansSerif" fontSize="10.0" bold="true" hTextAlign="Left">
             <text><![CDATA[Mail:]]></text>
             <property name="com.jaspersoft.studio.unit.width" value="px"/>
         </element>
         <element kind="textField" uuid="0070ff98-f4bf-4696-8796-0e10ee8d7b60" x="343" y="88" width="171" height="16"
-                 fontName="Arial" fontSize="10.0">
+                 fontName="SansSerif" fontSize="10.0">
             <expression><![CDATA["Cbte N°: " + $P{P_INVOICE_NUMBER}]]></expression>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
@@ -309,87 +309,87 @@
             <pen lineWidth="0.0" lineColor="rgba(0, 0, 0, 0.5411765)"/>
         </element>
         <element kind="staticText" uuid="800de0c0-9bf1-4f82-8266-4ff87878feb5" x="5" y="39" width="60" height="12"
-                 fontName="Arial" fontSize="9.0" bold="true">
+                 fontName="SansSerif" fontSize="9.0" bold="true">
             <text><![CDATA[Alícuota]]></text>
         </element>
         <element kind="staticText" uuid="389e4e5d-b723-46d0-9623-e7890f67f56b" x="75" y="39" width="70" height="12"
-                 fontName="Arial" fontSize="9.0" bold="true" hTextAlign="Right">
+                 fontName="SansSerif" fontSize="9.0" bold="true" hTextAlign="Right">
             <text><![CDATA[Base Imponible]]></text>
         </element>
         <element kind="staticText" uuid="845ad06a-3fad-43d7-97be-7f8908d4d959" x="160" y="39" width="70" height="12"
-                 fontName="Arial" fontSize="9.0" bold="true" hTextAlign="Right">
+                 fontName="SansSerif" fontSize="9.0" bold="true" hTextAlign="Right">
             <text><![CDATA[Importe]]></text>
         </element>
         <element kind="staticText" uuid="ea388860-9552-40dd-8277-9450949bc0f6" x="5" y="55" width="60" height="12"
-                 fontName="Arial" fontSize="9.0">
+                 fontName="SansSerif" fontSize="9.0">
             <text><![CDATA[10.5%]]></text>
         </element>
         <element kind="textField" uuid="f2533096-749b-4183-8cce-d590a280a0d4" x="75" y="55" width="70" height="12"
-                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                 fontName="SansSerif" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
             <expression><![CDATA[$P{P_IVA_105_BASE}]]></expression>
         </element>
         <element kind="textField" uuid="04997539-a79e-4bf9-a7ee-649a30f0579f" x="160" y="55" width="70" height="12"
-                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                 fontName="SansSerif" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
             <expression><![CDATA[$P{P_IVA_105_AMOUNT}]]></expression>
         </element>
         <element kind="staticText" uuid="3fa2f724-541c-4e4d-a2fe-8140a3d2f3ea" x="5" y="71" width="60" height="12"
-                 fontName="Arial" fontSize="9.0">
+                 fontName="SansSerif" fontSize="9.0">
             <text><![CDATA[21.0%]]></text>
         </element>
         <element kind="textField" uuid="7453b327-4eb8-4a9c-ab6b-4655385bd971" x="75" y="71" width="70" height="12"
-                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                 fontName="SansSerif" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
             <expression><![CDATA[$P{P_IVA_210_BASE}]]></expression>
         </element>
         <element kind="textField" uuid="c77bffac-164b-440c-801a-d27b06a175d0" x="160" y="71" width="70" height="12"
-                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                 fontName="SansSerif" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
             <expression><![CDATA[$P{P_IVA_210_AMOUNT}]]></expression>
         </element>
         <element kind="staticText" uuid="6132143d-d1ab-4b52-ae02-b4098453ae03" x="5" y="89" width="60" height="12"
-                 fontName="Arial" fontSize="9.0">
+                 fontName="SansSerif" fontSize="9.0">
             <text><![CDATA[27.0%]]></text>
         </element>
         <element kind="textField" uuid="cba50eb7-0603-449b-99a8-f78fad792807" x="75" y="89" width="70" height="12"
-                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                 fontName="SansSerif" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
             <expression><![CDATA[$P{P_IVA_270_BASE}]]></expression>
         </element>
         <element kind="textField" uuid="ae193ba8-9c66-4694-ae52-8b025315574a" x="160" y="89" width="70" height="12"
-                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                 fontName="SansSerif" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
             <expression><![CDATA[$P{P_IVA_270_AMOUNT}]]></expression>
         </element>
         <element kind="staticText" uuid="8cec64b8-4d18-4edb-8a4a-ffd7302e05e1" x="5" y="105" width="60" height="12"
-                 fontName="Arial" fontSize="9.0">
+                 fontName="SansSerif" fontSize="9.0">
             <text><![CDATA[0.0% (Exento)]]></text>
         </element>
         <element kind="textField" uuid="ca293fd2-bb10-44fc-be35-65b731ec2f95" x="75" y="105" width="70" height="12"
-                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                 fontName="SansSerif" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
             <expression><![CDATA[$P{P_IVA_0_BASE}]]></expression>
         </element>
         <element kind="staticText" uuid="330b5f09-ec48-415d-8dea-54f0f34189c7" x="302" y="38" width="100" height="14"
-                 fontName="Arial" bold="true" vTextAlign="Middle">
+                 fontName="SansSerif" bold="true" vTextAlign="Middle">
             <text><![CDATA[Otros tributos]]></text>
         </element>
         <element kind="staticText" uuid="f8e23314-df09-4385-94ca-bbac9f5efaf5" x="297" y="55" width="120" height="12"
-                 fontName="Arial" fontSize="9.0">
+                 fontName="SansSerif" fontSize="9.0">
             <text><![CDATA[Perc. Ing. Brutos: $]]></text>
         </element>
         <element kind="textField" uuid="392e7a3d-552b-46ac-bfbc-8bc51c656da1" x="422" y="55" width="70" height="12"
-                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                 fontName="SansSerif" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
             <expression><![CDATA[$P{P_PERC_IIBB_AMOUNT}]]></expression>
         </element>
         <element kind="staticText" uuid="0807ae4c-84d3-4ef1-9857-1cc14c05533b" x="297" y="70" width="120" height="12"
-                 fontName="Arial" fontSize="9.0">
+                 fontName="SansSerif" fontSize="9.0">
             <text><![CDATA[Perc. IVA: $]]></text>
         </element>
         <element kind="textField" uuid="bf61c061-c465-425d-a2db-781a85ed2985" x="422" y="70" width="70" height="12"
-                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                 fontName="SansSerif" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
             <expression><![CDATA[$P{P_PERC_IVA_AMOUNT}]]></expression>
         </element>
         <element kind="staticText" uuid="70af1704-c78c-4e3e-a798-35c1aeebdbce" x="297" y="85" width="120" height="12"
-                 fontName="Arial" fontSize="9.0">
+                 fontName="SansSerif" fontSize="9.0">
             <text><![CDATA[Perc. Ganancias: $]]></text>
         </element>
         <element kind="textField" uuid="3e022ab8-59d0-4058-8097-40189bbc8461" x="422" y="85" width="70" height="12"
-                 fontName="Arial" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
+                 fontName="SansSerif" fontSize="9.0" pattern="#,##0.00" hTextAlign="Right">
             <expression><![CDATA[$P{P_PERC_GANANCIAS_AMOUNT}]]></expression>
         </element>
         <element kind="staticText" uuid="7c170895-3fdf-4477-914e-b467f41b0021" x="290" y="144" width="120" height="14"
@@ -433,30 +433,30 @@
             <expression><![CDATA[$P{P_TOTAL_FINAL}]]></expression>
         </element>
         <element kind="staticText" uuid="f7256e28-52f1-401e-b1a8-87b65be3326f" x="15" y="251" width="60" height="14"
-                 fontName="Arial" fontSize="10.0" bold="true">
+                 fontName="SansSerif" fontSize="10.0" bold="true">
             <text><![CDATA[C.A.E.:]]></text>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
         <element kind="textField" uuid="c3dbb164-1005-40fb-9383-12e8683a1b5a" x="75" y="251" width="120" height="14"
-                 fontName="Arial" fontSize="10.0">
+                 fontName="SansSerif" fontSize="10.0">
             <expression><![CDATA[$P{P_CAE}]]></expression>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
         <element kind="staticText" uuid="5c640edb-82f2-4b94-8e89-678a7f9d8665" x="15" y="268" width="60" height="14"
-                 fontName="Arial" fontSize="10.0" bold="true">
+                 fontName="SansSerif" fontSize="10.0" bold="true">
             <text><![CDATA[Vto. C.A.E.:]]></text>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
         <element kind="textField" uuid="4355d530-b211-4b0b-b6dc-965479fabb86" x="75" y="268" width="120" height="14"
-                 fontName="Arial" fontSize="10.0">
+                 fontName="SansSerif" fontSize="10.0">
             <expression><![CDATA[$P{P_CAE_DUE_DATE}]]></expression>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
         </element>
         <element kind="image" uuid="aa56a9a7-7216-4d30-9544-e6127ae27bb7" x="15" y="143" width="105" height="105">
             <expression><![CDATA[$P{P_QR_IMAGE}]]></expression>
         </element>
-        <element kind="staticText" uuid="b99198cb-ecab-4a14-b1f1-e120ea273084" x="160" y="284" width="230" height="12"
-                 fontName="Arial" fontSize="8.0">
+        <element kind="staticText" uuid="b99198cb-ecab-4a14-b1f1-e120ea273084" x="140" y="284" width="270" height="12"
+                 fontName="SansSerif" fontSize="8.0">
             <text><![CDATA[Comprobante Autorizado por AFIP - Escanear QR para verificar]]></text>
         </element>
         <property name="com.jaspersoft.studio.unit.height" value="px"/>

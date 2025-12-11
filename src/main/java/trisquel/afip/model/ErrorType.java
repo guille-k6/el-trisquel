@@ -1,0 +1,5 @@
+package trisquel.afip.model;
+
+public enum ErrorType {
+    AFIP_TIMEOUT, AFIP_VALIDATION_ERROR, AFIP_SERVER_ERROR, NETWORK_ERROR, AUTHENTICATION_ERROR, UNKNOWN
+}

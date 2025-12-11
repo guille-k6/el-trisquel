@@ -2,7 +2,8 @@ package trisquel.service;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import trisquel.afip.AfipQRBuilder;
 import trisquel.afip.model.AfipIva;
@@ -28,20 +29,29 @@ public class InvoiceReportService {
     private volatile JasperReport cachedReport;
     private volatile Image cachedLogo;
     private final AfipQRBuilder afipQRBuilder;
+    private final Resource invoiceReportResource;
+    private final Resource invoiceLogoResource;
 
-    public InvoiceReportService(AfipQRBuilder afipQRBuilder) {
+    public InvoiceReportService(AfipQRBuilder afipQRBuilder,
+                                @Value("${report.invoice.path}") Resource invoiceReportResource,
+                                @Value("${report.logo.path}") Resource invoiceLogoResource) {
         this.afipQRBuilder = afipQRBuilder;
+        this.invoiceReportResource = invoiceReportResource;
+        this.invoiceLogoResource = invoiceLogoResource;
     }
 
     /**
      * Compila el JRXML 1 sola vez y lo cachea
      */
     private JasperReport getReport() throws Exception {
-        if (cachedReport == null || 1 == 1) { // TODO: Sacar estos
+        if (cachedReport == null) {
             synchronized (this) {
                 if (cachedReport == null) {
-                    try (InputStream in = new ClassPathResource("reports/Factura_A_A4.jrxml").getInputStream()) {
+                    try (InputStream in = invoiceReportResource.getInputStream()) {
                         cachedReport = JasperCompileManager.compileReport(in);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new RuntimeException("No se pudo cargar el template del reporte", e);
                     }
                 }
             }
@@ -53,8 +63,11 @@ public class InvoiceReportService {
         if (cachedLogo == null) {
             synchronized (this) {
                 if (cachedLogo == null) {
-                    try (InputStream in = new ClassPathResource("image/trisquellogo.jpg").getInputStream()) {
-                        cachedLogo = ImageIO.read(in); // BufferedImage -> Image
+                    try (InputStream in = invoiceLogoResource.getInputStream()) {
+                        cachedLogo = ImageIO.read(in);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new RuntimeException("No se pudo cargar el logo", e);
                     }
                 }
             }

@@ -1,10 +1,10 @@
 package trisquel.model;
 
 import jakarta.persistence.*;
+import trisquel.afip.model.ErrorType;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.Optional;
 
 @Entity
 @Table(name = "invoice_queue")
@@ -14,33 +14,57 @@ public class InvoiceQueue {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invoice_queue_seq")
     @SequenceGenerator(name = "invoice_queue_seq", sequenceName = "invoice_queue_seq", allocationSize = 1)
     private Long id;
+
     @Column(name = "invoice_id")
     private Long invoiceId;
+
     @Column(name = "enqueued_at", columnDefinition = "TIMESTAMP WITH TIME ZONE DEFAULT now()")
     private ZonedDateTime enqueuedAt;
+
     @Column(name = "processed_at")
     private ZonedDateTime processedAt;
+
+    @Column(name = "started_processing_at")
+    private ZonedDateTime startedProcessingAt;
+
+    @Column(name = "next_retry_at")
+    private ZonedDateTime nextRetryAt;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 127)
     private InvoiceQueueStatus status = InvoiceQueueStatus.QUEUED;
+
     @Column(name = "retry_count")
     private Integer retryCount = 0;
+
     @Column(name = "request")
     private String request;
+
     @Column(name = "response")
     private String response;
+
     @Column(name = "afip_status")
     private String afipStatus;
-    @Column(name = "afip_reprocess")
-    private String afipReprocess;
+
     @Column(name = "afip_cae")
     private String afipCae;
+
     @Column(name = "afip_due_date_cae")
     private LocalDate afipDueDateCae;
+
     @Column(name = "errors")
     private String errors;
+
     @Column(name = "observations")
     private String observations;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "error_type", length = 50)
+    private ErrorType errorType;
+
+    @Column(name = "error_details", columnDefinition = "TEXT")
+    private String errorDetails;
+
     @Column(name = "generated_by")
     private Long generatedBy;
 
@@ -53,6 +77,48 @@ public class InvoiceQueue {
         this.enqueuedAt = ZonedDateTime.now();
         this.status = InvoiceQueueStatus.QUEUED;
         this.retryCount = 0;
+    }
+
+    // Factory method para crear reintentos
+    public static InvoiceQueue createRetryFromFailedQueue(InvoiceQueue failedQueue) {
+        if (failedQueue.getRetryCount() >= 3) {
+            return null;
+        }
+
+        InvoiceQueue retryQueue = new InvoiceQueue();
+        retryQueue.setInvoiceId(failedQueue.getInvoiceId());
+        retryQueue.setEnqueuedAt(ZonedDateTime.now());
+        retryQueue.setStatus(InvoiceQueueStatus.QUEUED);
+        retryQueue.setRetryCount(failedQueue.getRetryCount() + 1);
+        retryQueue.setGeneratedBy(failedQueue.getId());
+
+        // Calcular backoff exponencial: 1min, 5min, 15min
+        retryQueue.setNextRetryAt(calculateNextRetryTime(retryQueue.getRetryCount()));
+
+        return retryQueue;
+    }
+
+    private static ZonedDateTime calculateNextRetryTime(int retryCount) {
+        ZonedDateTime now = ZonedDateTime.now();
+        switch (retryCount) {
+            case 1:
+                return now.plusMinutes(1);
+            case 2:
+                return now.plusMinutes(5);
+            case 3:
+                return now.plusMinutes(15);
+            default:
+                return now.plusMinutes(1);
+        }
+    }
+
+    public void markAsBeingProcessed() {
+        this.status = InvoiceQueueStatus.BEING_PROCESSED;
+        this.startedProcessingAt = ZonedDateTime.now();
+    }
+
+    public void incrementRetryCount() {
+        this.retryCount++;
     }
 
     // Getters and Setters
@@ -86,6 +152,22 @@ public class InvoiceQueue {
 
     public void setProcessedAt(ZonedDateTime processedAt) {
         this.processedAt = processedAt;
+    }
+
+    public ZonedDateTime getStartedProcessingAt() {
+        return startedProcessingAt;
+    }
+
+    public void setStartedProcessingAt(ZonedDateTime startedProcessingAt) {
+        this.startedProcessingAt = startedProcessingAt;
+    }
+
+    public ZonedDateTime getNextRetryAt() {
+        return nextRetryAt;
+    }
+
+    public void setNextRetryAt(ZonedDateTime nextRetryAt) {
+        this.nextRetryAt = nextRetryAt;
     }
 
     public InvoiceQueueStatus getStatus() {
@@ -128,14 +210,6 @@ public class InvoiceQueue {
         this.afipStatus = afipStatus;
     }
 
-    public String getAfipReprocess() {
-        return afipReprocess;
-    }
-
-    public void setAfipReprocess(String afipReprocess) {
-        this.afipReprocess = afipReprocess;
-    }
-
     public String getAfipCae() {
         return afipCae;
     }
@@ -164,40 +238,31 @@ public class InvoiceQueue {
         return observations;
     }
 
+    public void setObservations(String observations) {
+        this.observations = observations;
+    }
+
+    public ErrorType getErrorType() {
+        return errorType;
+    }
+
+    public void setErrorType(ErrorType errorType) {
+        this.errorType = errorType;
+    }
+
+    public String getErrorDetails() {
+        return errorDetails;
+    }
+
+    public void setErrorDetails(String errorDetails) {
+        this.errorDetails = errorDetails;
+    }
+
     public Long getGeneratedBy() {
         return generatedBy;
     }
 
     public void setGeneratedBy(Long generatedBy) {
         this.generatedBy = generatedBy;
-    }
-
-    public void setObservations(String observations) {
-        this.observations = observations;
-    }
-
-    public void incrementRetryCount() {
-        this.retryCount = (this.retryCount == null ? 1 : this.retryCount) + 1;
-    }
-
-    /**
-     * @param invoiceQueue
-     * @return Optional with the next invoiceQueue to process or empty if the retryLimit is exceeded
-     */
-    public static Optional<InvoiceQueue> createInvoiceQueueFromUncompletedInvoiceQueue(InvoiceQueue invoiceQueue) {
-        if (invoiceQueue.getRetryCount() >= 3) {
-            return Optional.empty();
-        }
-        InvoiceQueue newIQueue = new InvoiceQueue();
-        newIQueue.setInvoiceId(invoiceQueue.getInvoiceId());
-        newIQueue.setEnqueuedAt(ZonedDateTime.now());
-        if (!"N".equals(invoiceQueue.getAfipReprocess())) {
-            invoiceQueue.setStatus(InvoiceQueueStatus.RETRY);
-        } else {
-            invoiceQueue.setStatus(InvoiceQueueStatus.FAILED);
-            newIQueue.setRetryCount(invoiceQueue.getRetryCount());
-        }
-        newIQueue.setGeneratedBy(invoiceQueue.getId());
-        return Optional.of(newIQueue);
     }
 }

@@ -38,6 +38,7 @@ dependencies {
     implementation("org.bouncycastle:bcutil-jdk18on:1.78.1")
 
     implementation("net.sf.jasperreports:jasperreports:7.0.3")
+    implementation("net.sf.jasperreports:jasperreports-jdt:7.0.3")
     implementation("net.sf.jasperreports:jasperreports-pdf:7.0.3")
     implementation("net.sf.jasperreports:jasperreports-fonts:7.0.3")
     implementation("com.google.zxing:core:3.5.3")

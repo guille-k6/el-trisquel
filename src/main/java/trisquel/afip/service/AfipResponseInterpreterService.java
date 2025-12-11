@@ -88,7 +88,7 @@ public class AfipResponseInterpreterService {
 
         public void completeInvoiceQueue(InvoiceQueue invoiceQueue) {
             invoiceQueue.setAfipStatus(estado);
-            invoiceQueue.setAfipReprocess(reproceso);
+            // invoiceQueue.setAfipReprocess(reproceso);
             invoiceQueue.setAfipCae(cae);
             invoiceQueue.setAfipDueDateCae(fechaVencimientoCae);
             invoiceQueue.setErrors(buildStringFromList(this.errores));

@@ -76,4 +76,17 @@ public class InvoiceQueueController {
         }
         return response;
     }
+
+    @GetMapping("/retry/{id}")
+    public ResponseEntity<?> retryInvoiceQueue(@PathVariable Long id) {
+        ResponseEntity<?> response;
+        try {
+            invoiceQueueService.retryInvoiceQueue(id);
+        } catch (ValidationException e) {
+            response = ResponseEntity.status(HttpStatus.CONFLICT).body(new ValidationExceptionResponse(e.getValidationErrors()).getErrors());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ValidationExceptionResponse(Map.of("Error", List.of(e.getMessage()))));
+        }
+        return ResponseEntity.ok().build();
+    }
 }

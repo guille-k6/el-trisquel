@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import trisquel.model.InvoiceQueue;
 import trisquel.model.InvoiceQueueStatus;
 import trisquel.repository.InvoiceQueueRepository;
+import trisquel.utils.ValidationException;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,5 +46,15 @@ public class InvoiceQueueService {
 
     public List<InvoiceQueue> findByInvoice(Long invoiceId) {
         return repository.findByInvoiceId(invoiceId);
+    }
+
+    public void retryInvoiceQueue(Long id) {
+        Optional<InvoiceQueue> invoiceQueue = repository.findById(id);
+        if (invoiceQueue.isEmpty()) throw new ValidationException().addValidationError("Error", "No existe cola de facturación con id: " + id);
+        List<InvoiceQueueStatus> retryableStates = Arrays.asList(InvoiceQueueStatus.QUEUED, InvoiceQueueStatus.FAILED);
+        if (!retryableStates.contains(invoiceQueue.get().getStatus())) {
+            throw new ValidationException().addValidationError("Error", "El estado de la cola de facturación no es el correcto");
+        }
+
     }
 }
